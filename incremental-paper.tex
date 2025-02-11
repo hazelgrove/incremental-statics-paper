@@ -1,0 +1,79 @@
+\documentclass[acmsmall,dvipsnames,10pt,review,nonacm]{acmart}\settopmatter{printfolios=true}
+
+\startPage{1}
+
+%% Copyright information 
+\setcopyright{none}
+
+\bibliographystyle{ACM-Reference-Format}
+%\citestyle{acmauthoryear}
+\citestyle{acmnumeric}
+
+%% Spacing hacks 
+\usepackage{titlesec}
+\titlespacing*{\section} {0pt}{6pt}{2pt}
+% \titlespacing*{\subsection} {0pt}{6pt}{2pt}
+\titlespacing*{\subsubsection}{0pt}{6pt}{10pt}
+\titlespacing*{\paragraph} {0pt}{4pt}{10pt}
+% \titlespacing*{\subparagraph} {12pt}{5pt}{10pt}
+
+\usepackage{enumitem}
+\usepackage{todonotes}
+
+\input{config/config-tex}
+\input{config/config-tikz}
+\input{config/symbols/types}
+% \input{config/symbols/expressions}
+% \input{config/symbols/marked}
+% \input{config/symbols/macros}
+% \input{config/symbols/symbols}
+% \input{config/symbols/definitions}
+
+\begin{document}
+
+%% Title information
+\title[Incremental]{Incremental Bidirectional Typing via Order Maintenance}
+%\subtitle{Subtitle}
+
+%% Author information
+\author{Thomas J. Porter}
+\orcid{0009-0000-1809-8382}
+\affiliation{
+\institution{University of Michigan}
+\city{Ann Arbor}
+\state{MI}
+\country{USA}
+}
+
+\author{Cyrus Omar}
+\orcid{0000-0003-4502-7971}
+\affiliation{
+\institution{University of Michigan}
+\city{Ann Arbor}
+\state{MI}
+\country{USA}
+}
+
+\input{abstract}
+
+\maketitle
+
+\input{introduction}
+\input{incremental-by-example}
+\input{formalism}
+\input{properties}
+\input{implementation}
+\input{evaluation}
+\input{related-work}
+\input{discussion-and-conclusion}
+
+%% Acknowledgments
+% TODO
+
+%% Appendix
+% \appendix
+
+%% Bibliography
+% \bibliography{incremental-paper}
+
+\end{document}

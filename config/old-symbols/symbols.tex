@@ -1,0 +1,162 @@
+%
+% utilities
+%
+\newcommand{\colorSideJudge}{Black!50}
+\newcommand{\colorCText}{\colorUText}
+\newcommand{\colorCBkgSyn}{\colorUBkgSyn}
+\newcommand{\colorCBkgAna}{\colorUBkgAna}
+\definecolor{hole}{RGB}{162,85,162}
+\definecolor{cursorhighlight}{RGB}{230,255,230}
+\definecolor{cursor}{RGB}{76,170,76}
+\newcommand{\mathcolorbox}[2]{{\fboxsep=1pt\colorbox{#1}{$\displaystyle #2$}}}
+
+%
+% color
+%
+\newtcolorbox{highlightbox}[2][]{
+  on line,
+  hbox,
+  boxsep=0pt,
+  left=1pt,
+  right=1pt,
+  top=1pt,
+  bottom=1pt,
+  colframe=white,
+  colback=#2
+  #1,
+}
+
+\DeclareMathOperator{\?}{?}
+\DeclareMathOperator{\dom}{dom}
+
+%
+% judgments
+%
+
+% judgments
+\newcommand{\judgment}[3]{\inferrule[#3]{#1}{#2}}
+\newcommand{\judgbox}[1]{\noindent \fbox{$#1$}}
+
+
+% constraints
+\newcommand{\constrain}[2]{{#1} \approx {#2}}
+\newcommand{\constraintCons}[2]{\normalfont\textsf{cons}(#1, #2)}
+\newcommand{\constraintNil}{\{\}}
+\newcommand{\maps}[2]{{#1} \mapsto {#2}}
+\newcommand{\mapNil}[0]{\cdot}
+
+\newcommand{\matchedArrowConstraint}[4]{
+    \matchedArrow{#1}{#2}{#3}\goodcolor{\colorSideJudge}{~|~} {#4}
+}
+\newcommand{\matchedProdConstraint}[4]{
+    \matchedProd{#1}{#2}{#3}\goodcolor{\colorSideJudge}{~|~} {#4}
+}
+
+\newcommand{\constraintTurn}{\goodcolor{\colorCText}{\vdash}}
+\newcommand{\constraintBar}{\goodcolor{\colorCText}{~|~}}
+\newcommand{\constraintSyn}{\goodcolor{\colorCText}{\Rightarrow}}
+\newcommand{\constraintAna}{\goodcolor{\colorCText}{\Leftarrow}}
+\newcommand{\synConstraint}[5]{
+    \begin{mybox}{\colorCBkgSyn}
+    \ensuremath{{#1} \constraintTurn {#2} \constraintSyn {#3} \constraintBar {#4} \constraintBar {#5}}
+    \end{mybox}
+}
+\newcommand{\anaConstraint}[5]{
+    \begin{mybox}{\colorCBkgAna}
+    \ensuremath{{#1} \constraintTurn {#2} \constraintAna {#3} \constraintBar {#4} \constraintBar {#5}}
+    \end{mybox}
+}
+\newcommand{\synMarkConstraint}[4]{
+    \begin{mybox}{\colorCBkgSyn}
+      \ensuremath{{#1} \constraintTurn {#2} \goodcolor{\colorMKText}        {\looparrowright} {#3}
+      \constraintSyn {#4}}
+    \end{mybox}
+}
+\newcommand{\anaMarkConstraint}[4]{
+    \begin{mybox}{\colorCBkgAna}
+      \ensuremath{{#1} \constraintTurn {#2} \goodcolor{\colorMKText}{\looparrowright} {#3}
+    \constraintAna {#4}}
+    \end{mybox}
+}
+
+\newcommand{\mConstraint}[0]{\ensuremath{L}}
+\newcommand{\cConstraint}[0]{\ensuremath{C}}
+
+
+\newcommand{\meet}[2]{{#1} \sqcap {#2}}
+
+
+% type incomplete
+\newcommand{\incomplete}[1]{#1 ~ \normalfont\textsf{incomplete}}
+
+% potential type
+\newcommand{\PTUnknownVar}[1]{\ensuremath{#1}}
+\newcommand{\PTNum}{\ensuremath{{\normalfont\textsf{N}}}}
+\newcommand{\PTBool}{\ensuremath{{\normalfont\textsf{B}}}}
+\newcommand{\PTArrow}[2]{\ensuremath{#1 \to #2}}
+
+% potential types
+\newcommand{\ptypCons}[2]{\normalfont\textsf{cons}(#1, #2)}
+\newcommand{\ptypSingle}[1]{\normalfont\textsf{single}(#1)}
+
+% potential type set
+\newcommand{\ptsRep}[1]{\normalfont\textsf{rep}(#1)}
+\newcommand{\ptsLead}[1]{\normalfont\textsf{lead}(#1)}
+
+% PTGraph Elements and Membership
+\newcommand{\ptypGraphNode}[2]{#1\normalfont\textsf{ : }#2}
+\newcommand{\underGraph}[2]{#1~|~#2}
+\DeclareMathOperator{\cod}{cod}
+\newcommand{\isIn}[2]{#1 \in #2}
+\newcommand{\isNotIn}[2]{#1 \notin #2}
+
+% PTGraph Update
+\newcommand{\ptypGraphUpdate}[4]{
+    \underGraph{#1}{\normalfont\textsf{update}~#2:#3 ~\hookrightarrow~ #4}
+}
+
+% PTGraph add node
+\newcommand{\ptypGraphAdd}[3]{
+    \underGraph{#1}{\normalfont\textsf{add}~#2 ~\hookrightarrow~ #3}
+}
+
+% PTSet Leader
+\newcommand{\leader}[4]{
+    \underGraph{#1}{\normalfont\textsf{leader}~#2 \equiv \ptypGraphNode{#3}{#4}}
+}
+
+% Unions
+\newcommand{\unionOf}[3]{#2 \cup_{#1} #3}
+
+%   Type Union
+\newcommand{\typUnion}[2]{\unionOf{\tau}{#1}{#2}}
+\newcommand{\ptypGraphUnion}[4]{
+    \underGraph{#1}{\typUnion{#2}{#3}} ~\hookrightarrow~ #4
+}
+
+% PTyps Union
+\newcommand{\ptypsUnion}[2]{#1~\Cup~#2}
+\newcommand{\specSubset}[3]{#1~\Subset_{#3}~#2}
+\newcommand{\ptypesSubset}[2]{\specSubset{#1}{#2}{u}}
+\newcommand{\ptypSetSubset}[3]{\underGraph{#1}{\specSubset{#2}{#3}{s}}}
+\newcommand{\snapSubset}[2]{\specSubset{#1}{#2}{j}}
+\newcommand{\snapElement}[2]{#1 ~\in_{h}~ #2}
+
+% unification
+\newcommand{\unify}[3]{\underGraph{#1}{#2~\amalg~#3}}
+
+% Snapshot PTS
+\newcommand{\ptsSnapshot}[3]{\underGraph{#1}{\normalfont\textsf{snapshot}_s~#2 \equiv #3}}
+
+% Snapshot List
+\newcommand{\listSnapshot}[3]{\underGraph{#1}{\normalfont\textsf{snapshot}_l~#2 \equiv #3}}
+
+% Solution
+\newcommand{\solution}[2]{\normalfont\textsf{solution}~#1 \equiv #2}
+
+% List
+\newcommand{\listCons}[2]{\normalfont\textsf{cons}(#1, #2)}
+\newcommand{\listNil}{\normalfont\textsf{nil}}
+
+% fresh
+\newcommand{\markFresh}[1]{#1~\normalfont\textsf{fresh}}

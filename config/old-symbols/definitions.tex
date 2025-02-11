@@ -1,0 +1,289 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Language Components
+
+\usepackage{xstring}
+\usepackage{tensor}
+
+% \selectcolormodel{gray}
+
+% notation
+\def\_{\texttt{\textunderscore}}
+\renewcommand{\id}[1]{\textcolor{gray}{\ensuremath{#1}}}
+\newcommand{\eid}[2]{\tensor*{#2}{^{\id{#1}}}}
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
+\newcommand{\figureCode}[1]{\textbf{\texttt{#1}}\vskip1em}
+\newcommand{\Z}[1]{\hat{#1}}
+\newcommand{\Q}[1]{\bar{#1}}
+\renewcommand{\Set}[1][]{\Theta_{#1}}
+\newcommand{\SetOf}[1]{\left\{#1\right\}}
+\newcommand{\SuchThat}[1]{~\vert~#1}
+\newcommand{\SequenceOf}[1]{\left.#1\right|}
+\newcommand{\SizeOf}[1]{\left\lvert#1\right\rvert}
+\newcommand{\action}[1]{\xrightarrow{#1}}
+% TODO: rename \graphAction to \graphEdit
+\newcommand{\graphAction}[2]{\big(#1, #2\big)}
+\newcommand{\fresh}[1]{{#1}^{+}}
+\newcommand{\source}{\textsf{source}}
+\newcommand{\target}{\textsf{target}}
+
+% sets
+\def\A{\mathcal{A}}
+\def\E{\mathcal{E}}
+\def\G{\mathcal{G}}
+\def\I{\mathcal{I}}
+\def\K{\mathcal{K}}
+\def\P{\mathcal{P}}
+\def\S{\mathcal{S TODO DONT USE}}
+\def\L{\mathcal{L}}
+\def\U{\mathcal{U}}
+\def\W{\mathcal{W}}
+\def\V{\mathcal{V}}
+\def\e{\varepsilon}
+\def\AA{\textbf{A}}
+\def\EE{\textbf{E}}
+
+% Sorts
+\newcommand\Exp{\mathsf{Exp}}
+\newcommand\Pat{\mathsf{Pat}}
+\newcommand\Typ{\mathsf{Typ}}
+
+% objects
+\def\e{\varepsilon}
+\def\Grove{\gamma}
+
+% judgments
+\newcommand{\act}[5]{#1, #2; #3 \action{#4} #5}
+\newcommand{\applyAction}[3]{#1 \action{#2} #3}
+\newcommand{\applyUserAction}[3]{#1 \action{#2} #3}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Graphs
+
+\DeclareMathOperator{\sortOp}{\text{sort}}
+\DeclareMathOperator{\arityOp}{\text{arity}}
+\DeclareMathOperator{\fixOp}{\text{fix}}
+\renewcommand{\sort}[1]{\sortOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\arity}[1]{\arityOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\fix}[1]{\fixOp\mathopen{}\left(#1\right)\mathclose{}}
+
+\DeclareMathOperator{\constructorOp}{\texttt{constructor}}
+\DeclareMathOperator{\econstructorOp}{\texttt{econstructor}}
+\DeclareMathOperator{\pconstructorOp}{\texttt{pconstructor}}
+\DeclareMathOperator{\tconstructorOp}{\texttt{tconstructor}}
+\newcommand{\constructor}[1]{\constructorOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\econstructor}[1]{\econstructorOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\pconstructor}[1]{\pconstructorOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\tconstructor}[1]{\tconstructorOp\mathopen{}\left(#1\right)\mathclose{}}
+
+% \newcommand{\Edge}[1]{Edge~#1}
+% \newcommand{\Vertex}[1]{Vertex~#1}
+\newcommand{\multiVertex}[1]{\textcolor{red}{\ensuremath{\curlyveedownarrow_{#1}}}}
+\newcommand{\cycleVertex}[1]{\textcolor{red}{\ensuremath{\circlearrowright_{#1}}}}
+\newcommand{\orphanVertex}[1]{\textcolor{red}{\ensuremath{\mathbf{\ndownarrow_{#1}}}}}
+\newcommand{\rootVertex}{v_\text{root}}
+\newcommand{\rootPosition}{p_\text{root}}
+\newcommand{\otherVertexVskip}{\vskip0.5em}
+
+% \DeclareMathOperator{\outvertexOp}{\text{outvertex}}
+% \newcommand{\outvertex}[1]{\outvertexOp\mathopen{}\left(#1\right)\mathclose{}}
+
+\DeclareMathOperator{\defaultposOp}{\text{defaultpos}}
+\newcommand{\defaultpos}[1]{\defaultposOp\mathopen{}\left(#1\right)\mathclose{}}
+
+\newcommand{\parens}[1]{\textcolor{gray}{(}#1\textcolor{gray}{)}}
+
+% Constructors
+\newcommand{\ExpVar}{\mathsf{Exp\_var}}
+\newcommand{\ExpLam}{\mathsf{Exp\_lam}}
+\newcommand{\ExpApp}{\mathsf{Exp\_app}}
+\newcommand{\ExpNum}{\mathsf{Exp\_num}}
+\newcommand{\ExpPlus}{\mathsf{Exp\_plus}}
+\newcommand{\ExpTimes}{\mathsf{Exp\_times}}
+\newcommand{\PatVar}{\mathsf{Pat\_var}}
+\newcommand{\TypNum}{\mathsf{Typ\_num}}
+\newcommand{\TypArrow}{\mathsf{Typ\_arrow}}
+
+% Positions
+\newcommand{\Root}{\mathsf{Root}}
+\newcommand{\LamParam}{\mathsf{Param}}
+\newcommand{\LamType}{\mathsf{Type}}
+\newcommand{\LamBody}{\mathsf{Body}}
+\newcommand{\AppFun}{\mathsf{Fun}}
+\newcommand{\AppArg}{\mathsf{Arg}}
+\newcommand{\PlusLeft}{\mathsf{Left}}
+\newcommand{\PlusRight}{\mathsf{Right}}
+\newcommand{\TimesLeft}{\mathsf{Left}}
+\newcommand{\TimesRight}{\mathsf{Right}}
+\newcommand{\ArrowArg}{\mathsf{Arg}}
+\newcommand{\ArrowResult}{\mathsf{Result}}
+
+\newcommand{\pWrap}{p_\textsf{wrap}}
+\newcommand{\pPost}{p_\textsf{post}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Terms
+
+\newcommand{\varExp}[2]{#1^{#2}}
+\newcommand{\numExp}[2]{\underline{#1}^{#2}}
+\newcommand{\lamExp}[4]{\lambda^{#1} #2 : #3.#4}
+\newcommand{\appExp}[3]{\left(#1~#2\right)^{#3}}
+\newcommand{\plusExp}[3]{#1 +^{#2} #3}
+\newcommand{\varPat}[2]{#1^{#2}}
+\newcommand{\arrowTyp}[3]{#1 \to^{#2} #3}
+\newcommand{\numTyp}[1]{Num^{#1}}
+\newcommand{\hole}{\ensuremath{\square}} %\textcolor{violet}{\llparenthesis}}\textcolor{violet}{\rrparenthesis}}
+
+% \newcommand{\conflictHole}[2][]{%
+% {\noexpandarg\StrSubstitute{#2}{,}{\textcolor{red}{\,\textbf{|}\,}}[\myargs]%
+% {\textcolor{red}{\{}\myargs\textcolor{red}{\}}_{#1}}}}%
+
+\newcommand{\genericConstructorTerm}[3]{\eid{#1}{#2}\ {\textbf{\{} #3 \textbf{\}}}_{p \in arity(k)}}
+\newcommand{\genericTerm}[2]{\genericConstructorTerm{#1}{k}{#2}}
+
+\newcommand{\conflictHole}[1]{{\textcolor{red}{\textbf{\{}}} #1 {\textcolor{red}{\textbf{\}}}}}
+
+\newcommand{\binaryConflictHole}[2]{\conflictHole{#1 {\textcolor{red}{\textbf{|}}} #2}}
+
+\newcommand{\conflictHoleTerm}[2]{\eid{#1}{} \conflictHole{#2} }
+
+% \eid{#1}{}  #2 % {\textcolor{red} a}
+
+% }
+% {\noexpandarg\StrSubstitute{#3}{,}{\textcolor{red}{\,\textbf{|}\,}}[\myargs]%
+% {\textcolor{red}{\textbf{\{}}\myargs\textcolor{red}{\textbf{\}}}_{#2}}}}%
+\newcommand{\emptyHole}[1]{{}^{\id{#1}}\square}
+
+\newcommand{\eVar}[2]{\eid{#1}{#2}}
+\newcommand{\eFun}[4]{\eid{#1}{\lambda} #2 : #3 . #4}
+\newcommand{\eApp}[3]{\eid{#1}{(#2~#3)}}
+\newcommand{\eNum}[2]{\eid{#1}{\underline{#2}}}
+\newcommand{\ePlus}[3]{#2~\eid{#1}{\texttt{+}}~#3}
+\newcommand{\eTimes}[3]{#2~\eid{#1}{\texttt{*}}~#3}
+\newcommand{\pVar}[2]{\eid{#1}{#2}}
+\newcommand{\tArrow}[3]{#2 \eid{#1}{\rightarrow} #3}
+\newcommand{\tNum}[1]{\eid{#1}{\mathsf{num}}}
+
+\newcommand{\var}[1]{\eid{u}{#1}}
+\newcommand{\app}[2]{\eApp{u}{#1}{#2}}
+\newcommand{\num}{\eNum{u}{n}}
+\newcommand{\ehole}{\emptyHole{\ell}}
+\newcommand{\lexp}[1]{\eid{w}{}{#1}}
+\newcommand{\conflict}[1]{
+\conflictHoleTerm{\ell}{\eid{w_i}{}{#1}_{i}}_{i<n}
+}
+\newcommand{\multiref}{\multiVertex{(w,v)}}
+\newcommand{\uniref}{\cycleVertex{(w,v)}}
+\newcommand{\plus}[2]{\ePlus{u}{#1}{#2}}
+\newcommand{\mult}[2]{\eTimes{u}{#1}{#2}}
+\newcommand{\lam}[3]{\eid{u}{\lambda} #1 : #2 . #3}
+\newcommand{\reglam}{\lam{x}{\TLMV}{\ELV}}
+\newcommand{\freevar}{\ECFree{\var{x}}}
+\newcommand{\incontype}{\ECInconType{\ECMV}}
+\newcommand{\lamasc}{\ECLamInconAsc{\var{x}}{\TLMV}{\ELMV}}
+\newcommand{\lamanamarr}{\ECLamAnaNonMatchedArrow{\var{x}}{\TLMV}{\ELMV}}
+\newcommand{\apsynmarr}{\app{\ECApSynNonMatchedArrow{\ELMV_1}}{\ELMV_2}}
+\newcommand{\lamge}{\ECLamGraphErasure{\lam{x}{\TLMV}{\ELV}}}
+\newcommand{\tnum}{\tNum{u}}
+\newcommand{\tarrow}{\tArrow{u}{\TMV_1}{\TMV_2}}
+\newcommand{\starrow}{\tArrow{}{\sigma_1}{\sigma_2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Zippered Terms
+
+\newcommand{\cursor}[1]{{\vartriangleright}#1{\vartriangleleft}}
+\newcommand{\erase}[1]{#1\mathclose{}^{\diamond}\mathclose{}}
+\newcommand{\markErase}[1]{#1\mathclose{}^{\square}\mathclose{}}
+\newcommand{\graphErase}[1]{#1\mathclose{}^{\triangle}\mathclose{}}
+\newcommand{\provErase}[1]{#1\mathclose{}^{\circ}\mathclose{}}
+\newcommand{\erasesToRow}[2]{\markErase{#1} & = & #2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Decomposition
+
+\DeclareMathOperator{\decompOp}{\texttt{decomp}}
+\DeclareMathOperator{\vertexesOp}{\texttt{vertexes}}
+\newcommand{\decomp}[1]{\decompOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\vertexes}[1]{\vertexesOp\mathopen{}\left(#1\right)\mathclose{}}
+
+\DeclareMathOperator{\edecompOp}{\texttt{edecomp}}
+\DeclareMathOperator{\pdecompOp}{\texttt{pdecomp}}
+\DeclareMathOperator{\tdecompOp}{\texttt{tdecomp}}
+\DeclareMathOperator{\edecompPrimeOp}{\edecompOp^\prime}
+\DeclareMathOperator{\pdecompPrimeOp}{\pdecompOp^\prime}
+\DeclareMathOperator{\tdecompPrimeOp}{\tdecompOp^\prime}
+\newcommand{\edecomp}[1]{\edecompOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\pdecomp}[1]{\pdecompOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\tdecomp}[1]{\tdecompOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\edecompPrime}[2]{\edecompPrimeOp\mathopen{}\left(#1, #2\right)\mathclose{}}
+\newcommand{\pdecompPrime}[2]{\pdecompPrimeOp\mathopen{}\left(#1, #2\right)\mathclose{}}
+\newcommand{\tdecompPrime}[2]{\tdecompPrimeOp\mathopen{}\left(#1, #2\right)\mathclose{}}
+
+% helpers
+\newcommand{\invertexes}[1]{\text{invertexes}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\inconstructors}[1]{\text{inconstructors}\mathopen{}\left(#1\right)\mathclose{}}
+\renewcommand{\inedges}[1]{\text{inedges}\mathopen{}\left(#1\right)\mathclose{}}
+\renewcommand{\sources}[1]{\text{sources}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\targets}[1]{\text{targets}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\live}[1]{\text{live}\mathopen{}\left(#1\right)\mathclose{}}
+
+\DeclareMathOperator{\ingraphOp}{\text{ingraph}}
+\DeclareMathOperator{\outedgesOp}{\text{outedges}}
+\DeclareMathOperator{\parentsOp}{\text{parents}}
+\DeclareMathOperator{\ancestorsOp}{\text{ancestors}}
+\DeclareMathOperator{\verticesOp}{\text{vertices}}
+\DeclareMathOperator{\lfpOp}{\text{lfp}}
+\DeclareMathOperator{\ancestorsPrimeOp}{\ancestorsOp^\prime}
+\newcommand{\ingraph}[1]{\ingraphOp\mathopen{}\left(#1\right)\mathclose{}}
+\renewcommand{\outedges}[2]{\outedgesOp\mathopen{}\left(#1, #2\right)\mathclose{}}
+\renewcommand{\parents}[1]{\parentsOp\mathopen{}\left(#1\right)\mathclose{}}
+\renewcommand{\ancestors}[1]{\ancestorsOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\ancestorsPrime}[1]{\ancestorsPrimeOp\mathopen{}\left(#1\right)\mathclose{}}
+\renewcommand{\lfp}[1]{\lfpOp\mathopen{}\left(#1\right)\mathclose{}}
+
+\DeclareMathOperator{\minOp}{\text{min}}
+\renewcommand{\min}[1]{\minOp\mathopen{}\left(#1\right)\mathclose{}}
+
+\DeclareMathOperator*{\argminOp}{arg\,min}
+\renewcommand{\argmin}[2]{\argminOp_{#1}\mathopen{}\left(#2\right)\mathclose{}}
+
+\DeclareMathOperator{\rootsOp}{\text{roots}}
+\newcommand{\roots}[1]{\rootsOp\mathopen{}\left(#1\right)\mathclose{}}
+
+\DeclareMathOperator{\resolveOp}{\text{resolve}}
+\newcommand{\resolve}[3]{\resolveOp\mathopen{}\left(#1, #2, #3\right)\mathclose{}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Recomposition
+
+\DeclareMathOperator{\recompOp}{\texttt{recomp}}
+\DeclareMathOperator{\erecompOp}{\texttt{erecomp}}
+\DeclareMathOperator{\precompOp}{\texttt{precomp}}
+\DeclareMathOperator{\trecompOp}{\texttt{trecomp}}
+\newcommand{\recomp}[1]{\recompOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\erecomp}[1]{\erecompOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\precomp}[1]{\precompOp\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\trecomp}[1]{\trecompOp\mathopen{}\left(#1\right)\mathclose{}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% actions
+\def\Down{\text{Down}}
+\def\Enqueue{\text{Enqueue}}
+\def\Left{\text{Left}}
+\def\Move{\text{Move}}
+\def\Num{\text{Num}}
+\def\Right{\text{Right}}
+\def\Select{\text{Select}}
+\def\Send{\text{Send}}
+\def\Up{\text{Up}}
+
+\newcommand{\Construct}[1]{\mathsf{Construct}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\Delete}{\mathsf{Delete}}
+\newcommand{\Relocate}[1]{\mathsf{Relocate}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\Wrap}[2]{\mathsf{Wrap}\mathopen{}\left(#1, #2\right)\mathclose{}}
+
+% cursors
+\newcommand{\CVertex}[1]{\text{Vertex}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\CLocation}[1]{\text{Location}\mathopen{}\left(#1\right)\mathclose{}}
+\newcommand{\CEdge}[1]{\text{Edge}\mathopen{}\left(#1\right)\mathclose{}}

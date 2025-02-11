@@ -1,0 +1,88 @@
+%%%%%%%%
+
+\renewcommand{\topfraction}{1} % Allow floats to take up the page
+\renewcommand{\textfraction}{0}
+
+%%%%%%%%
+% \autoref from hyperref
+\renewcommand{\AMSautorefname}          {Equation}
+\renewcommand{\appendixautorefname}     {Appendix}
+\renewcommand{\chapterautorefname}      {Chapter}
+\renewcommand{\equationautorefname}     {Equation}
+\renewcommand{\FancyVerbLineautorefname}{Line}
+\renewcommand{\figureautorefname}       {Figure}
+\renewcommand{\footnoteautorefname}     {Footnote}
+\renewcommand{\Hfootnoteautorefname}    {Footnote}
+\renewcommand{\itemautorefname}         {Item}
+\renewcommand{\Itemautorefname}         {Item}
+\renewcommand{\pageautorefname}         {Page}
+\renewcommand{\paragraphautorefname}    {Section}
+\renewcommand{\partautorefname}         {Part}
+\renewcommand{\sectionautorefname}      {Section}
+\renewcommand{\subparagraphautorefname} {Section}
+\renewcommand{\subsectionautorefname}   {Section}
+\renewcommand{\subsubsectionautorefname}{Section}
+\renewcommand{\tableautorefname}        {Table}
+\renewcommand{\theoremautorefname}      {Theorem}
+
+%% Packages
+\usepackage{scalerel}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage[rule=false]{subcaption}
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{relsize}
+% \usepackage{centernot}
+\usepackage{stmaryrd}
+% \usepackage{semantic}
+
+\let\colonapprox\undefined % Avoid redefinition error in `colonequals`
+\let\colonsim\undefined % Avoid redefinition error in `colonequals`
+
+
+% \usepackage{todonotes}
+% \usepackage[ruled]{algorithm2e}
+
+
+
+% Load MnSymbol without clobbering \ast
+% See https://tex.stackexchange.com/a/269691
+\usepackage{amsmath}% needed before mathabx
+\let\amsast=\ast
+\usepackage[matha]{mathabx}% needed to prevent \ast getting clobbered
+\let\abxast=\ast
+% \usepackage{MnSymbol}
+\let\mnast=\ast
+\let\ast=\abxast
+
+\usepackage{bm}
+\usepackage{thmtools}
+\usepackage{colonequals}
+\usepackage{mathpartir}
+\usepackage{stmaryrd}
+\usepackage{fontawesome}
+\usepackage{array}
+\usepackage{mathtools}
+\usepackage{centernot}
+
+\newtcolorbox{mybox}[2][]
+{
+  on line,
+  hbox,
+  boxsep=0pt,
+  left=1pt,
+  right=1pt,
+  top=1pt,
+  bottom=1pt,
+  colframe=white,
+  colback=#2
+  #1,
+}
+\newcommand\goodcolor[2]{%
+  \protect\leavevmode
+  \begingroup
+    \color{#1}%
+    #2%
+  \endgroup
+}

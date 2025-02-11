@@ -1,0 +1,170 @@
+\documentclass[acmsmall,dvipsnames,10pt,nonacm,sigplan]{acmart}\settopmatter{printfolios=true}
+
+\startPage{1}
+
+%% Copyright information 
+\setcopyright{none}
+
+\bibliographystyle{ACM-Reference-Format}
+%\citestyle{acmauthoryear}
+\citestyle{acmnumeric}
+
+%% Spacing hacks 
+\usepackage{titlesec}
+\titlespacing*{\section} {0pt}{6pt}{2pt}
+% \titlespacing*{\subsection} {0pt}{6pt}{2pt}
+\titlespacing*{\subsubsection}{0pt}{6pt}{10pt}
+\titlespacing*{\paragraph} {0pt}{4pt}{10pt}
+% \titlespacing*{\subparagraph} {12pt}{5pt}{10pt}
+
+\usepackage{enumitem}
+\usepackage{todonotes}
+% \usepackage{authblk}
+
+
+\input{config/config-tex}
+\input{config/config-tikz}
+% \input{config/symbols/types}
+% \input{config/symbols/expressions}
+% \input{config/symbols/marked}
+% \input{config/symbols/macros}
+% \input{config/symbols/symbols}
+% \input{config/symbols/definitions}
+
+\begin{document}
+
+%% Title information
+\title[Incremental]{Incremental Bidirectional Typing via Order Maintenance}
+%\subtitle{Subtitle}
+
+%% Author information
+% \author{Thomas J. Porter}
+% \orcid{0009-0000-1809-8382}
+% \affiliation{
+% \institution{University of Michigan}
+% \city{Ann Arbor}
+% \state{MI}
+% \country{USA}
+% }
+
+% \author{Marisa Kirisame}
+% \orcid{}
+% \affiliation{
+%   \institution{University of Utah}
+%   % \streetaddress{104 Jamestown Rd}
+%   \city{Salt Lake City}
+%   \state{UT}
+%   \postcode{23185}
+%   \country{USA}
+% }
+
+% \author{Liam Mulcahy}
+% \affiliation{
+% \institution{University of Michigan}
+% \city{Ann Arbor}
+% \state{MI}
+% \country{USA}
+% }
+
+% \author{Pavel Panchekha}
+%   \orcid{}
+%   \affiliation{
+%   \institution{University of Utah}
+%   % \streetaddress{104 Jamestown Rd}
+%   \city{Salt Lake City}
+%   \state{UT}
+%   % \postcode{23185}
+%   \country{USA}
+% }
+
+% \author{Cyrus Omar}
+% \orcid{0000-0003-4502-7971}
+% \affiliation{
+% \institution{University of Michigan}
+% \city{Ann Arbor}
+% \state{MI}
+% \country{USA}
+% }
+
+\author{
+    Thomas J. Porter$^1$\quad 
+    Marisa Kirisame$^2$\quad 
+    Liam Mulcahy$^1$\quad 
+    Pavel Panchekha$^2$\quad 
+    Cyrus Omar$^1$
+    \\
+    ~\vspace{-7px}\\
+    }
+
+% \affil[5]{thing}
+
+\affiliation{
+    $^1$University of Michigan\qquad 
+    $^2$University of Utah
+}
+
+\maketitle
+
+% - Motivation
+% - Problem statement
+% - Architecture
+% -- Annotated program with TODOs
+% -- Action judgments
+% -- Update judgments
+% -- Binding problem/queries
+% --- OM interval on AST
+% --- Ancestry BBST 
+% --- Bound set BBSTs
+% -- OM PQ for updates
+
+
+\subsection*{Motivation} 
+
+In \textit{live programming systems}, editor services such as type checking and evaluation are continually provided while the user is editing the program. The live paradigm offers benefits to developer experience and productivity. Many editor services are most easily expressed as stateless transformations that take only the current the program text as input, and compute the result from scratch. For live programming at scale, these services cannot be implemented naively as pure functions, since the execution time will grow with the size of the program, and at some point will take longer than the time between edits. \textit{Incremental} type checking aims to overcome this limitation by maintaining type information between states of the program. We present an algorithm for fine-grained incremental maintenance of typing information for the \textit{marked lambda calculus}~\cite{DBLP:journals/pacmpl/ZhaoMDBPO24} across structural edits.
+
+\subsection*{Problem}
+
+The marked lambda calculus~\cite{DBLP:journals/pacmpl/ZhaoMDBPO24} defines a pure, total function from an ordinary program in the typed lambda calculus to a \textit{marked} program, which is the same as the input except for the addition of \textit{marks}, localized type error annotations. It is these marks, as well as synthesized and analyzed types at subterms, that we to incrementally maintain. 
+
+We consider structural edit actions, such as the insertion or deletion of an AST node, as our atomic changes to the input. We make no assumptions about the sequence of edit actions, since we aim to handle cases such as collaborative editing with many cursors or compound actions. 
+
+We make no assumption about the form of the program, such as being partitioned into files. We therefore incrementalize typing at the finest granularity possible: individual syntax nodes. We make no assumptions about the size of the program, and in fact target very large scale programs. Since the typing updates incurred by an edit may be arbitrarily expensive to compute, we must not halt normal editor operation while computing these updates. This constraint fundamentally shapes our solution. 
+
+\subsection*{Actions and Update Propagation}
+
+Our solution maintains an enriched program data structure (EP), which stores local typing and binding information and is endowed with \textit{update propagation dynamics}. A program edit updates the EP efficiently, after which the EP takes a sequence of efficient steps to propagate the changes generated by the edit. By separating the incremental update into an \textit{action judgment} which updates the EP when an action is applied at a cursor location and an \textit{update propagation judgment} which advances a not-fully propagated EP forward by one step, even those actions which necessitate long recomputation times do not block further actions from being taken; indeed, actions and update propagation steps can be applied in any order without threatening the validity of the incremental statics with respect to the from-scratch analysis. 
+
+% The main components of the EP data structure are the abstract syntax tree (AST) of the program, type error annotations, bidirectional type annotations, and information used to maintain binding structure discussed below. Critically, each type that appears in the AST or in the bidirectional typing annotations also maintains a data structure representing which parts of the type are ``new" -- that is, which parts of the type have recently been updated and have yet to be propagated.
+
+\subsection*{Order Maintenance} 
+
+This local propagation mechanism exploits the type system's locality, making it suitable for a bidirectional typing discipline~\cite{DBLP:journals/csur/DunfieldK21}. However, even such a ``local" type system exhibits nonlocality between binders and their bound variables. We opt to maintain pointers along these bindings, rather than walking the spine of the program. 
+
+% For example, when a user edits the ascribed type on a lambda abstraction, each occurrence of the bound variable in the body synthesizes a new type. 
+
+% A naive traversal of the body may take linear time in the size of the program. When the body is large, it is too inefficient to naively traverse the entire body to find these bound variables. In order to propagate typing updates along bindings efficiently, it is desirable to maintain pointers between each binder and its bound variables. 
+
+% Maintaining these binding representations is nontrivial. Consider the case in which a user inserts a variable at a leaf of the program. The obvious way to find the variable's binding site involves walking the spine of the program tree, which may be quite long in a large codebase. Even worse, when a user wraps a subexpression in a binder (for example, by inserting a let declaration), the set of captured variables must be efficiently identified.
+
+To maintain these binders, we employ an \textit{order maintenance data structure}, a totally ordered collection of elements that supports efficient comparison between elements and insertion of new elements. By annotating each AST node with an interval in the order maintenance data structure, it is possible to test whether one node is the ancestor of another in logarithmic time. This efficient test is the basis of our algorithm for maintaining binding pointers. 
+
+% An order maintenance data structure stores a totally ordered collection of elements and supports efficient comparison between elements and insertion of new elements directly after an existing element. Each AST node maintains the endpoints of an interval in the order maintenance data structure, such that containment of intervals coincides with the ancestry relation between AST nodes. This allows efficient calculation of whether a location is within a binder's scope. When combined with balanced search trees to find nearest enclosing binders and remove shadowed variables from a set of bound variables, we achieve efficient maintenance of bound variable sets for binders. 
+
+% We additionally maintain a separate order maintenance data structure that approximates bidirectional traversal order of the AST. By prioritizing update propagation steps on nodes that are earlier in this order, less time is wasted computing updates that are soon to be overridden by upstream updates.
+
+\subsection*{Related Work}
+
+This work follows the work on adaptive functional programming~\cite{DBLP:conf/popl/AcarBH02} in employing the order maintenance data structure of Dietz and Sleator~\cite{DBLP:conf/stoc/DietzS87} to maintain the dynamic dependency structure between parts of the program. The prior work on adaptive functional programming presents general translations to incremental programs, using order maintenance to prioritize the recomputation of intermediate values. On the other hand, the present work is specialized to bidirectional typing and uses order maintenance to maintain scoping data.
+
+Prior approaches to incremental typing utilize a task engine~\cite{DBLP:conf/sle/WachsmuthKVGV13}, derive memoized typing rules~\cite{DBLP:conf/nfm/BusiDG19}, or translate typing rules to a Datalog program that can be solved incrementally~\cite{DBLP:conf/kbse/SzaboEV16, DBLP:journals/pacmpl/PacakES20}. This last technique uses co-contextual typing~\cite{DBLP:conf/oopsla/ErdwegBKKM15}, in which binding information is propagated bottom up rather than top down, to overcome issues related to binding structure updates. Compared to these approaches, our incremental typing system is less general, but achieves very fine granularity and direct binding updates by specializing to a bidirectionally typed lambda calculus.  
+
+% Other citations~\cite{DBLP:journals/pacmpl/SzaboBEV18, DBLP:conf/issta/SzaboKBME18, DBLP:conf/ecoop/KuciEBBM17, DBLP:conf/popl/Meertens83, DBLP:conf/snapl/OmarVHSGAH17, DBLP:conf/popl/OmarVHAH17, DBLP:journals/pacmpl/OmarVCH19, DBLP:conf/sle/PacakE19, DBLP:phd/dnb/Kuci20, DBLP:journals/pacmpl/ZwaanAV22}
+
+% Probably not using~\cite{DBLP:conf/snapl/SiekVCB15,DBLP:conf/esa/BenderCDFZ02}
+
+%% Bibliography
+\bibliography{incremental-paper}
+
+\thispagestyle{plain}
+
+\end{document}

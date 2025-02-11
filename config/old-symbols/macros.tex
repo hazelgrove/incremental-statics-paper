@@ -1,0 +1,108 @@
+% Generic Notations
+\newcommand{\EmptySet}{\emptyset}
+\newcommand{\Set}[1]{\overline{#1}}
+\newcommand{\Setof}[1]{\left\{#1\right\}}
+\newcommand{\suchthat}{\mid}
+\newcommand{\Pow}[1]{\mathscr{P}\mathopen{}\left(#1\right)\mathclose{}}
+
+% judgments
+\newcommand{\proves}{\vdash}
+\DeclareMathOperator{\sorting}{\mathrm{sorting}}
+
+\newcommand{\Sorting}{\hat{\Gamma}}
+% calculus of well-sorted syntax
+% \newcommand{\fun}[2]{\lambda #1.#2}
+
+% Language Syntax
+\newcommand{\Sig}{\mathcal{L}}
+\newcommand{\Sorts}{\mathcal{S}}
+\newcommand{\Constructors}{\mathcal{C}}
+\newcommand{\Positions}{\mathcal{P}}
+\newcommand{\Sc}{\Sorts_\Constructors}
+\newcommand{\Sp}{\Sorts_\Positions}
+\newcommand{\Arity}{\mathcal{A}}
+\newcommand{\ArityInv}{\Arity^{-1}}
+\newcommand{\Ports}[1]{\Positions/#1}
+
+% Language Format
+\newcommand{\Format}{\Phi}
+
+% Identifier Sets
+\newcommand{\IdSet}{U}
+\newcommand{\IdxSet}[1]{\IdSet_{#1}}
+
+% Terms
+\newcommand{\e}{\varepsilon}
+
+% Graphs
+\newcommand{\States}{\Sigma}
+
+% Graph Helpers
+\newcommand{\inedges}{\mathrm{inedges}}
+\newcommand{\outedges}{\mathrm{outedges}}
+\newcommand{\sources}{\mathrm{sources}}
+\newcommand{\parents}{\mathrm{parents}}
+\newcommand{\ancestors}{\mathrm{ancestors}}
+\newcommand{\lfp}{\mathrm{lfp}}
+\newcommand{\argmin}{\mathrm{arg}\,\mathrm{min}}
+
+% Trees
+\newcommand{\sort}{\sigma}
+\newcommand{\term}{t}
+\newcommand{\ptree}{\breve{\term}}
+\newcommand{\tree}{\hat{\term}}
+\newcommand{\multiparent}[2]{\textcolor{red}{{\curlyveedownarrow_{#1}^{#2}}}}
+\newcommand{\cycle}[2]{\textcolor{red}{\rcirclearrowleft_{#1}^{#2}}}
+\newcommand{\Hole}{\square} %\textcolor{violet}{\llparenthesis}}\textcolor{violet}{\rrparenthesis}}
+\newcommand{\multichild}[2][]{%
+{\noexpandarg\StrSubstitute{#2}{,}{\textcolor{red}{\,\textbf{|}\,}}[\myargs]%
+{\textcolor{red}{\textbf{\{}}\myargs\textcolor{red}{\textbf{\}}}_{#1}}}}%
+% \newcommand{\Hole}[2]{\square_{\id{(#1, #2)}}}
+
+% Category Theory
+\renewcommand{\L}{\mathbb{L}}
+\renewcommand{\S}{\mathbb{S}}
+\newcommand{\ev}{\varepsilon}
+\newcommand{\T}[1]{\tilde{#1}}
+\newcommand{\id}{\textrm{id}}
+
+%
+% provenances
+%
+\newcommand{\Prov}{{\normalfont\textsf{Provenance}}}
+\newcommand{\Provp}{\ensuremath{q}}
+
+% errors with id
+\newcommand{\ECMarkedId}[3]{\ensuremath{\textcolor{red}{\bm{\llparenthesis}}\textcolor{red}{#1}\textcolor{red}{\bm{\rrparenthesis}^{#3}_{#2}}}}
+\newcommand{\ECMarkedFreeId}[2]{\ensuremath{\ECMarkedId{#1}{\MRFree}{#2}}}
+\newcommand{\ECMarkedInconTypeId}[2]{\ensuremath{\ECMarkedId{#1}{\mathsmaller{\inconsistentRel}}{#2}}}
+\newcommand{\ECMarkedInconBrId}[2]{\ensuremath{\ECMarkedId{#1}{\MRInconBr}{#2}}}
+
+\newcommand{\ECFreeId}[2]{\ensuremath{\ECMarkedFreeId{#1}{#2}}}
+\newcommand{\ECInconTypeId}[2]{\ensuremath{\ECMarkedInconTypeId{#1}{#2}}}
+\newcommand{\ECInconBrId}[4]{\ensuremath{\ECMarkedInconBrId{\ECIf{#1}{#2}{#3}}{#4}}}
+\newcommand{\ECApNonMatchedId}[3]{\ensuremath{\ECAp{\ECInconTypeId{#1}{#2}}{#3}}}
+
+\newcommand{\ECApSynNonMatchedArrowId}[3]{\ensuremath{\ECAp{\ECMarkedId{#1}{\MRSynNonMatchedArrow}{\MRSyn,~#2}}{#3}}}
+
+\newcommand{\ECLamAnaNonMatchedArrowId}[4]{\ECMarkedId{\ECLam{#1}{#2}{#3}}{\MRAnaNonMatchedArrow}{\MRAna,~#4}}
+
+\newcommand{\ECInconMatchedId}[3]{\ensuremath{\ECMarkedId{#1}{#2}{#3}}}
+\newcommand{\ECInconMatchedArrowId}[2]{\ensuremath{\ECInconMatchedId{#1}{\notMatchedArrowRel}{#2}}}
+\newcommand{\ECInconMatchedPairId}[2]{\ensuremath{\ECInconMatchedId{#1}{\notMatchedProdRel}{#2}}}
+
+\newcommand{\ECPairAnaNonMatchedProdId}[3]{\ECMarkedId{\ECPair{#1}{#2}}{\MRAnaNonMatchedProd}{\MRAna,~#3}}
+
+\newcommand{\ECProjLSynNonMatchedProdId}[2]{\ECMarkedId{#1}{\MRSynNonMatchedProd}{\MRSyn,~#2}}
+\newcommand{\ECProjRSynNonMatchedProdId}[2]{\ECMarkedId{#1}{\MRSynNonMatchedProd}{\MRSyn,~#2}}
+
+% Violet hotdogs; highlight color helps distinguish them
+\newcommand{\llparenthesiscolor}{\textcolor{violet}{\llparenthesis}}
+\newcommand{\rrparenthesiscolor}{\textcolor{violet}{\rrparenthesis}}
+
+\newcommand{\tarrnp}[2]{#1 \rightarrow #2}
+\newcommand{\trul}[2]{\inparens{#1 \Rightarrow #2}}
+\newcommand{\typearrow}{\blacktriangleright_{\rightarrow}}
+\newcommand{\tarr}[2]{#1 \rightarrow #2}
+\newcommand{\lamfunc}[2]{( \lambda #1.#2 )}
+

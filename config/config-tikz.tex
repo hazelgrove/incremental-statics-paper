@@ -1,0 +1,95 @@
+%%%%%%%%
+% TikZ Stuff
+%\usepackage{etex} % Fix "No room for new \dimen" error
+\usepackage{shellesc} % Fix bug that breaks the tikz 'external' library
+\usepackage{tikz}
+\usetikzlibrary{babel} % Ensure compatibility the 'babel' package
+
+\usetikzlibrary{external} % Needs to be separately enabled
+%\tikzexternalize % Enable externalization
+%\usepackage{lua-visual-debug}
+
+\usetikzlibrary{arrows.meta} % Arrow Tips
+\tikzset{>=Stealth}
+%\tikzset{<=stealth}
+%\tikzset{arrows={-Stealth[scale=50]}}
+%\tikzset{edge from parent/.style={draw,->,line width=0.6pt}}
+%\tikzset{wideline/.style={line width=0.7pt}}
+%\tikzset{boldline/.style={color=black,line width=1.0pt}}
+
+\usetikzlibrary{
+  backgrounds,  % Provides "framed" and "gridded"
+  bending,      % bending arrow tips
+  decorations.pathmorphing,   % Provides wavy edges
+  graphs,       % Graph *notation*
+  graphdrawing, % Graph *layout*
+  quotes,       % Quote syntax (e.g., "foo")
+}
+
+\usegdlibrary{
+  trees,
+}
+
+\tikzset{
+  %every picture/.style={framed, background rectangle/.style={draw=gray!50}},
+}
+\tikzset{edge style/.style={
+  draw,
+  %color=gray,
+  font={\small\ttfamily},
+  /tikz/every edge quotes/.style={
+    %draw=gray!20,
+    anchor=west,
+    swap/.append code={
+      \ifpgfarrowswap
+        \pgfkeysalso{anchor=west}
+      \else
+        \pgfkeysalso{anchor=east}
+      \fi}},
+}}
+\tikzset{graphs/graph style/.style={
+  tree layout,
+  level distance=0.5cm,
+  level sep=0.5cm,
+  sibling distance=0.5cm,
+  sibling sep=0.1cm,
+  part distance=0.1cm,
+  part sep=0.1cm,
+  component distance=0.1cm,
+  component sep=0.1cm,
+  nodes={
+    draw,
+    %color=gray,
+    inner sep=2pt,
+    rounded corners=1mm},
+  edges={edge style},
+}}
+\tikzset{graphs/root style/.style={
+ %draw=none,
+ as={\textbullet$_{\id{0}}$}
+}}
+\tikzset{alice/.style={
+  color=red!80!black,
+  font={\bfseries\small},
+  thick,
+}}
+\tikzset{bob/.style={
+  color=green!60!black,
+  font={\bfseries\small},
+  thick,
+}}
+\tikzset{merge/.style={
+  color=blue,
+  font={\bfseries\small},
+  thick,
+}}
+\tikzset{alice edge/.style={alice, edge style, font={\bfseries\small}}}
+\tikzset{alice node/.style={alice}}
+\tikzset{alice step/.style={alice}}
+\tikzset{bob edge/.style={bob, edge style}, font={\bfseries\small}}
+\tikzset{bob node/.style={bob}}
+\tikzset{bob step/.style={bob}}
+\tikzset{merge edge/.style={merge, edge style}, font={\bfseries\small}}
+\tikzset{merge node/.style={merge}}
+\tikzset{merge step/.style={merge,decorate,decoration={coil,amplitude=1.0pt,segment length=7.0pt,aspect=0}}}
+\tikzset{star/.style={edge node={node[inner sep=0pt,at end,sloped] {\textbf{\huge${}^{\ast}$}}}}}
