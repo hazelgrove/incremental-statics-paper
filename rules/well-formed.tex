@@ -1,0 +1,122 @@
+\newcommand{\NconNew}{
+    \irule{~}{
+        \ncon{\NNew{a_1}}{a_2}
+    }{\nconrel Dirty}
+}
+
+\newcommand{\NconOld}{
+    \irule{~}{
+        \ncon{\NOld{a}}{a}
+    }{\nconrel Clean}
+}
+\newcommand{\WFHole}{
+    \irule{
+        \ncon{\NOld{\DSome{\THole}}}{\DV}
+    }{
+        \WFU{\EUp{~\EHole~}{\NDV}}
+    }{WFHole}
+}
+
+\newcommand{\WFConst}{
+    \irule{
+        \ncon{\NOld{\DSome{\TBase}}}{\DV}
+    }{
+        \WFU{\EUp{\EConst}{\NDV}}
+    }{WFConst}
+}
+
+
+\newcommand{\WFVar}{
+    \irule{
+        \inCtx{\VV}{\NDV}{\MV}{\ctx}\\
+        \ncon{\NDV}{\DSome{\TV}}
+    }{
+        \WFU{\EUp{\EVar{\VV}{\MV}~}{\NV{\DSome{\TV}}}}
+    }{WFVar}
+}
+
+\newcommand{\WFAp}{
+    \irule{
+        \matchedArrow{\NDV_1}{\NDV_4}{\NDV_5}{\NV{\MV}_3}\\
+        \ncon{\NDV_4}{\DV_2}\\
+        \ncon{\NDV_5}{\DV_3}\\
+        \ncon{\NV{\MV}_3}{\MV_1}\\ 
+        \WFL{\ELow{\NV{\DNone}}{\MGood}{\EUp{\EMV~}{\NDV_1}}}\\
+        \WFL{\ELow{\NDV_2}{\MV_2}{\EUV}}
+    }{
+        \WFU{\EUp{\EAp{\paren{\ELow{\NV{\DNone}}{\MGood}{\EUp{\EMV~}{\NDV_1}}}}{\MV_1}{\paren{\ELow{\NDV_2}{\MV_2}{\EUV}}}}{\NDV_3}}
+    }{WFAp}
+}
+
+\newcommand{\WFAsc}{
+    \irule{
+        \ncon{\NV{\TV_1}}{\TV_2}\\
+        \ncon{\NV{\TV_1}}{\TV_3}\\
+        \WFL{\ELow{\NV{\DSome{\TV_2}}}{\MV}{\EUV}}
+    }{
+        \WFU{\EUp{\EAsc{\NV{\TV_1}}{\ELow{\NV{\DSome{\TV_2}}}{\MV}{\EUV}}}{\NV{\DSome{\TV_3}}}}
+    }{WFAsc}
+}
+
+\newcommand{\WFSubsume}{
+    \irule{
+        \subsumable{\EMV}\\
+        \consistent{\NDV_1}{\NDV_2}{\MV_2}\\  
+        \ncon{\MV_2}{\MV_1}\\
+        \WFU{\EUp{\EMV~}{\NDV_2}}
+    }{
+        \WFL{\ELow{\NDV_1}{\MV_1}{\EUp{\EMV~}{\NDV_2}}}
+    }{WFSubsume}
+}
+
+\newcommand{\WFFun}{
+    \irule{
+        \matchedArrow{\NDV_1}{\NDV_5}{\NDV_6}{\NV{\MV}_5}\\
+        \consistent{\NDV_5}{\NV{\DSome{\TV}}}{\NV{\MV}_6}\\
+        \ncon{\NDV_6}{\DV_4}\\
+        \ncon{\NV{\MV}_5}{\MV_2}\\
+        \ncon{\NV{\MV}_6}{\MV_3}\\
+        \ncon{\funsyn{\NDV_1}{\NV{\TV}}{\NDV_3}}{\DV_4}\\
+        \consistent{\NDV_1}{\NDV_4}{\NV{\MV_7}}\\
+        \ncon{\NV{\MV_7}}{\MV_1}\\
+        \WFL[\extendCtx{\ctx}{\BV}{\NV{\TV}}]{\ELow{\NDV_2}{\MV_4}{\EUp{\EMV~}{\NDV_3}}}
+    }{
+        \WFL{\ELow{\NDV_1}{\MV_1}{\EUp{\ELam{\BV}{\NV{\TV}}{\MV_2}{\MV_3}{\paren{\ELow{\NDV_2}{\MV_4}{\EUp{\EMV~}{\NDV_3}}}}}{\NDV_4}}}
+    }{WFFun}
+}
+
+\newcommand{\WFTFun}{
+    \irule{
+        \matchedForall{\NMDV_1}{\TBV}{\NMDV_5}{\NV{\MV}_3}\\
+        \ncon{\NMDV_5}{\MDV_2}\\
+        \ncon{\NV{\MV}_3}{\MV_2}\\
+        \ncon{\tfunsyn{\NMDV_1}{\NMDV_2}}{\MDV_4}\\
+        \consistent{\NMDV_4}{\NMDV_1}{\NV{\MV}_4}\\
+        \ncon{\NV{\MV}_4}{\MV_1}\\
+        \WFL[\tExtendCtx{\ctx}{\TBV}]{\ELow{\NMDV_2}{\MV_3}{\EUp{\EMV~}{\NMDV_3}}}
+    }{
+        \WFL{\ELow{\NMDV_1}{\MV_1}{\EUp{\ETLam{\TBV}{\MV_2}{\paren{\ELow{\NMDV_2}{\MV_3}{\EUp{\EMV~}{\NMDV_3}}}}}{\NMDV_4}}}
+    }{WFTypFun}
+}
+
+\newcommand{\WFTAp}{
+    \irule{
+        \WFT{\MTV}\\
+        \matchedForall{\NMDV_1}{\TBV}{\NMDV_2}{\NV{\MV}_2}\\
+        \ncon{\NV{\MV}_2}{\MV_1}\\
+        \sub{\NMTV}{\TBV}{\NMDV_2}{\NMDV_3}\\
+        \ncon{\NMDV_3}{\MDV_2}\\
+        \WFL{\ELow{\NV{\DNone}}{\MGood}{\EUp{\EMV~}{\NMDV_1}}}\\
+    }{
+        \WFU{\EUp{\ETAp{\paren{\ELow{\NV{\DNone}}{\MGood}{\EUp{\EMV~}{\NMDV_1}}}}{\MV_1}{\NMTV}}{\NMDV_2}}
+    }{WFTypAp}
+}
+
+
+\newcommand{\WFProgram}{
+    \irule{
+        \WFL[\emptyset]{\PV}
+    }{
+        \WFP{\PV}
+    }{WFProgram}
+}

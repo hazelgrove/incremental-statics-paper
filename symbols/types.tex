@@ -1,0 +1,98 @@
+% equality
+\newcommand{\markEqual}[2]{\ensuremath{#1 = #2}}
+\newcommand{\notEqual}[2]{\ensuremath{#1 \neq #2}}
+
+% base types
+\newcommand{\base}[1]{\ensuremath{#1 ~{\normalfont\textsf{base}}}}
+ 
+% syntax
+\newcommand{\TName}{{\normalfont\textsf{Type}}}
+\newcommand{\TSet}{\ensuremath{T}}
+\newcommand{\TV}{\ensuremath{\tau}}
+
+\newcommand{\THole}{\ensuremath{?}}
+\newcommand{\TBase}{\ensuremath{{\normalfont\textsf{b}}}}
+\newcommand{\TNum}{\ensuremath{{\normalfont\textsf{num}}}}
+\newcommand{\TBool}{\ensuremath{{\normalfont\textsf{bool}}}}
+\newcommand{\TArrow}[2]{\ensuremath{#1 \to #2}}
+\newcommand{\TProd}[2]{\ensuremath{#1 \times #2}}
+\newcommand{\TVar}[1]{\ensuremath{#1}}
+\newcommand{\TForall}[2]{\ensuremath{\forall #1.~#2}}
+
+\newcommand{\BTName}{{\normalfont\textsf{BareType}}}
+\newcommand{\BTV}{\ensuremath{\tau}}
+\newcommand{\MTName}{{\normalfont\textsf{MarkedType}}}
+\newcommand{\MTV}{\ensuremath{\check{\tau}}}
+\newcommand{\MTVar}[2]{\ensuremath{#1}_{#2}}
+
+% Type variables
+
+\newcommand{\TVV}{\ensuremath{\alpha}}
+\newcommand{\TVName}{{\normalfont\textsf{Type Variable}}}
+\newcommand{\TBV}{\ensuremath{\alpha?}}
+\newcommand{\TBName}{{\normalfont\textsf{Type Binding}}}
+\newcommand{\TBHole}{\ensuremath{?}}
+\newcommand{\TBVar}[1]{\ensuremath{#1}}
+
+% data syntax
+\newcommand{\DName}{{\normalfont\textsf{TypeOpt}}}
+\newcommand{\DSet}{\ensuremath{T?}}
+\newcommand{\DV}{\ensuremath{\sigma}}
+% \newcommand{\DNone}{\blacksquare}
+% \newcommand{\DSome}[1]{\square#1}
+\newcommand{\DNone}{\square}
+\newcommand{\DSome}[1]{#1}
+
+
+\newcommand{\MDName}{{\normalfont\textsf{MarkedTypeOpt}}}
+\newcommand{\MDV}{\ensuremath{\check{\sigma}}}
+\newcommand{\MDNone}{\square}
+\newcommand{\MDSome}[1]{#1}
+
+% (Agda-style) newness syntax
+% \newcommand{\NName}{{\normalfont\textsf{Newness}}}
+% \newcommand{\NSet}{\ensuremath{N}}
+% \newcommand{\NV}{\ensuremath{\nu}}
+% \newcommand{\NNew}{{\normalfont\textsf{new}}}
+% \newcommand{\NOld}{{\normalfont\textsf{old}}}
+
+% newness syntax
+\newcommand{\NName}{{\normalfont\textsf{DirtyBit}}}
+\newcommand{\NVSymbol}{\ensuremath{\circ}}
+\newcommand{\NV}[1]{\ensuremath{#1^\NVSymbol}}
+\newcommand{\NNewSymbolBlack}{{\scalebox{0.5}{\bigstar}}}
+\newcommand{\NNewBlack}[1]{\ensuremath{#1^\NNewSymbolBlack}}
+\newcommand{\NNewSymbol}{{\scalebox{0.5}{{\color{mypop}\bigstar}}}}
+\newcommand{\NNew}[1]{\ensuremath{#1^\NNewSymbol}}
+\newcommand{\NOldSymbol}{\ensuremath{\bullet}}
+\newcommand{\NOld}[1]{\ensuremath{#1^\NOldSymbol}}
+
+
+% common case macros
+\newcommand{\NDV}{\NV{\DV}}
+\newcommand{\NTV}{\NV{\TV}}
+\newcommand{\NMDV}{\NV{\MDV}}
+\newcommand{\NMTV}{\NV{\MTV}}
+
+
+% contexts
+\newcommand{\ctx}{\ensuremath{\Gamma}}
+\newcommand{\ctxName}{{\normalfont\textsf{Context}}}
+\newcommand{\assignType}[2]{\ensuremath{#1 : #2}}
+\newcommand{\extendCtx}[3]{\ensuremath{#1 , ~\assignType{#2}{#3}}}
+\newcommand{\inCtx}[4]{\ensuremath{\assignType{\EVar{#1}{#3}}{#2}~\in~#4}}
+\newcommand{\tExtendCtx}[2]{\ensuremath{#1 , ~#2}}
+\newcommand{\tInCtx}[3]{\ensuremath{\MTVar{#1}{#2}~\in~#3}}
+
+% \newcommand{\notInCtx}[2]{\ensuremath{\goodcolor{\colorFailSideJudge}{#2 \not\in \dom(#1)}}}
+% \newcommand{\withCtx}[2]{\ensuremath{#1 \vdash #2}}
+
+% % typing
+% \newcommand{\synType}[2]{\ensuremath{#1 \Rightarrow #2}}
+% \newcommand{\notSynType}[2]{\ensuremath{#1 \not\Rightarrow #2}}
+% \newcommand{\ctxSynType}[3]{\ensuremath{\withCtx{#1}{\synType{#2}{#3}}}}
+% \newcommand{\ctxNotSynType}[3]{\ensuremath{\withCtx{#1}{\notSynType{#2}{#3}}}}
+% \newcommand{\anaType}[2]{\ensuremath{#1 \Leftarrow #2}}
+% \newcommand{\notAnaType}[2]{\ensuremath{#1 \goodcolor{\colorFailSideJudge}{\not\Leftarrow} #2}}
+% \newcommand{\ctxAnaType}[3]{\ensuremath{\withCtx{#1}{\anaType{#2}{#3}}}}
+% \newcommand{\ctxNotAnaType}[3]{\ensuremath{\withCtx{#1}{\notAnaType{#2}{#3}}}}

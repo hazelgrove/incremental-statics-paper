@@ -1,48 +1,6 @@
-% !requires types
 
-%
-% external expressions
-%
-\newcommand{\EMName}{{\normalfont\textsf{UExp}}}
-\newcommand{\EMSet}{\ensuremath{E}}
-\newcommand{\EMV}{\ensuremath{e}}
-\newcommand{\ELMName}{{\normalfont\textsf{UChildExp}}}
-\newcommand{\ELV}{\bar{\EMV}}
-
-% holes
-\newcommand{\EEHole}{\ensuremath{\ECEHole}}
-
-% integers
-\newcommand{\ENum}[1]{\ensuremath{\ECNum{#1}}}
-\newcommand{\ENumMV}{\ensuremath{\ECNumMV}}
-\newcommand{\EOpPlus}{\ensuremath{\ECOpPlus}}
-\newcommand{\EPlus}[2]{\ensuremath{\ECPlus{#1}{#2}}}
-
-% booleans
-\newcommand{\ETrue}{\ensuremath{\ECTrue}}
-\newcommand{\EFalse}{\ensuremath{\ECFalse}}
-\newcommand{\EIf}[3]{\ensuremath{\ECIf{#1}{#2}{#3}}}
-
-% lambdas
-\newcommand{\ELam}[3]{\ensuremath{\ECLam{#1}{#2}{#3}}}
-\newcommand{\EAp}[2]{\ensuremath{\ECAp{#1}{#2}}}
-
-% pairs
-\newcommand{\EPair}[2]{\ensuremath{\ECPair{#1}{#2}}}
-\newcommand{\EProjL}[1]{\ensuremath{\ECProjL{#1}}}
-\newcommand{\EProjR}[1]{\ensuremath{\ECProjR{#1}}}
-
-% let
-\newcommand{\ELet}[3]{\ensuremath{\ECLet{#1}{#2}{#3}}}
-
-%
-% marked expressions
-%
-\newcommand{\ECMName}{{\normalfont\textsf{MExp}}}
-\newcommand{\ECMSet}{\ensuremath{\check{E}}}
-\newcommand{\ECMV}{\ensuremath{\check{e}}}
-\newcommand{\ELMVName}{{\normalfont\textsf{MChildExp}}}
-\newcommand{\ELMV}{\check{\bar{e}}}
+\newcommand{\notMatchedRel}[1]{\ensuremath{\blacktriangleright_{\centernot#1}}}
+\newcommand{\notMatchedArrowRel}{\ensuremath{\notMatchedRel{\to}}}
 
 % holes
 \definecolor{hole}{RGB}{162,85,162}
@@ -74,7 +32,6 @@
 % errors
 \newcommand{\MRFree}{\ensuremath{\mathsmaller{\mathsmaller{\mathsmaller{\square}}}}}
 \newcommand{\MRInconType}{\ensuremath{\mathsmaller{\inconsistentRel}}}
-\newcommand{\MRGraphErase}{\ensuremath{\mathsmaller{\graphErase}}}
 \newcommand{\MRInconBr}{\ensuremath{\mathlarger{\noMeetRel}}}
 \newcommand{\MRInconAsc}{\ensuremath{\bm{:}}}
 \newcommand{\MRSynNonMatchedArrow}{\ensuremath{\mathsmaller{\notMatchedArrowRel}}}
@@ -104,7 +61,6 @@
 \newcommand{\ECSynNonMatchedProd}[1]{\ensuremath{\ECMarkedSynNonMatchedProd{#1}}}
 \newcommand{\ECAnaNonMatchedArrow}[1]{\ensuremath{\ECMarkedAnaNonMatchedArrow{#1}}}
 \newcommand{\ECAnaNonMatchedProd}[1]{\ensuremath{\ECMarkedAnaNonMatchedProd{#1}}}
-\newcommand{\ECLamGraphErasure}[1]{\ECMarked{#1}{\triangle^{\times}}{}}
 
 \newcommand{\ECLamInconAsc}[3]{\ensuremath{\ECInconAsc{\ECLam{#1}{#2}{#3}}}}
 \newcommand{\ECApSynNonMatchedArrow}[2]{\ensuremath{\ECAp{\ECSynNonMatchedArrow{#1}}{#2}}}

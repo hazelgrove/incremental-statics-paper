@@ -2,4 +2,93 @@
 \section{Implementation}%
 \label{sec:Implementation}
 
-OCaml implementation
+The formalism of Incremental MALC primarily supports reasoning about the correctness properties of edit actions and update propagation steps. This section describes Malcom, our implementation of Incremental MALC. Critically, Malcom's edit actions and update propagation steps never need to traverse the unchanged portions of the program, including to build type contexts or search scopes for variable occurrences.
+
+\subsection{Ordered Mutable Trees}
+
+In Malcom, terms are represented as mutable trees with additional pointers. Cursors are represented by pointers to AST nodes, and each node stores a pointer to its parent, allowing constant time cursor movement up and down the tree. Nodes also store types and marks; both are mutable as well. Dirtiness is represented implicitly, by membership in a global priority queue, described later.
+
+Moreover, terms in Malcom are decorated with two \emph{timestamps} $(a, b)$, where $a$ is the node's position in a pre-order traversal of the full program and $b$ is the node's position in a post-order traversal of the full program. Thus, $a < b$. These two timestamps form an interval $[a, b]$ with the expected properties: a term's interval strictly contains all its children's intervals, and sibling intervals are disjoint and ordered. The reader can imagine these timestamps as recording the left-to-right order of MALC annotations. For binders, we will refer to these intervals as representing the binder's scope, since the intervals contain all terms below the binder.
+
+These timestamps have two beneficial properties. First, term containment corresponds to interval containment, so Malcom can quickly test whether one term (for example, a binder) contains another (for example, a variable). Secondly, MALC update steps take place in timestamp order, with the analytic steps performed in pre-order and the synthetic steps performed in post-order, which makes timestamps useful for prioritizing update steps.
+
+Timestamps are not simple integers;
+  they are elements of a global
+  order maintenance structure.
+An order maintenance structure is
+  a finite, totally ordered collection of elements $e$
+  that allows fast creation and comparison of elements.
+Concretely, it supports just two basic operations:
+\begin{itemize}
+    \item Insert($e$),
+      which constructs a new element directly after $e$. 
+    \item Compare($e_1$, $e_2$), which compares the given elements in the total order. 
+\end{itemize}
+Critically, both order maintenance operations are fast---%
+  O(1) with a small constant---%
+  and the order is preserved even as
+  more elements are added.
+Malcom's implementation of order maintenance
+  is based on \citet{DBLP:conf/esa/BenderCDFZ02}
+  and extends the minimal API above
+  with a variant of Insert that returns a new element
+  directly before, instead of after, another element.
+
+\subsection{Executing edit actions and update steps}
+
+Most update steps and edit actions, which simply add or remove tree nodes and update their marks, can be performed directly.
+However, operations that affect variables and binders are challenging. Edit actions like changing the type annotation on a binder, changing the binder name, or deleting a binder can affect the type of all variables bound by that binder, which can be arbitrarily far away.
+
+\subsubsection{Variable and Binder Pointers}
+
+Malcom thus adds additional pointers to the tree to track binding information. Each variable stores a pointer to its binding site (that is, to the abstraction term that introduces it), and each binding site stores an ordered set of pointers to its bound variables, represented by a splay tree ordered by pre-order time stamp. It is convenient to treat the root of the program as the ``binding site'' for free variables, so it also stores a separate set of free variables for each variable name.
+
+These additional pointers make certain update steps faster. For example, edits to type annotations on binders ($\SetAnn{\tau}$) can now update all uses of the bound variable by simply iterating through the set of variable pointers at that binder. However, the pointer sets must also be maintained as edits occur.
+
+Malcom also maintains a global map from variable names to the ordered set of binders for that variable name, whose importance will be explained shortly. These ordered sets are also represented by splay trees ordered by pre-order timestamp. Splay nodes also store both the post-order timestamp of each binder and also the maximum post-order timestamp in the subtree of the splay tree rooted at that splay node. The splay tree operations are implemented so as to maintain this additional piece of data. When binders are inserted or deleted, these ordered sets are directly updated.
+
+\subsubsection{Edits to Variables}
+
+First, consider edits to variables.
+When a variable is deleted, it need only be removed from its binding site's set of bound variables. Since the variable stores a pointer to this site, this can be done directly. However, when a variable expression is inserted, it is necessary to locate its binding site (or the root if it is free) and set up pointers between the variable and its binding site. 
+
+To do so, we first use the global variable-name-to-binder map to look up the set of all binders for the inserted variable name. Since binders can shadow each other, we need the lowest binder that contains the variable in question; this is the binder with the largest pre-order timestamp whose interval contains the variable's interval. The splay tree allows Malcom to find this node in $O(\log n)$ time; Malcom also splays this node to the root of the splay tree to make later operations using this binder faster.
+
+\subsubsection{Edits to Binders}
+
+Next, consider edits to binders.
+When a binder is created in the program, such as filling the empty binder of a function abstraction with a variable name,
+Malcom must check whether that binder shadows some outer binding and, if so, update all re-bound variables. Identifying the outer binding uses the same splay tree lookup as variable insertion. That binder has an ordered set of pointers to its bound variables; Malcom must determine which of these bound variables are now instead bound to the new binder.
+
+The new binder is a descendant of the outer binder. Therefore its scope is some subinterval of the outer binder's scope. Conceptually, then, Malcom needs to split the outer binder's scope into three segments---and initial segment below only the outer binder, a middle segment below the new binder, and a final segment also only below the outer binder. To do so, it first considers the pre-order timestamp of the new binder, and splays that to the root of the outer binder's splay tree. The root and the left subtree now represent the initial segment. The right subtree is removed and split again, on the new binder's post-order timestamp; the right subtree of the result is now the final segment. The remaining middle segment now contains all bound variables of the new binder; it becomes the new binder's ordered set of bound variables. Then the initial and final segments are joined (an $O(\log n)$ operation on splay trees) and become the outer binder's new, smaller set of bound variables. %\todo{This paragraph could really use a figure, people's brains will break.}
+
+Deleting a binder is similar, but in reverse. The outer binder is found, and its split tree is split at the deleted binder's pre-order timestamp. The two halves become the initial and final segments, joined to the deleted binder's set of bound variables. The resulting larger set becomes the outer binder's new set of bound variables. In case of both insertion and deletion, the variable's global set of binders is also updated.
+
+While complex, this splay-tree-based algorithm allows for algorithmically efficient handling of binders without the need to traverse the program to search for other binders or bound variables.
+
+\subsection{Prioritizing Update Steps}
+\label{subsec:Update Priority Queue}
+
+Another challenge is actually locating possible update steps.
+Malcom achieves this by maintaining a priority queue of all locations where update steps are possible (all dirtied types), represented as pointers into the AST. Each update step, then, simply involves popping a dirtied type location from the priority queue, performing the corresponding update step, and inserting any newly dirtied type locations into the priority queue. The action performance and update propagation step rules of Incremental MALC have been crafted to ensure that they can be implemented this way. For example, the premise to each update propagation step rule requires exactly one type to be dirty, and the conclusion cleans this type while dirtying some other types. In Malcom, this corresponds to popping an update location from the queue, mutating local information in the program, and pushing some new set of update locations onto the queue. 
+
+The priority queue is ordered using the term's timestamps. For new analyzed types or types in the surface syntax, the priority is the node's pre-order timestamp, since analysis steps are performed pre-order. For new synthesized types, it is the post-order timestamp. Since Incremental MALC is non-deterministic, the order \emph{does not affect correctness}.
+However, the chosen order is more efficient in many cases. Since bidirectional type checking moves ``left to right'' through the program, and the chosen order is also a ``left to right'' order, Malcom will also push terms with larger timestamps than the ones it just popped. This means that Malcom tends to perform upstream updates before downstream updates, so as to avoid duplicate work. 
+% Of course, the user can perform edit actions at any time, and if she does, Malcom may be forced to revisit a node. But the chosen order guarantees that Malcom does not perform duplicate work between edit actions, and even once edit actions are considered we found this order most efficient.
+
+Finally, there's one last edge case: term deletion. In the calculus, deletion is trivial because all data is local. However, with the global update queue, care must be taken when deleting subexpressions that contain update locations. When a subexpression is deleted, it is traversed, with each AST node within being marked as deleted. When an update location is popped form the queue, it is first checked that the location has not been deleted. If it has been, it is skipped, and popping continues. This is the only operation in Malcom that traverses an entire subexpression, but this cost is still proportional to the size of the edit and should be small for most reasonable editing patterns. If desired, the priority queue could be implemented by a splay tree, which would allow for easy deletion of pending updates to deleted terms. However, we found that a standard min-heap priority queue was faster and did not use this technique in our implementation.
+
+\subsection{Unchanged Type Optimization}
+
+As defined in Incremental MALC, actions and update propagation steps dirty all types that could have potentially changed, even if they happen to remain the same. A simple optimization is to forgo dirtying types when unchanged. This cannot be applied in all cases, such as the dirtying of the analyzed type where an action is performed. In this cases, it is because the expression changes, not the type, that the analyzed type must be propagated. This optimization is, however, applicable to all update propagation steps, as they do not change the form of the expression. 
+
+This optimization is implemented in Malcom for all update propagation steps. However, this requires comparing dirtied types for structural equality, which is linear in the size of the type in our implementation. This should not be an issue for typical programs, and could be addressed if desired by hash-consing type syntax trees and comparing hashes. 
+
+\subsection{Language Workbench}
+
+We have implemented Malcom, as described above, as a language workbench written in OCaml. It implements the data structures described above, including order maintenance, splay trees, variable and binder pointers, and the name-to-binder map. Traversal of the entire program is never necessary.
+% \todo{Also user-generated ones? Not sure.}
+
+We also wrote a simple debugging interface for Malcom that displays the program syntax tree in a textual format and renders it in a web browser. It maintains one cursor. There is a button for each edit action and each cursor movement. There is also an ``update step'' button that triggers the first update step and an ``all update steps'' button that triggers update steps until the program is quiescent. Synthesized and analyzed typing information is hidden, except when they are members of the update propagation frontier, which allowed us to observe update propagation and debug our implementation. Note that the web interface is for debugging only, and while it updates type information incrementally, the actual interface is rendered from scratch at each step. We leave incremental rendering of the incrementally-computed type information for future work. 
+We have extensively tested Malcom to ensure that the incremental output is always consistent with the from-scratch output.
+% (including for all actions evaluated in our performance benchmark).

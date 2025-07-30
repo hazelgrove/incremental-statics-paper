@@ -1,0 +1,236 @@
+
+% Congruence irules, not necessary
+
+% \judgbox{\StepUp{\EUV}{\EUV}}
+
+% \inferirule{\StepMid{\EMV}{\EMV'}}{\StepUp{\EUp{\EMV}{\NDV}}{\EUp{\EMV'}{\NDV}}}
+
+% \judgbox{\StepMid{\EMV}{\EMV}}
+
+% \inferirule{\StepMid{\ELV}{\ELV'}}{\StepMid{\ELam{\BV}{\NTV}{\ELV}{\MV}{\MV}}{\ELam{\BV}{\NTV}{\ELV'}{\MV}{\MV}}}
+
+% \inferirule{\StepMid{\ELV_1}{\ELV_1'}}{\StepMid{\EAp{\ELV_1}{\MV}{\ELV_2}}{\EAp{\ELV_1'}{\MV}{\ELV_2}}}
+
+% \inferirule{\StepMid{\ELV_2}{\ELV_2'}}{\StepMid{\EAp{\ELV_1}{\MV}{\ELV_2}}{\EAp{\ELV_1}{\MV}{\ELV_2'}}}
+
+% \inferirule{\StepMid{\ELV}{\ELV'}}{\StepMid{\EAsc{\ELV}{\TV}}{\EAsc{\ELV'}{\TV}}}
+
+% \judgbox{\StepUp{\ELV}{\ELV}}
+
+% \inferirule{\StepUp{\EUV}{\EUV'}}{\StepLow{\ELow{\EUV}{\MV}{\NDV}}{\ELow{\EUV'}{\MV}{\NDV}}
+
+% \inferirule{\StepLow{\ELV}{\ELV'}}{\StepLow{\ELow{\EUV}{\MV}{\NDV}}{\ELow{\EUV'}{\MV}{\NDV}}
+
+\newcommand{\StepSyn}{
+    \irule{
+        \consistent{\DSome{\TV}}{\DV}{\MV_2}
+    }{
+        \begin{aligned}
+        \StepLow{
+            &\ELow{\NOld{\DSome{\TV}}}{\MV_1}{\EUp{\EMV}{\NNew{\DV}}}\\
+        }{
+            &~\ELow{\NOld{\DSome{\TV}}}{\MV_2}{\EUp{\EMV}{\NOld{\DV}}}
+        }
+        \end{aligned}
+    }{StepSyn}
+}
+
+\newcommand{\StepAna}{
+    \irule{
+        \subsumable{\EMV} \\
+        \consistent{\DV_1}{\DV_2}{\MV_2}
+    }{
+        \begin{aligned}
+        \StepLow{
+            &\ELow{\NNew{\DV_1}}{\MV_1}{\EUp{\EMV}{\NV{\DV_2}}}\\
+        }{
+            &~\ELow{\NOld{\DV_1}}{\MV_2}{\EUp{\EMV}{\NV{\DV_2}}}
+        }
+        \end{aligned}
+    }{StepAna}
+}
+
+\newcommand{\StepAnnFun}{
+    \irule{
+        \vsyn{\BV}{\TV}{\MGood}{\EUV_1}{\EUV_2}
+    }{
+        \begin{aligned}
+        \StepLow{
+            &\ELow{\NDV_1}{\MV_1}{\EUp{\ELam{\BV}{\NNew{\TV}}{\MV_2}{\MV_3}{\paren{\ELow{\NDV_2}{\MV_4}{\EUV_1}}}}{\NDV_3}}\\
+        }{
+            &~\ELow{\NNew{\DV_1}}{\MV_1}{\EUp{\ELam{\BV}{\NOld{\TV}}{\MV_2}{\MV_3}{\paren{\ELow{\NDV_2}{\MV_4}{\EUV_2}}}}{\NDV_3}}
+        }
+        \end{aligned}
+    }{StepAnnFun}
+}
+
+\newcommand{\StepAnaFun}{
+    \irule{
+        \matchedArrow{\DV_1}{\DV_5}{\DV_6}{\MV_5}\\
+        \consistent{\DV_5}{\DSome{\TV}}{\MV_6}\\
+        \funsyn{\DV_1}{\TV}{\DV_3}~=~\DV_7
+    }{
+        \begin{aligned}
+        \StepLow{
+            &\ELow{\NNew{\DV_1}}{\MV_1}{\EUp{\ELam{\BV}{\NV{\TV}}{\MV_2}{\MV_3}{\paren{\ELow{\NDV_2}{\MV_4}{\EUp{\EMV}{\NDV_3}}}}}{\NDV_4}}\\
+        }{
+            &~\ELow{\NOld{\DV_1}}{\MGood}{\EUp{\ELam{\BV}{\NV{\TV}}{\MV_5}{\MV_6}{\paren{\ELow{\NNew{\DV_6}}{\MV_4}{\EUp{\EMV}{\NDV_3}}}}}{\NNew{\DV}_7}}
+        }    
+        \end{aligned}
+    }{StepAnaFun}
+}
+
+\newcommand{\StepSynFun}{
+    \irule{
+        \funsyn{\DV_1}{\TV}{\DV_2}~=~\DV_4
+    }{
+        \begin{aligned}
+        \StepLow{
+            &\ELow{\NDV_1}{\MV_1}{\EUp{\ELam{\BV}{\NV{\TV}}{\MV_2}{\MV_3}{\paren{\ELow{\NV{\DNone}}{\MV_4}{\EUp{\EMV}{\NNew{\DV_2}}}}}}{\NDV_3}}\\
+        }{
+            &~\ELow{\NDV_1}{\MV_1}{\EUp{\ELam{\BV}{\NV{\TV}}{\MV_2}{\MV_3}{\paren{\ELow{\NV{\DNone}}{\MGood}{\EUp{\EMV}{\NOld{\DV_2}}}}}}{\NNew{\DV}_4}}
+        }
+        \end{aligned}
+    }{StepSynFun}
+}
+
+\newcommand{\StepAp}{
+    \irule{
+        \matchedArrow{\DV_2}{\DV_5}{\DV_6}{\MV_4}
+    }{
+        \begin{aligned}
+        \StepUp{
+            &\EUp{\EAp{\paren{\ELow{\NDV_1}{\MV_1}{\EUp{\EMV}{\NNew{\DV_2}}}}}{\MV_2}{\paren{\ELow{\NDV_3}{\MV_3}{\EUV}}}
+            }{\NDV_4}\\
+        }{
+            &~\EUp{\EAp{\paren{\ELow{\NDV_1}{\MV_1}{\EUp{\EMV}{\NOld{\DV_2}}}}}{\MV_4}{\paren{\ELow{\NNew{\DV_5}}{\MV_3}{\EUV}}}
+            }{\NNew{\DV_6}}
+        }
+        \end{aligned}
+    }{StepAp}
+}
+
+\newcommand{\StepAsc}{
+    \irule{
+    }{
+        \begin{aligned}
+        \StepUp{
+            &\EUp{\EAsc{\paren{\ELow{\NDV_1}{\MV}{\EMV}}}{\NNew{\TV}}}{\NDV_2}\\
+        }{
+            &~\EUp{\EAsc{\paren{\ELow{\NNew{\DSome{\TV}}}{\MV}{\EMV}}}{\NOld{\TV}}}{\NNew{\DSome{\TV}}}
+        }
+        \end{aligned}
+    }{StepAsc}
+}
+
+\newcommand{\StepAnaTFun}{
+    \irule{
+        \matchedForall{\MDV_1}{\TBV}{\MDV_5}{\MV_3}\\
+        \tfunsyn{\MDV_1}{\MDV_3}~=~\MDV_6
+    }{
+        \begin{aligned}
+        \StepLow{
+            &\ELow{\NNew{\MDV_1}}{\MV_1}{\EUp{\ETLam{\TBV}{\MV_2}{\paren{\ELow{\NMDV_2}{\MV_4}{\EUp{\EMV}{\NMDV_3}}}}}{\NMDV_4}}\\
+        }{
+            &~\ELow{\NOld{\MDV_1}}{\MGood}{\EUp{\ETLam{\TBV}{\MV_3}{\paren{\ELow{\NNew{\MDV_5}}{\MV_4}{\EUp{\EMV}{\NMDV_3}}}}}{\NNew{\MDV}_6}}
+        }    
+        \end{aligned}
+    }{StepAnaTypFun}
+}
+
+\newcommand{\StepSynTFun}{
+    \irule{
+        \tfunsyn{\MDV_1}{\MDV_2}~=~\MDV_4
+    }{
+        \begin{aligned}
+        \StepLow{
+            &\ELow{\NMDV_1}{\MV_1}{\EUp{\ETLam{\TBV}{\MV_2}{\paren{\ELow{\NV{\DNone}}{\MV_4}{\EUp{\EMV}{\NNew{\MDV_2}}}}}}{\NMDV_3}}\\
+        }{
+            &~\ELow{\NMDV_1}{\MV_1}{\EUp{\ETLam{\TBV}{\MV_2}{\paren{\ELow{\NV{\DNone}}{\MGood}{\EUp{\EMV}{\NOld{\MDV_2}}}}}}{\NNew{\MDV}_4}}
+        }
+        \end{aligned}
+    }{StepSynTypFun}
+}
+
+\newcommand{\StepTApFun}{
+    \irule{
+        \matchedForall{\MDV_2}{\TBV}{\MDV_4}{\MV_3}\\
+        \sub{\MTV}{\TBV}{\MDV_4}{\MDV_5}\\
+    }{
+        \begin{aligned}
+        \StepUp{
+            &\EUp{\ETAp{\paren{\ELow{\NMDV_1}{\MV_1}{\EUp{\EMV}{\NNew{\MDV_2}}}}}{\MV_2}{\NV{\MTV}}
+            }{\NMDV_3}\\
+        }{
+            &~\EUp{\ETAp{\paren{\ELow{\NMDV_1}{\MV_1}{\EUp{\EMV}{\NOld{\MDV_2}}}}}{\MV_3}{\NV{\MTV}}
+            }{\NNew{\MDV_5}}
+        }
+        \end{aligned}
+    }{StepTypApFun}
+}
+
+\newcommand{\StepTApArg}{
+    \irule{
+        \matchedArrow{\MDV_2}{\MDV_5}{\MDV_6}{\MV_4}
+    }{
+        \begin{aligned}
+        \StepUp{
+            &\EUp{\ETAp{\paren{\ELow{\NMDV_1}{\MV_1}{\EUp{\EMV}{\NMDV_2}}}}{\MV_2}{\NNew{\MTV}}
+            }{\NMDV_3}\\
+        }{
+            &~\EUp{\ETAp{\paren{\ELow{\NMDV_1}{\MV_1}{\EUp{\EMV}{\NMDV_2}}}}{\MV_3}{\NOld{\MTV}}
+            }{\NNew{\MDV_5}}
+        }
+        \end{aligned}
+    }{StepTypApArg}
+}
+
+\newcommand{\InsideStep}{
+    \irule{
+        \StepLow{
+            \ELow{\NV{\DNone}_1}{\MGood}{\EUV_1}
+        }{
+            \ELow{\NV{\DNone}_2}{\MGood}{\EUV_2}
+        }
+    }{
+        \StepProg{
+            \ELow{\NV{\DNone}_1}{\MGood}{\EUV_1}
+        }{
+            \ELow{\NV{\DNone}_2}{\MGood}{\EUV_2}
+        }
+    }{InsideStep}
+}
+
+% \newcommand{\InsideStep}{
+%     \irule{
+%         \begin{aligned}
+%         \StepLow{
+%             &\ELow{\NV{\DNone}_1}{\MGood}{\EUV_1}\\
+%         }{
+%             &\ELow{\NV{\DNone}_2}{\MGood}{\EUV_2}
+%         }
+%         \end{aligned}
+%     }{
+%         \begin{aligned}
+%         \StepProg{
+%             &\ELow{\NV{\DNone}_1}{\MGood}{\EUV_1}\\
+%         }{
+%             &\ELow{\NV{\DNone}_2}{\MGood}{\EUV_2}
+%         }
+%         \end{aligned}
+%     }{InsideStep}
+% }
+
+
+\newcommand{\TopStep}{
+    \irule{
+    }{
+        % \begin{aligned}
+        \StepProg{
+            \ELow{\NV{\DNone}}{\MGood}{\EUp{\EMV}{\NNew{\DV}}}
+        }{
+            \ELow{\NV{\DNone}}{\MGood}{\EUp{\EMV}{\NOld{\DV}}}
+        }
+        % \end{aligned}
+    }{TopStep}
+}

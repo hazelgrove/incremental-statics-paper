@@ -1,0 +1,66 @@
+
+
+\newcommand{\VarUpdateHole}{
+    \irule{~}{
+        \vsyn{\VV}{\TV}{\MV}{~\EUp{\EHole}{\NDV}}{~\EUp{\EHole}{\NDV}}
+    }{VarUpdateHole}
+}
+
+\newcommand{\VarUpdateVarEq}{
+    \irule{~}{
+        \vsyn{\VV}{\TV}{\MV_1}{~\EUp{\EVar{\VV}{\MV_2}}{\NDV}}{\EUp{\EVar{\VV}{\MV_1}}{\NNew{\DSome{\TV}}}}
+    }{VarUpdateVarEq}
+}
+
+\newcommand{\VarUpdateVarNeq}{
+    \irule{\VV\neq\VV'}{
+        \vsyn{\VV}{\TV}{\MV_1}{~\EUp{\EVar{\VV'}{\MV_2}}{\NDV}}{\EUp{\EVar{\VV'}{\MV_2}}{\NDV}}
+    }{VarUpdateVarNeq}
+}
+
+
+\newcommand{\VarUpdateFunEq}{
+    \irule{~}{
+        \vsyn{\VV}{\TV_1}{\MV_1}{\EUp{\paren{\ELam{\VV}{\NTV_2}{\MV_2}{\MV_3}{\ELV}}}{\NDV}}{\EUp{\paren{\ELam{\VV}{\NTV_2}{\MV_2}{\MV_3}{\ELV}}}{\NDV}}
+    }{VarUpdateFunEq}
+}
+
+\newcommand{\VarUpdateFunNeq}{
+    \irule{
+        \VV\neq\VV'\\
+        \vsyn{\VV}{\TV_1}{\MV_1}{\EUV_1}{\EUV_2}
+    }{
+        \vsyn{\VV}{\TV_1}{\MV_1}{\EUp{\paren{\ELam{\VV'}{\NTV_2}{\MV_2}{\MV_3}{\ELow{\NDV_1}{\MV_4}{\EUV_1}}}}{\NDV_2}}{\EUp{\paren{\ELam{\VV'}{\NTV_2}{\MV_2}{\MV_3}{\ELow{\NDV_1}{\MV_4}{\EUV_2}}}}{\NDV_2}}
+    }{VarUpdateFunNeq}
+}
+
+\newcommand{\VarUpdateAp}{
+    \irule{
+        \vsyn{\VV}{\TV}{\MV_1}{\EUV_1}{\EUV_3}\\
+        \vsyn{\VV}{\TV}{\MV_1}{\EUV_2}{\EUV_4}
+    }{
+        \vsyn{\VV}{\TV}{\MV_1}{
+        \EUp{\EAp{\paren{\ELow{\NDV_1}{\MV_2}{\EUV_1}}}{\MV_2}{\paren{\ELow{\NDV_2}{\MV_3}{\EUV_2}}}}{\NDV_3}
+        }{
+        \EUp{\EAp{\paren{\ELow{\NDV_1}{\MV_2}{\EUV_3}}}{\MV_2}{\paren{\ELow{\NDV_2}{\MV_3}{\EUV_4}}}}{\NDV_3}
+        }
+    }{VarUpdateAp}
+}
+
+\newcommand{\VarUpdateAsc}{
+    \irule{
+        \vsyn{\VV}{\TV_1}{\MV_1}{\EUV_1}{\EUV_2}
+    }{
+        \vsyn{\VV}{\TV_1}{\MV_1}{
+        \EUp{\paren{\EAsc{\ELow{\NDV_1}{\MV_2}{\EUV_1}}{\NTV_2}}}{\NDV_2}
+        }{
+        \EUp{\paren{\EAsc{\ELow{\NDV_1}{\MV_2}{\EUV_2}}{\NTV_2}}}{\NDV_2}
+        }
+    }{VarUpdateAsc}
+}
+
+\newcommand{\VarUpdateNone}{
+    \irule{~}{
+        \vsyn{\BHole}{\TV}{\MV}{~\EUV}{\EUV}
+    }{VarUpdateNone}
+}

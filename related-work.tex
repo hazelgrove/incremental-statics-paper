@@ -2,4 +2,132 @@
 \section{Related Work}%
 \label{sec:Related Work}
 
-Browser
+There is a large body of work on incremental computation~\cite{IC-Survey, IC-bib}, ranging from general frameworks such as Self-Adjusting Computation (SAC)~\cite{SAC}, Adaption~\cite{Adapton,AdaptonName}, and incremental Datalog engines ~\cite{SOUFFLE} to domain-specific approaches for lists~\cite{ICC}, databases~\cite{DDF}, and web browsers~\cite{tali-garseil}.
+
+Order maintenance data structures, first introduced by \cite{OM}, are a common data structure across these approaches, appearing in various forms in both general frameworks like SAC~\cite{DBLP:conf/popl/AcarBH02} and domain-specific systems like web browser layout engines \cite{ST}.
+
+When considering the specific problem tackled in this paper of incrementally maintaining type information in response to program edits, there have been prior efforts of both varieties as well. Our approach is a domain-specific approach targeted very specifically to bidirectional type checking with total error localization, building on recent advances, most notably the marked lambda calculus~\cite{DBLP:journals/pacmpl/ZhaoMDBPO24} which was described in \autoref{sec:Background}. Fundamental to our approach is the use of a structure editor calculus to represent changes. We are most directly inspired by Hazelnut~\cite{omar2017b}, which specified a bidirectionally typed structure editor calculus which was able to update type error marks locally at the cursor without needing recomputation. However, Hazelnut simply leaves edits that require distant changes to error marks undefined, making it impractical for real editing. Hazel, which was originally based on Hazelnut, now uses an approach based on the MLC, and we plan to integrate the approach from this paper into a future version of Hazel.
+
+The small step approach to typing appears in prior work~\cite{DBLP:conf/rta/StumpKO11,DBLP:conf/esop/KuanMF07}, in which typing is presented as a rewrite system and is analyzed using term-rewriting theory. The use of small steps to propagate types is similar to Incremental MALC, but without birdirectionality or total error localization. 
+
+\citet{DBLP:conf/kbse/SzaboEV16} and \citet{DBLP:journals/pacmpl/PacakES20} take a more general approach by translating typing rules to a Datalog program whose database of derived semantic facts can be incrementally updated as the facts that encode the program are added and removed. This generic approach is worthy of continued investigation, but is limited by the generality of the incremental update algorithm for the chosen implementation of Datalog. One particular challenge is accounting for binding structure in a way that leverages the incrementality when encoded in Datalog.  \citet{DBLP:journals/pacmpl/PacakES20} uses co-contextual typing~\cite{DBLP:conf/oopsla/ErdwegBKKM15}, in which binding information is propagated bottom up rather than top down, to overcome issues related to binding structure updates. This approach, while fine grained enough to capture individual binding updates rather than whole-context changes, still requires traversing program spines when bindings are updated, potentially incurring linear time performance penalties. 
+% though this requires maintaining additional co-contextual information and updating it on edits. We avoid this overhead.
+
+\citet{Demers1981IncrementalEF} discusses incremental evaluation of attribute grammars, proposing two different approaches. As with Datalog, it is possible to encode many type systems as attribute grammars, and indeed the setting in this paper is the Cornell Program Synthesizer~\cite{teitelbaum1981cornell}, one of the earliest structure editors and a pioneer in live semantic analysis. It may be that a generalized version of our approach would start to look like an incremental attribute grammar system, given analogies between synthesized and analyzed attributes and synthesized and analyzed types. We are not aware of a contemporary implementation of these ideas. 
+
+Our approach in this paper is distinctive relative to these related approaches in that we start by approaching the problem from type-theoretic first principles, developing a formal semantics for type information propagation and proving its metatheoretic properties, then implementing it in a highly specialized manner targeted to the problem of incremental bidirectional typing. We believe it will be fruitful to continue to compare generic approaches to our more direct approach, and hope that the novel benchmark task developed here 
+% (which are generally more sophisticated than those used in prior work) 
+will be ported to other systems and lead to productive competition (and even more realistic or punishing benchmarks).
+
+In addition to approaches leveraging incrementality derived from edits, there are a number of approaches that rely on memoization or caching to improve the performance of language implementations. This includes a large body of work on incremental build systems \cite{ALACARTE, SALSA}, which are in common use in industry. These systems generally operate at a coarse granularity, rebuilding entire compilation units (e.g. modules or packages) after changes. In contrast, our approach operates at a fine-grained level, on individual expressions. Consequently, our approach is more suitable for live programming environments where edits may occur many times per second.
+
+This family of approaches also includes the system of \citet{DBLP:conf/sle/WachsmuthKVGV13}, which develops a name resolution and type analysis engine using dependent ``tasks'', which each capture one step of analysis. This approach is language-independent but again less fine-grained than our approach, operating primarily at the file level in the implemented system. Some of the approaches we take in Malcom, namely the use of a priority queue to maintain the update propagation frontier, are reminiscent of task analysis engine based approaches.
+
+\citet{DBLP:conf/nfm/BusiDG19} specify memoized versions of standard typing rules and implement this system to achieve speedups on various small functional and imperative benchmarks, but their approach sometimes requires traversing large parts of the program when a variable binding changes.  
+
+\citet{DBLP:conf/fpca/AdityaN91} present a system that incrementalizes the Hindley-Milner type inference algorithm based on a call-graph analysis. It specifically incrementalizes the unification phase of type checking, operating at the granularity of changes to individual declarations. \citet{DBLP:conf/popl/Meertens83} also presents an incremental system for unification-based type checking, which incrementally maintains the unification constraints generated by the program but does not incrementally solve them in general.  
+
+Incrementalization has also been applied to program analysis techniques, such as abstract interpretation~\cite{DBLP:conf/sigsoft/McPeakGR13,DBLP:conf/birthday/SeidlEV15,DBLP:conf/benevol/EsVR17,DBLP:conf/ecoop/Razafintsialonina25}, symbolic execution~\cite{DBLP:conf/icse/YangKP04,DBLP:conf/issta/YangPK12,DBLP:journals/tosem/YangPRK14,DBLP:conf/icse/QiuYPK15}, intermediate representation~\cite{DBLP:conf/indiaSE/GhimeKJC22}, data flow for probabilistic programs~\cite{DBLP:conf/sas/ZhangSX17}, and analysis via encoding as a constraint satisfaction problem~\cite{DBLP:conf/fase/MudduluruR14}. Existing techniques for incremental abstract interpretation could be applied to type inference, but it is not clear how they would handle type error localization, fine grained incremental analysis, or concurrent editing and analysis. 
+
+% These techniques generally rely on dependency analysis and memoization.
+
+% ~\cite{DBLP:conf/scam/WautersPSR23} identifies edits of certain forms that have simple effects on the reanalysis (e.g. semantics preserving changes like consistently renaming a binder).
+
+% ~\cite{DBLP:conf/icse/LauterburgSMV08}
+
+
+
+
+
+
+% \subsection{Related Work Copied From Spineless Traversal}
+
+% \paragraph{Incremental Computation}
+% Incremental computation---%
+%   speeding up computations by reusing previously-computed results---%
+%   is a long-studied topic in computer science broadly~\cite{memo}
+%   and programming language theory in particular;
+%   \citet{IC-Survey} and \citet{IC-bib}
+%   give thorough surveys of the field.
+% The recent Self-Adjusting Computation (SAC)~\cite{SAC} framework
+%   proposes incrementalizing arbitrary computations,
+%   including a cost semantics~\cite{SACCost},
+%   optimizations for data structure operations~\cite{SACTrace},
+%   and opportunities for parallelization~\cite{PSAC}.
+% The Adapton framework~\cite{Adapton}
+%   aims at \emph{demand-driven} incremental computation,
+%   and allows manually-specified annotations~\citet{AdaptonName}
+%   for greater reuse.
+% While this prior work focuses on general-purpose computations,
+%   Spineless Traversal is focused on a particularly critical application of incremental computation: web browsers.
+% This application-specific focus has precedent:
+%   \citet{ICC} speed up memoization for functional programs over lists
+%   using ``chunky decomposition'',
+%   while differential dataflow databases~\cite{DDF}
+%   incrementalize Relational Algebra computations
+%   and have achieved some prominence in industry.
+% \citet{TR1} is the earliest work
+%   on incremental evaluation of attribute grammar,
+%   motivated by syntax-directed editors;
+% Later work~\cite{TR2} allows reference to non-neighbor attributes.
+% However, these early papers require recomputation
+%   immediately after every tree change,
+%   whereas web browsers, our target application,
+%   batch updates to perform incremental computation
+%   only once per frame.
+% The standard in web browsers is instead
+%   the Double Dirty Bit algorithm,
+%   implemented in all existing web rendering engines.
+% \citet{tali-garseil} describes the Double Dirty Bit algorithm
+%   in industry publication \texttt{web.dev},
+%   and it also features in textbooks~\cite{wbe}.
+  
+% The formal methods community has put significant effort
+%   into formalizing web page layout.
+% \citet{meyerovich-1} proposed using attribute grammars,
+%   similar to the DSL in Figure~\ref{fig:dsl},
+%   for formalizing web-like layout rules.
+% Later work~\cite{yufeng-1} proposes
+%   synthesizing schedules from the attribute grammar rules,
+%   including proposals~\cite{meyerovich-2,meyerovich-3}
+%   to use parallel schedules to further improve layout performance.
+% The Cassius project~\cite{cassius-1}
+%   later formalized a significant fragment of CSS~2.1
+%   using an attribute-grammar-like formalism.
+% Our layout implementation is based on Cassius.
+% Later work~\cite{cassius-2} also proposed
+%   using the Cassius formalism to verify web page layouts,
+%   including in a modular way~\cite{cassius-3}.
+% However, none of these works investigated incremental layout.
+% By contrast, the MEDEA project~\cite{yufeng-2}
+%   proposed synthesizing incremental layout algorithms
+%   by automatically synthesizing dirty bit propagation code.
+% Our work extends MEDEA by exploring
+%   optimized incremental traversal algorithms.
+
+% \subsection{Related Work Copied from WITS Abstract}
+
+% % This work follows the work on  in employing  The prior work on adaptive functional programming presents general translations to incremental programs, using order maintenance to prioritize the recomputation of intermediate values. On the other hand, the present work is specialized to bidirectional typing and uses order maintenance to maintain scoping data.
+
+% Prior approaches to incremental typing utilize a task engine~\cite{DBLP:conf/sle/WachsmuthKVGV13},  or translate typing rules to a Datalog program that can be solved incrementally~\cite{DBLP:conf/kbse/SzaboEV16, DBLP:journals/pacmpl/PacakES20}. 
+
+% This work follows the work in \cite{DBLP:conf/popl/AcarBH02}, which proposes a mechanism to make any purely-functional program adaptive using order maintenance for incremental computation. 
+
+% \cite{DBLP:conf/stoc/DietzS87} describes the order maintenance data structure used in this paper to maintain scoping data.
+
+% While our approach is specialized to the bidirectionally typed lambda calculus, more general prior approaches to incremental typing exist.
+
+
+% \cite{DBLP:conf/nfm/BusiDG19} proposes a language-independent incrementalization using caching and memoization.
+
+% \cite{DBLP:journals/pacmpl/PacakES20} and \cite{DBLP:conf/kbse/SzaboEV16} take the approach of compiling analyses to Datalog, for which incremental solvers already exist.
+
+% \cite{DBLP:conf/oopsla/ErdwegBKKM15} uses the technique of co-contextual typing, propagating context \textit{requirements} up expression trees during type checking. The co-contextual typing rules naturally give rise to incrementality via memoization.
+
+% \cite{}
+
+%  The first involves two passes .... The second involves propagating changes.
+
+% \cite{}
+
+

@@ -1,0 +1,73 @@
+% dirty join idk 
+\newcommand{\dirtyor}[2]{#1\sqcup#2}
+
+
+% mark meet 
+\newcommand{\markmeet}[2]{#1\sqcap#2}
+
+% subsumable
+\newcommand{\subsumable}[1]{\ensuremath{#1 ~{\normalfont\textsf{subsumable}}}}
+
+% consistency
+\newcommand{\consistentRel}{\ensuremath{\sim}}
+\newcommand{\consistent}[3]{\ensuremath{#1 \consistentRel_{#3} #2}}
+\newcommand{\inconsistentRel}{\ensuremath{\nsim}}
+\newcommand{\inconsistent}[2]{\ensuremath{#1 \inconsistentRel #2}}
+
+% matching
+\newcommand{\matchedRel}[1]{\ensuremath{\blacktriangleright^{#1}}}
+\newcommand{\matchedArrowRel}{\ensuremath{\matchedRel{\to}}}
+\newcommand{\matchedArrow}[4]{\ensuremath{#1 \matchedArrowRel_{#4} \TArrow{#2}{#3}}}
+\newcommand{\matchedProdRel}{\ensuremath{\matchedRel{\times}}}
+\newcommand{\matchedProd}[4]{\ensuremath{#1\matchedProdRel_{#4} \TProd{#2}{#3}}}
+\newcommand{\matchedForallRel}{\ensuremath{\matchedRel{\forall}}}
+\newcommand{\matchedForall}[4]{\ensuremath{#1\matchedForallRel_{#4} \TForall{#2}{#3}}}
+
+% Type helpers
+\newcommand{\DArrow}[2]{\mathsf{DArrow}(#1,#2)}
+\newcommand{\DUnless}[2]{\mathsf{DUnless}(#1,#2)}
+\newcommand{\funsynrel}{\mathsf{FunSyn}}
+\newcommand{\funsyn}[3]{\funsynrel(#1,#2,#3)}
+\newcommand{\sub}[4]{[#1/#2]#3=#4}
+\newcommand{\tfunsynrel}{\mathsf{TypFunSyn}}
+\newcommand{\tfunsyn}[2]{\tfunsynrel(#1,#2)}
+
+% Action
+\newcommand{\ActUp}[4][\ctx]{#1\vdash#3\xrightarrow{#2}#4}
+\newcommand{\ActLow}[4][\ctx]{#1\vdash#3\xrightarrow{#2}#4}
+\newcommand{\ActMid}[4][\ctx]{#1\vdash#3\xrightarrow{#2}#4}
+\newcommand{\ActProg}[3]{\ensuremath{#2\xrightarrow{#1}#3}}
+
+% Steps
+% \newcommand{\mmapsto}{\mapstochar\relbar\mathrel{\mkern-12mu}\mapsto}
+\newcommand{\StepSym}{\mmapsto}
+\newcommand{\StepUp}[2]{#1\StepSym#2}
+\newcommand{\StepLow}[2]{#1\StepSym#2}
+\newcommand{\StepProg}[2]{\ensuremath{#1\mapsto#2}}
+
+\newcommand{\ActStep}[3]{#2\xmapsto{#1}#3}
+
+% Vars Syn
+% \newcommand{\vsyn}[5]{\left[\EUp{\left(\EVar{#1}{#3}}{#2}\right) / #1\rright]#4~=~#5}
+\newcommand{\vsyn}[5]{\llbracket\EUp{\EVar{#1}{#3}}{#2} / #1\rrbracket#4~=~#5}
+\newcommand{\tvsyn}[4]{\llbracket \EVar{#1}{#2} / #1\rrbracket#3~=~#4}
+
+%%--- Marking ---%%
+
+\newcommand{\erase}[1]{|#1|}
+\newcommand{\MarkTyp}[3][\ctx]{#1\vdash#2\leadsto#3}
+\newcommand{\MarkSyn}[3][\ctx]{#1\vdash#2\leadsto#3}
+\newcommand{\MarkAna}[4][\ctx]{#1\vdash#2\Rightarrow#3\leadsto#4}
+\newcommand{\MarkProg}[2]{#1\leadsto#2}
+
+%%--- Internal ---%%
+
+% Directed consistency 
+\newcommand{\nconrel}{\succ}
+\newcommand{\ncon}[2]{\ensuremath{#1\nconrel#2}}
+
+% Well-formedness
+\newcommand{\WFP}[1]{\vdash#1}
+\newcommand{\WFL}[2][\ctx]{#1\vdash#2}
+\newcommand{\WFU}[2][\ctx]{#1\vdash#2}
+\newcommand{\WFT}[2][\ctx]{#1\vdash#2}

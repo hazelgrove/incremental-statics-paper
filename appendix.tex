@@ -1,0 +1,653 @@
+
+% \part{Appendix}
+
+\section{Definitions for Incremental MALC}
+
+The syntax of sorts relevant to MALC and Incremental MALC are given in~\autoref{fig:syntax}. The side conditions used for typing are defined in~\autoref{fig:side-conditions}. Note that these operations have been extended to accommodate optional types, as required in the action performance and update propagation step rules. The marking judgments for MALC are defined in~\autoref{fig:marking}. Simple and localized actions are defined in~\autoref{fig:actions}. The variable update judgment is defined in~\autoref{fig:variable-update}.~\autoref{fig:simple-action-perfomance} and~\autoref{fig:localized-action-perfomance} define the rules for simple action performance and localized action performance.~\autoref{fig:update} defines update propagation steps. Finally,~\autoref{fig:Well-Formedness} defines the well-formedness invariant. 
+
+\begin{figure}
+    \[\begin{array}{lcllll}
+    \VV & \in & \VName &  & \\ 
+    \BV & \in & \BName & \Coloneqq & \EHole \mid \VV \\ 
+    \TV & \in & \TName & \Coloneqq & 
+        \THole 
+        \mid \TBase
+        \mid \TArrow{\TV}{\TV} \\ 
+    \DV & \in & \DName & \Coloneqq & 
+        \DNone
+        \mid \DSome{\tau}\\ 
+    \BEV & \in & \BEName & \Coloneqq & 
+        \BEHole
+        \mid \BEConst
+        \mid \BEVar{\VV}
+        \mid \BELam{\BV}{\TV}{\BEV}
+        \mid \BEAp{\BEV}{\BEV}
+        \mid \BEAsc{\BEV}{\TV}\\
+    \MV & \in & \MName & \Coloneqq & 
+        \MGood
+        \mid \MBad \\ 
+    \MEUV & \in & \MEUName & \Coloneqq & \EUp{\MEMV~}{\DV}\\ 
+    \MEMV & \in & \MEMName & \Coloneqq & 
+        \EHole
+        \mid \EConst
+        \mid \EVar{\VV}{\MV}
+        \mid \ELam{\BV}{\TV}{\MV}{\MV}{\MELV}
+        \mid \EAp{\MELV}{\MV}{\MELV}
+        \mid \EAsc{\MELV}{\TV}\\ 
+    \MELV & \in & \MELName & \Coloneqq & \ELow{\DV}{\MV}{\MEUV}\\
+    \MPV & \in & \MPName \subseteq \MELName & \Coloneqq & \ELow{\DNone}{\MGood}{\MEUV}\\ 
+    \NVSymbol & \in & \NName & \Coloneqq & \raisebox{0.5pt}{\scalebox{1.3}{\NNewSymbolBlack}} \mid \NOldSymbol\\ 
+    \EUV & \in & \EUName & \Coloneqq & \EUp{\EMV~}{\NDV}\\ 
+    \EMV & \in & \EMName & \Coloneqq & 
+        \EHole
+        \mid \EConst
+        \mid \EVar{\VV}{\MV}
+        \mid \ELam{\BV}{\NTV}{\MV}{\MV}{\ELV}
+        \mid \EAp{\ELV}{\MV}{\ELV}
+        \mid \EAsc{\ELV}{\NTV}\\ 
+    \ELV & \in & \ELName & \Coloneqq & \ELow{\NDV}{\MV}{\EUV}\\ 
+    \PV & \in & \PName \subseteq \ELName & \Coloneqq & \ELow{\NV{\DNone}}{\MGood}{\EUV}\\ 
+    \ctx & \in & \ctxName & \Coloneqq & \emptyset \mid \extendCtx{\ctx}{\VV}{\TV}\\
+    \end{array}\]
+    \caption{Syntax of MALC and Incremental MALC}
+    \label{fig:syntax}
+\end{figure}
+
+\begin{figure}
+    \centering
+
+    \judgbox{\inCtx{\BV}{\TV}{\MV}{\ctx}}
+    \vspace{-7pt}
+    \[
+    \inCtxHole\hspace{20pt}\inCtxEmpty\hspace{20pt}\inCtxFound\hspace{20pt}\inCtxSkip
+    \]
+
+    \judgbox{\matchedArrow{\DV}{\DV}{\DV}{\MV}}
+    \vspace{-7pt}
+    \[
+    \matchedArrowNone\hspace{20pt}\matchedArrowHole\hspace{20pt}\matchedArrowArrow\hspace{20pt}\matchedArrowOther
+    \]
+    
+    \judgbox{\consistent{\DV}{\DV}{\MV}}
+    \vspace{-10pt}
+    \[
+    \consistentNoneL\hspace{20pt}\consistentNoneR\hspace{20pt}\consistentHoleL\hspace{20pt}\consistentHoleR
+    \]
+    \[
+    \consistentArrow\hspace{20pt}\consistentOther
+    \]
+    \caption{Side Condition Judgments}
+    \label{fig:side-conditions}
+\end{figure}
+
+\begin{figure}
+    \centering
+
+    \judgbox{\MarkSyn{\BEV}{\MEUV}}
+    \[
+    \MarkHole\hspace{20pt}\MarkConst\hspace{20pt}\MarkVar
+    \]
+    \[
+    \MarkAsc\hspace{20pt}\MarkSynFun
+    \]
+    \[
+    \MarkAp
+    \]  
+
+    \vspace{5pt}
+    \judgbox{\MarkAna{\TV}{\BEV}{\MEUV}}
+    \[
+    \MarkSubsume
+    \]
+    \[
+    \MarkAnaFun
+    \]
+
+    \vspace{5pt}
+    \judgbox{\MarkProg{\BEV}{\MPV}}
+    \[
+    \MarkProgram
+    \]
+    \caption{Marking Judgments}
+    \label{fig:marking}
+\end{figure}
+
+\begin{figure}
+    \[\begin{array}{lclcll}
+    \CV & \in & \CName & \Coloneqq & \One \mid\Two \\
+        % \mid\Three \\
+    \AV & \in & \AName & \Coloneqq & \InsertConst \mid \InsertVar{\VV} \mid \WrapFun \mid \WrapAp{\CV}\mid\WrapAsc\\
+        &&&\mid &\Delete \mid \Unwrap{\CV}\mid \SetAnn{\TV} \mid \SetAsc{\TV}\\
+        &&&\mid &\InsertBinder{\BV}\mid \DeleteBinder\\
+    \overline{s} & \in & \mathsf{List[Sort]} & \Coloneqq & \nil \mid \cons{s}{\overline{s}}\\ 
+    \LAV & \in & \LAName & \Coloneqq & \LA{\AV}{\overline{\CV}} 
+    \end{array}\]
+    \vspace{-10pt}
+    \caption{Actions}
+    \label{fig:actions}
+\end{figure}
+
+\begin{figure}
+    \judgbox{\vsyn{\BV}{\MV}{\TV}{~\EUV}{\EUV}}
+    \[
+    \centering
+    \VarUpdateHole\hspace{20pt}
+    \VarUpdateVarEq\hspace{20pt}
+    \VarUpdateVarNeq
+    \]
+     \[
+    \centering
+    \VarUpdateFunEq\hspace{20pt}
+    \]
+     \[
+    \centering
+    \VarUpdateFunNeq\hspace{20pt}
+    \]
+     \[
+    \centering
+    \VarUpdateAp
+    \]
+     \[
+    \centering
+    \VarUpdateAsc
+    \]
+     \[
+    \centering
+    \VarUpdateNone
+    \]
+    \caption{Variable Update Judgment}
+    \label{fig:variable-update}
+\end{figure}
+
+\begin{figure}
+    \judgbox{\ActUp{\AV}{\EUV}{\EUV}}
+
+    \[
+    \centering
+    \ActInsertConst\hspace{30pt}
+    \ActInsertVar\hspace{30pt}
+    \ActDelete
+    \]
+    \[
+    \centering
+    \ActWrapFun\hspace{30pt}
+    \ActWrapAsc
+    \]
+    \[
+    \centering
+    \ActWrapApOne
+    \ActWrapApTwo
+    \]
+    \[
+    \centering
+    \ActUnwrapFun\hspace{20pt}
+    \ActUnwrapAsc
+    \]
+    \[
+    \centering
+    \ActUnwrapApOne\hspace{20pt}
+    \ActUnwrapApTwo
+    \]
+    \[
+    \centering
+    \ActSetAnn\hspace{10pt}
+    \ActSetAsc
+    \]
+    \vspace{5pt}
+    \[
+    \centering
+    \ActInsertBinder
+    \]
+    \[
+    \centering
+    \ActDeleteBinder
+    \]
+
+    \vspace{15pt}
+    
+    \judgbox{\ActLow{\AV}{\ELV}{\ELV}}
+    % \hspace{80pt}\judgbox{\ActProg{\AV}{\PV}{\PV}}
+    \[
+    \centering
+    \ActAna
+    % \hspace{80pt}\ActProgram
+    \]
+    \caption{Simple Action Performance}
+    \label{fig:simple-action-perfomance}
+\end{figure}
+
+\begin{figure}
+    \judgbox{\ActMid{\LAV}{\EMV}{\EMV}}
+    \[
+    \centering
+    \ActFunRec\hspace{20pt}
+    \ActAscRec
+    \]
+    \[
+    \centering
+    \ActApRecOne\hspace{20pt}
+    \ActApRecTwo
+    \]
+    \judgbox{\ActLow{\LAV}{\EUV}{\EUV}}\hspace{5pt}
+    \judgbox{\ActLow{\LAV}{\ELV}{\ELV}}\hspace{5pt}
+    \judgbox{\ActProg{\LAV}{\PV}{\PV}}
+    \[
+    \centering
+    \ActSynRec\hspace{20pt}
+    \ActAnaRec\hspace{20pt}
+    \ActAnaLocal\hspace{20pt}
+    \ActProgram
+    \]
+    \caption{Localized Action Performance}
+    \label{fig:localized-action-perfomance}
+\end{figure}
+
+
+\begin{figure}
+    \judgbox{\funsyn{\DV}{\TV}{\DV}=\DV}
+    \[\begin{array}{lcl}
+        \funsyn{\DSome{\TV_1}}{\TV_2}{\DV} &=& \DNone\\
+        \funsyn{\DNone}{\TV_2}{\DNone} &=& \DNone\\
+        \funsyn{\DNone}{\TV_1}{\TV_2} &=& \TArrow{\TV_1}{\TV_2}
+    \end{array}\]
+    \judgbox{\StepLow{\ELV}{\ELV}}
+    \[
+    \centering
+    \StepSyn \hspace{20pt}
+    \StepAna
+    \]
+    \[
+    \centering
+    \]
+    \[
+    \centering
+    \StepAnnFun \hspace{20pt}
+    \StepSynFun
+    \]
+    \[
+    \centering
+    \StepAnaFun~+~\text{cong. rules}
+    \]
+    
+    \judgbox{\StepUp{\EUV}{\EUV}}
+    \[
+    \centering
+    \StepAp\hspace{20pt}
+    \StepAsc~+~\text{cong. rules}
+    \]
+    
+    \judgbox{\StepProg{\PV}{\PV}}
+    \[
+    \centering
+    \InsideStep\hspace{20pt}\TopStep
+    \]
+    
+    \caption{Update Propagation Steps}
+    \label{fig:update}
+\end{figure}
+
+
+% \section{Well-Formedness}
+% \label{subsec:Well-Formedness}
+% Stating and proving the correctness properties of the calculus rely on the notion of a well-formed program. This is the invariant on incremental programs that is preserved by all actions and update propagation steps and ensures the equivalence of the incremental analysis and the from-scratch analysis. The definition of this predicate, denoted $\WFP{\PV}$, is in \autoref{fig:Well-Formedness}. 
+
+\begin{figure}
+    \judgbox{\matchedArrow{\NDV}{\NDV}{\NDV}{\NV{\MV}}}\hspace{10pt}
+    \judgbox{\consistent{\NDV}{\NDV}{\NV{\MV}}}
+    \[
+    \matchedArrowDirty\hspace{30pt}\consistentDirty
+    \]
+    
+    \judgbox{\WFU{\EUV}}\hspace{10pt}\judgbox{\WFL{\ELV}}
+    \[
+    \WFHole\hspace{20pt}\WFConst\hspace{20pt}\WFVar\hspace{20pt}\WFAsc
+    \]
+    \[
+    \WFAp
+    \]
+    \[
+    \WFSubsume
+    \]
+    \[
+    \WFFun
+    \]
+    
+    \judgbox{\ncon{\NV{a}}{a}}\hspace{85pt}
+    \judgbox{\WFP{\PV}}
+    \[
+    \NconNew\hspace{20pt}\NconOld\hspace{60pt}
+    \WFProgram
+    \]
+    \caption{The Well-Formedness Invariant}
+    \label{fig:Well-Formedness}
+\end{figure}
+
+\paragraph{Well-Formedness} Well-formedness is defined in a syntax-directed way on all analytic expressions, with the \rulename{WFSyn} rule and the $\WFU{\EUV}$ judgment serving as a convenience for factoring the consistency check out of $\WFL{\ELV}$ for subsumable forms. The predicate utilizes the ``directed consistency'' relation, $\ncon{\NV{a}}{a}$. This relation holds when either the first argument is dirty or the arguments carry the same value. Programs are well-formed when this relation holds at every step of the bidirectional information flow. For example, in the rule \rulename{WFAp}, the analyzed type $\NDV_1$ is matched as an arrow type, resulting in a domain type, codomain type, and mark. This information, which was derived from the upstream type, are checked with the directed consistency relation against the downstream information found in the program. This check ensures that the information in the incremental program is locally consistent, except at the frontier of update propagation. Variants of the side condition judgments are introduced which operate on dirtied types, which produce dirty outputs if any inputs are dirty. Actions maintain this invariant by dirtying any information that may be newly inconsistent with its surroundings, and updates maintain the invariant by progressing the frontier according to the correct typing rules.
+
+\FloatBarrier
+
+\section{Polymorphic Incremental MALC}
+\label{subsec:appendix-polymorphism}
+
+% Below are the syntax, marking, action performance, update step propagation, and well-formedness rules for the polymorphic extension of Incremental MALC are. Only the rules for the new syntactic forms are included in the action performance, update step propagation, and well-formedness figures, with the other rules 
+
+\begin{figure}[ht]
+    \[\begin{array}{lcllll}
+    \VV & \in & \VName &  & \\  
+    \TVV & \in & \TVName &  & \\ 
+    \BV & \in & \BName & \Coloneqq & \EHole \mid \VV \\
+    \TBV & \in & \TBName & \Coloneqq & \EHole \mid \TVV \\
+    \BTV & \in & \BTName & \Coloneqq & 
+        \THole 
+        \mid \TBase
+        \mid \TArrow{\BTV}{\BTV} 
+        \mid \TVar{\TVV} 
+        \mid \TForall{\TBV}{\BTV}\\ 
+    % \DV & \in & \DName & \Coloneqq & 
+    %     \DNone
+    %     \mid \DSome{\tau}\\ 
+    \BEV & \in & \BEName & \Coloneqq & 
+        \BEHole
+        \mid \BEConst
+        \mid \BEVar{\VV}
+        \mid \BELam{\BV}{\TV}{\BEV}
+        \mid \BEAp{\BEV}{\BEV}
+        \mid \BEAsc{\BEV}{\TV}\\
+        &&& \mid & \BETLam{\TBV}{\BEV} 
+        \mid \BETAp{\BEV}{\TV}\\
+    \MV & \in & \MName & \Coloneqq & 
+        \MGood
+        \mid \MBad \\ 
+    \MTV & \in & \MTName & \Coloneqq & 
+        \THole 
+        \mid \TBase
+        \mid \TArrow{\MTV}{\MTV} 
+        \mid \MTVar{\TVV}{\MV} 
+        \mid \TForall{\TBV}{\MTV} \\ 
+    \MDV & \in & \MDName & \Coloneqq & 
+        \DNone
+        \mid \DSome{\MTV}\\ 
+    \MEUV & \in & \MEUName & \Coloneqq & \EUp{\MEMV~}{\MDV}\\ 
+    \MEMV & \in & \MEMName & \Coloneqq & 
+        \EHole
+        \mid \EConst
+        \mid \EVar{\VV}{\MV}
+        \mid \ELam{\BV}{\MTV}{\MV}{\MV}{\MELV}
+        \mid \EAp{\MELV}{\MV}{\MELV}
+        \mid \EAsc{\MELV}{\MTV}\\
+        &&& \mid & \ETLam{\TBV}{\MV}{\MEMV} 
+        \mid \ETAp{\MEMV}{\MV}{\NV{\MTV}}\\ 
+    \MELV & \in & \MELName & \Coloneqq & \ELow{\MDV}{\MV}{\MEUV}\\
+    \MPV & \in & \MPName \subseteq \MELName & \Coloneqq & \ELow{\DNone}{\MGood}{\MEUV}\\ 
+    \NVSymbol & \in & \NName & \Coloneqq & \raisebox{0.5pt}{\scalebox{1.3}{\NNewSymbolBlack}} \mid \NOldSymbol\\ 
+    \EUV & \in & \EUName & \Coloneqq & \EUp{\EMV~}{\NMDV}\\ 
+    \EMV & \in & \EMName & \Coloneqq & 
+        \EHole
+        \mid \EConst
+        \mid \EVar{\VV}{\MV}
+        \mid \ELam{\BV}{\NMTV}{\MV}{\MV}{\ELV}
+        \mid \EAp{\ELV}{\MV}{\ELV}
+        \mid \EAsc{\ELV}{\NMTV}\\
+        &&& \mid & \ETLam{\TBV}{\MV}{\EMV} 
+        \mid \ETAp{\EMV}{\MV}{\NMTV}\\ 
+    \ELV & \in & \ELName & \Coloneqq & \ELow{\NMDV}{\MV}{\EUV}\\ 
+    \PV & \in & \PName \subseteq \ELName & \Coloneqq & \ELow{\NV{\DNone}}{\MGood}{\EUV}\\ 
+    \ctx & \in & \ctxName & \Coloneqq & 
+        \emptyset 
+        \mid \extendCtx{\ctx}{\VV}{\MTV}
+        \mid \tExtendCtx{\ctx}{\TVV}\\
+    \end{array}\]
+    \vspace{-10pt}
+    \caption{Syntax of Polymorphic Incremental MALC}
+    \label{fig:appendix-polymorphism-syntax}
+\end{figure}
+
+\begin{figure}[h]
+    \[\begin{array}{lclcll}
+    \CV & \in & \CName & \Coloneqq & \One \mid\Two \\
+        % \mid\Three \\
+    \AV & \in & \AName & \Coloneqq & \InsertConst \mid \InsertVar{\VV} \mid \WrapFun \mid \WrapAp{\CV}\mid\WrapAsc\\
+        &&&\mid &\Delete \mid \Unwrap{\CV}\mid \SetAnn{\TV} \mid \SetAsc{\TV}\\
+        &&&\mid &\InsertBinder{\BV}\mid \DeleteBinder\\
+        &&&\mid &\WrapTFun \mid \WrapTAp \mid \SetTArg{\TV}\\
+    \overline{s} & \in & \mathsf{List[Sort]} & \Coloneqq & \nil \mid \cons{s}{\overline{s}}\\ 
+    \LAV & \in & \LAName & \Coloneqq & \LA{\AV}{\overline{\CV}} 
+    \end{array}\]
+    \vspace{-10pt}
+    \caption{Polymorphism Actions}
+    \label{fig:appendix-polymorphism-actions}
+\end{figure}
+
+\begin{figure}
+    \centering
+
+    \judgbox{\MarkTyp{\BTV}{\MTV}}
+    \[
+    \MarkTHole \hspace{20pt} \MarkTBase \hspace{20pt} \MarkTArrow
+    \]
+    \[
+    \MarkTVar \hspace{20pt} \MarkForall
+    \]
+
+    \judgbox{\MarkSyn{\BEV}{\MEUV}}
+    \[
+    \MarkHole\hspace{20pt}\MarkConst\hspace{20pt}\PolyMarkVar
+    \]
+    \[
+    \PolyMarkAsc\hspace{20pt}\PolyMarkSynFun
+    \]
+    \[
+    \PolyMarkAp
+    \]
+    \[
+    \MarkSynTFun \hspace{20pt} \MarkTAp
+    \]
+
+    \vspace{5pt}
+    \judgbox{\MarkAna{\MTV}{\BEV}{\MEUV}}
+    \[
+    \PolyMarkSubsume
+    \]
+    \[
+    \PolyMarkAnaFun
+    \]
+    \[
+    \MarkAnaTFun
+    \]
+
+    % \vspace{5pt}
+    % \judgbox{\MarkProg{\BEV}{\MPV}}
+    % \[
+    % \MarkProgram
+    % \]
+    
+    \vspace{-10pt}
+    \caption{Polymorphism Marking Judgments}
+    \label{fig:appendix-polymorphism-marking}
+\end{figure}
+
+% \begin{figure}
+%     \judgbox{\vsyn{\BV}{\MV}{\TV}{~\EUV}{\EUV}}
+%     \[
+%     \centering
+%     \VarUpdateHole\hspace{20pt}
+%     \VarUpdateVarEq\hspace{20pt}
+%     \VarUpdateVarNeq
+%     \]
+%      \[
+%     \centering
+%     \VarUpdateFunEq\hspace{20pt}
+%     \]
+%      \[
+%     \centering
+%     \VarUpdateFunNeq\hspace{20pt}
+%     \]
+%      \[
+%     \centering
+%     \VarUpdateAp
+%     \]
+%      \[
+%     \centering
+%     \VarUpdateAsc
+%     \]
+%      \[
+%     \centering
+%     \VarUpdateNone
+%     \]
+%     \caption{Polymorphism variable update judgments}
+%     \label{fig:polymorphism-variable-update}
+% \end{figure}
+
+
+\begin{figure}
+    \centering
+
+    \judgbox{\ActUp{\AV}{\BTV}{\MTV}}
+    \[
+    ...\hspace{20pt} \ActWrapTFun \hspace{20pt} \ActSetTArg  
+    % \ActWrapTAp
+    \]
+    % \[
+    % \ActSetTArg 
+    % \]
+    \[
+    \ActUnwrapTFun \hspace{20pt} \ActUnwrapTAp
+    \]
+    % \[
+    % \ActInsertTBinder
+    % \]
+    % \[
+    % \ActDeleteTBinder
+    % \]
+%     \vspace{-10pt}
+%     \caption{Polymorphism Simple Action Performance}
+%     \label{fig:appendix-polymorphism-actions}
+% \end{figure}
+
+% \begin{figure}
+    \centering
+
+    \judgbox{\StepLow{\ELV}{\ELV}}
+    \[
+    ...\hspace{20pt} \StepAnaTFun \hspace{20pt} \StepSynTFun
+    \]
+    \judgbox{\StepUp{\EUV}{\EUV}}
+    \[
+    ...\hspace{20pt} \StepTApFun \hspace{20pt} \StepTApArg
+    \]
+%     \vspace{-10pt}
+%     \caption{Polymorphism Update Propagation Steps}
+%     \label{fig:appendix-polymorphism-updates}
+% \end{figure}
+
+% \begin{figure}
+    \judgbox{\WFU{\EUV}}
+    \[
+    ...\hspace{20pt} \WFTAp
+    \]
+    \judgbox{\WFL{\ELV}}
+    \[
+    \WFTFun
+    \]
+    \caption{Polymorphim Simple Action Performance, Update Propagation, and Well-Formedness Invariant}
+    \label{fig:polymorphism-Well-Formedness}
+\end{figure}
+
+\FloatBarrier
+
+\section{Properties of Incremental MALC}
+\label{subsec:Proofs}
+
+% \begin{figure}
+%     \centering 
+%     \caption{Interleaved action and update propagation}
+%     \label{fig:actstep}
+% \end{figure}
+
+% \begin{theorem}[Action Completeness]
+%     For any bare expressions $\BEV_1$ and $\BEV_2$, there exists a sequence of localized actions $\overline{\LAV}$ such that \ActProg{\overline{\LAV}}{\BEV_1}{\BEV_2} (where \ActProg{\overline{\LAV}}{\BEV_1}{\BEV_2} denotes iterated action performance). 
+% \end{theorem}
+
+This section describes the formal properties proven for Incremental MALC. The full proofs are available in the accompanying Agda mechanization. 
+
+We begin with validity, which is expressed in terms of the relation $\ActStep{\overline{\LAV}}{\PV}{\PV}$, modeling interleaved action performance and update propagation, as well as the well-markedness condition on programs. 
+
+\[
+\ActStepAct\hspace{20pt}
+\ActStepStep\hspace{20pt}
+\ActStepDone
+\]
+
+
+\begin{definition}[Well-Markedness]
+    A program $\PV$ is \textit{well-marked} if $\MarkProg{\erase{\PV}}{\MPV}$, where $\MPV$ is equal to $\PV$ up to dirtiness of types. 
+\end{definition}
+
+\begin{theorem}[Validity]
+\label{theorem:Validity}
+    If program $\PV$ is well-formed and $\ActStep{\overline{\LAV}}{\PV}{\PV'}$, then $\PV'$ is well-marked. 
+\end{theorem}
+
+Validity guarantees that the result of the incremental analysis agrees with the from-scratch static analysis. The following lemmas and definition are used in the proof:
+
+\begin{lemma}[Action Preservation]
+\label{lemma:Action Preservation}
+    If $\PV$ is well-formed and $\ActProg{\LAV}{\PV}{\PV'}$, then $\PV'$ is well-formed. 
+\end{lemma}
+
+\begin{lemma}[Update Step Preservation]
+\label{lemma:Update Step Preservation}
+    If $\PV$ is well-formed and $\StepProg{\PV}{\PV'}$, then $\PV'$ is well-formed. 
+\end{lemma}
+
+\begin{definition}[Quiescent]
+    An incremental program $\PV$ is \textit{quiescent} if it contains no dirty types. 
+\end{definition}
+
+\begin{lemma}[Progress]
+\label{lemma:Progress}
+    If $\PV$ is well-formed, then it can take an update step if and only if it is not quiescent. 
+\end{lemma}
+
+\begin{lemma}[Quiescent Validity]
+\label{lemma:Quiescent Validity}
+    If $\PV$ is well-formed and quiescent, then it is well-marked.  
+\end{lemma}
+
+These can be composed in a straightforward way to prove validity. Since $\PV$ is well-formed and $\ActStep{\overline{\LAV}}{\PV}{\PV'}$, then by~\autoref{lemma:Action Preservation} and~\autoref{lemma:Update Step Preservation} (action preservation and update step preservation) $\PV'$ is also well-formed. No steps are possible from $\PV'$, \autoref{lemma:Progress} (progress) ensures that it is quiescent. \autoref{lemma:Quiescent Validity} (quiescent validity) can then be applied to obtain the guarantee of well-markedness. 
+
+\begin{theorem}[Convergence]
+    If program $\PV$ is well-formed, $\ActStep{\overline{\LAV}}{\PV}{\PV_1}$, and $\ActStep{\overline{\LAV}}{\PV}{\PV_2}$, then $\PV_1=\PV_2$. 
+\end{theorem}
+
+Convergence is proven with the help of the following lemmas:
+
+\begin{lemma}[Action Erasure]
+\label{lemma:Action Erasure}
+    If \ActProg{\LAV}{\PV}{\PV'}, then
+    \ActProg{\LAV}{\erase{\PV}}{\erase{\PV'}}.
+\end{lemma}
+
+\begin{lemma}[Update Step Erasure]
+\label{lemma:Update Step Erasure}
+    If \StepProg{\PV}{\PV'}, then
+    ${\erase{\PV}}={\erase{\PV'}}$.
+\end{lemma}
+
+\begin{lemma}[Action Unicity]
+\label{lemma:Action Unicity}
+    If \ActProg{\LAV}{\BEV}{\BEV_1} and \ActProg{\LAV}{\BEV}{\BEV_2}, then $\BEV_1=\BEV_2$.
+\end{lemma}
+
+\begin{lemma}[Marking Unicity]
+\label{lemma:Marking Unicity}
+    If $\MarkProg{\BEV}{\PV_1}$ and $\MarkProg{\BEV}{\PV_2}$, then $\PV_1=\PV_2$.  
+\end{lemma}
+
+Assuming $\PV$ is well-formed, $\ActStep{\overline{\LAV}}{\PV}{\PV_1}$, and $\ActStep{\overline{\LAV}}{\PV}{\PV_2}$, then ~\autoref{lemma:Action Erasure} and~\autoref{lemma:Update Step Erasure} (action erasure and update step erasure) imply that \ActProg{\overline{\LAV}}{\erase{\PV}}{\erase{\PV_1}} and \ActProg{\overline{\LAV}}{\erase{\PV}}{\erase{\PV_2}}. By \autoref{lemma:Action Unicity} (action unicity), $\erase{\PV_1}=\erase{\PV_2}$. By~\autoref{theorem:Validity} (validity), $\PV_1$ and $\PV_2$ are well-marked, meaning that $\MarkProg{\erase{\PV_1}}{\PV_1}$ and $\MarkProg{\erase{\PV_2}}{\PV_2}$. Using \autoref{lemma:Marking Unicity} (marking unicity) and the fact that $\erase{\PV_1}=\erase{\PV_2}$, we obtain $\PV_1=\PV_2$.   
+
+\begin{theorem}[Termination]
+    There is no infinite sequence $\{\PV_n\}_{n= 0}^\infty$ such that $\forall n$. $\StepProg{\PV_n}{\PV_{n+1}}$. 
+\end{theorem}
+
+Termination is proven by defining a well-founded ordering $<_P$ on programs such that if $\StepProg{\PV}{\PV'}$, then $\PV' <_P \PV$. Informally, $\PV' <_P \PV$ if either $\PV'$ has strictly fewer dirty types in the surface syntax (that is, on function annotations or type ascriptions), or $\PV'$ and $\PV$ have an equal number of such dirty types, but the update propagation frontier of $\PV'$ is further downstream than that of $\PV$ in the bidirectional flow. The syntax for incremental programs was designed to have the property that the left-to-right order in which annotations appear corresponds to the downstream order of information flow. All update rules except for those dealing with types in the surface syntax only dirty types to the right of the type they clean.

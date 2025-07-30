@@ -1,0 +1,336 @@
+
+\newcommand{\ActInsertVar}{
+    \irule{
+        \inCtx{\VV}{\NV{\TV}}{\MV}{\ctx}
+    }{
+        \ActUp{\InsertVar{\VV}}{\EUp{\EHole~}{\NDV}}{
+            \EUp{\EVar{\VV}{\MV}}{\NNew{\DSome{\TV}}}
+        }
+    }{ActInsertVar}
+}
+
+\newcommand{\ActInsertConst}{
+    \irule{
+    }{
+        \ActUp{\InsertConst}{\EUp{\EHole~}{\NDV}}{
+            \EUp{\EConst}{\NNew{\DSome{\TBase}}}
+        }
+    }{ActInsertConst}
+}
+
+\newcommand{\ActWrapFun}{
+    \irule{
+    }{
+        \ActUp{\WrapFun}{\EUp{\EMV~}{\NDV}}{
+            \EUp{\ELam{\BHole}{\NOld{\THole}}{\MGood}{\MGood}{
+                \paren{\ELow{\NNew{\DNone}}{\MGood}{\EUp{\EMV~}{\NOld{\DV}}}}
+            }}{\NNew{\DNone}}
+        }
+    }{ActWrapFun}
+}
+
+\newcommand{\ActWrapApOne}{
+    \irule{
+    }{
+        \ActUp{\WrapAp{\One}}{\EUp{\EMV~}{\NDV}}{
+            \EUp{
+\EAp{\paren{\ELow{\NNew{\DNone}}{\MGood}{\EUp{\EMV~}{\NNew{\DV}}}}}{\MGood}{\paren{\ELow{\NOld{\DNone}}{\MGood}{\EUp{\EHole~}{\NOld{\DSome{\THole}}}}}}
+            }{\NNew{\DNone}}
+        }
+    }{ActWrapApOne}
+}
+
+\newcommand{\ActWrapApTwo}{
+    \irule{
+    }{
+        \ActUp{\WrapAp{\Two}}{\EUp{\EMV~}{\NDV}}{
+            \EUp{
+                \EAp{\paren{\ELow{\NOld{\DNone}}{\MGood}{\EUp{\EHole~}{\NOld{\DSome{\THole}}}}}}{\MGood}{\paren{\ELow{\NNew{\DSome{\THole}}}{\MGood}{\EUp{\EMV~}{\NOld{\DV}}}}}
+            }{\NNew{\DSome{\THole}}}
+        }
+    }{ActWrapApTwo}
+}
+
+\newcommand{\ActWrapAsc}{
+    \irule{
+    }{
+        \ActUp{\WrapAsc}{\EUp{\EMV~}{\NDV}}{
+            \EUp{
+                \EAsc{\paren{\ELow{\NNew{\DSome{\THole}}}{\MGood}{\EUp{\EMV~}{\NDV}}}}{~\NOld{\THole}}
+            }{\NNew{\DSome{\THole}}}
+        }
+    }{ActWrapAsc}
+}
+
+\newcommand{\ActWrapTFun}{
+    \irule{
+    }{
+        \ActUp{\WrapFun}{\EUp{\EMV~}{\NMDV}}{
+            \EUp{\ETLam{\BHole}{\MGood}{
+                \paren{\ELow{\NNew{\DNone}}{\MGood}{\EUp{\EMV~}{\NOld{\MDV}}}}
+            }}{\NNew{\DNone}}
+        }
+    }{ActWrapTypFun}
+}
+
+\newcommand{\ActWrapTAp}{
+    \irule{
+    }{
+        \ActUp{\WrapTAp}{\EUp{\EMV~}{\NMDV}}{
+            \EUp{
+\ETAp{\paren{\ELow{\NNew{\DNone}}{\MGood}{\EUp{\EMV~}{\NNew{\MDV}}}}}{\MGood}{\NOld{\THole}}
+            }{\NNew{\DNone}}
+        }
+    }{ActWrapTypAp}
+}
+
+
+
+\newcommand{\ActDelete}{
+    \irule{
+    }{
+        \ActUp{\Delete}{\EUV}{
+            \EUp{~\EHole~}{\NNew{\DSome{\THole}}}
+        }
+    }{ActDelete}
+}
+
+\newcommand{\ActUnwrapFun}{
+    \irule{
+        \inCtx{\BV}{\NV{\TV_2}}{\MV_4}{\ctx}\\
+        \vsyn{\BV}{\TV_2}{\MV_4}{\EUV}{\EUp{\EMV~}{\NDV_3}}
+    }{
+        \ActUp{\Unwrap{\One}}{
+            \EUp{\ELam{\BV}{\NV{\TV_1}}{\MV_1}{\MV_2}{\paren{\ELow{\NDV_1}{\MV_3}{\EUV}}}}{\NDV_2}
+        }{
+            \EUp{\EMV~}{\NNew{\DV_3}}
+        }
+    }{ActUnwrapFun}
+}
+
+\newcommand{\ActUnwrapApOne}{
+    \irule{
+    }{
+        \ActUp{\Unwrap{\One}}{
+            \EUp{\EAp{\paren{\ELow{\NDV_1}{\MV_1}{\EUp{\EMV~}{\NDV_2}}}}{\MV_2}{\ELV}}{\NDV_3}
+        }{
+            \EUp{\EMV~}{\NNew{\DV_2}}
+        }
+    }{ActUnwrapApOne}
+}
+
+\newcommand{\ActUnwrapApTwo}{
+    \irule{
+    }{
+        \ActUp{\Unwrap{\Two}}{
+            \EUp{\EAp{\ELV}{\MV_1}{\paren{\ELow{\NDV_1}{\MV_2}{\EUp{\EMV~}{\NDV_2}}}}}{\NDV_3}
+        }{
+            \EUp{\EMV~}{\NNew{\DV_2}}
+        }
+    }{ActUnwrapApTwo}
+}
+
+\newcommand{\ActUnwrapAsc}{
+    \irule{
+    }{
+        \ActUp{\Unwrap{\One}}{
+            \EUp{\EAsc{\paren{\ELow{\NDV_1}{\MV}{\EUp{\EMV~}{\NDV_2}}}}{\NV{\TV}}}{\NDV_3}
+        }{
+            \EUp{\EMV~}{\NNew{\DV_2}}
+        }
+    }{ActUnwrapAsc}
+}
+
+\newcommand{\ActUnwrapTFun}{
+    \irule{
+        \tInCtx{\TBV}{\MV_3}{\ctx}\\
+        \tvsyn{\TBV}{\MV_3}{\EUV}{\EUp{\EMV~}{\NMDV_3}}
+    }{
+        \ActUp{\Unwrap{\One}}{
+            \EUp{\ETLam{\TBV}{\MV_1}{\paren{\ELow{\NMDV_1}{\MV_2}{\EUV}}}}{\NMDV_2}
+        }{
+            \EUp{\EMV~}{\NNew{\MDV_3}}
+        }
+    }{ActUnwrapTypFun}
+}
+
+\newcommand{\ActUnwrapTAp}{
+    \irule{
+    }{
+        \ActUp{\Unwrap{\One}}{
+            \EUp{\ETAp{\paren{\ELow{\NMDV_1}{\MV_1}{\EUp{\EMV~}{\NMDV_2}}}}{\MV_2}{\NMTV}}{\NMDV_3}
+        }{
+            \EUp{\EMV~}{\NNew{\MDV_2}}
+        }
+    }{ActUnwrapTypAp}
+}
+
+\newcommand{\ActSetAnn}{
+    \irule{
+    }{
+        \ActUp{\SetAnn{\TV_2}}{
+            \EUp{\ELam{\BV}{\NV{\TV_1}}{\MV_1}{\MV_2}{\ELV}}{\NDV}
+        }{
+            \EUp{\ELam{\BV}{\NNew{\TV_2}}{\MV_1}{\MV_2}{\ELV}}{\NDV}
+        }
+    }{ActSetAnn}
+}
+
+\newcommand{\ActSetAsc}{
+    \irule{
+    }{
+        \ActUp{\SetAsc{\TV_2}}{
+            \EUp{\EAsc{\ELV}{\NV{\TV}_1}}{\NDV}
+        }{
+            \EUp{\EAsc{\ELV}{\NNew{\TV}_2}}{\NDV}
+        }
+    }{ActSetAsc}
+}
+
+\newcommand{\ActSetTArg}{
+    \irule{
+        \MarkTyp{\TV}{\MTV_2}
+    }{
+        \ActUp{\SetTArg{\TV}}{
+            \EUp{\ETAp{\ELV}{\MV}{\NMTV_1}}{\NMDV}
+        }{
+            \EUp{\ETAp{\ELV}{\MV}{\NNew{\MTV}_2}}{\NMDV}
+        }
+    }{ActSetTypArg}
+}
+
+\newcommand{\ActInsertBinder}{
+    \irule{
+        \vsyn{\VV}{\TV}{\MGood}{\EUV}{\EUp{\EMV~}{\NDV_3}}
+    }{
+        \ActUp{\InsertBinder{\VV}}{
+            \EUp{\ELam{\BHole}{\NV{\TV}}{\MV_1}{\MV_2}{\paren{\ELow{\NDV_1}{\MV_3}{\EUV}}}}{\NDV_2}
+        }{
+            \EUp{\ELam{\BVar{\VV}}{\NV{\TV}}{\MV_1}{\MV_2}{\paren{\ELow{\NDV_1}{\MV_3}{\EUp{\EMV~}{\NNew{\DV_3}}}}}}{\NDV_2}
+        }
+    }{ActInsertBinder}
+}
+
+\newcommand{\ActDeleteBinder}{
+    \irule{
+        \inCtx{\BV}{\NV{\TV_2}}{\MV_4}{\ctx}\\
+        \vsyn{\BV}{\TV_2}{\MV_4}{\EUV}{\EUp{\EMV~}{\NDV_3}}
+    }{
+        \ActUp{\DeleteBinder}{
+            \EUp{\ELam{\BV}{\NV{\TV_1}}{\MV_1}{\MV_2}{\paren{\ELow{\NDV_1}{\MV_3}{\EUV}}}}{\NDV_2}
+        }{
+            \EUp{\ELam{\BHole}{\NV{\TV_1}}{\MV_1}{\MV_2}{\paren{\ELow{\NDV_1}{\MV_3}{\EUp{\EMV~}{\NNew{\DV_3}}}}}}{\NDV_2}
+        }
+    }{ActDeleteBinder}
+}
+
+\newcommand{\ActInsertTBinder}{
+    \irule{
+        \tvsyn{\TVV}{\MGood}{\EUV}{\EUp{\EMV~}{\NMDV_3}}
+    }{
+        \ActUp{\InsertBinder{\TVV}}{
+            \EUp{\ETLam{\BHole}{\MV_1}{\paren{\ELow{\NMDV_1}{\MV_2}{\EUV}}}}{\NMDV_2}
+        }{
+            \EUp{\ETLam{\BVar{\TVV}}{\MV_1}{\paren{\ELow{\NMDV_1}{\MV_2}{\EUp{\EMV~}{\NNew{\MDV_3}}}}}}{\NMDV_2}
+        }
+    }{ActInsertTypBinder}
+}
+
+\newcommand{\ActDeleteTBinder}{
+    \irule{
+        \tInCtx{\TBV}{\MV_3}{\ctx}\\
+        \tvsyn{\TBV}{\MV_3}{\EUV}{\EUp{\EMV~}{\NMDV_3}}
+    }{
+        \ActUp{\DeleteBinder}{
+            \EUp{\ETLam{\TBV}{\MV_1}{\paren{\ELow{\NMDV_1}{\MV_2}{\EUV}}}}{\NMDV_2}
+        }{
+            \EUp{\ETLam{\BHole}{\MV_1}{\paren{\ELow{\NMDV_1}{\MV_2}{\EUp{\EMV~}{\NNew{\MDV_3}}}}}}{\NMDV_2}
+        }
+    }{ActDeleteTypBinder}
+}
+
+\newcommand{\ActAna}{
+    \irule{
+        \ActUp{\AV}{\EUV_1}{\EUV_2}
+    }{
+        \ActLow{\AV}{
+            \ELow{\NDV}{\MV}{\EUV_1}
+        }{
+            \ELow{\NNew{\DV}}{\MV}{\EUV_2}
+        }
+    }{ActAna}
+}
+
+% --Localized Actions--%
+
+\newcommand{\ActSynRec}{
+    \irule{
+        \ActMid{\LAV}{\EMV_1}{\EMV_2}
+    }{
+        \ActUp{\LAV}{\EUp{\EMV_1}{\NDV}}{\EUp{\EMV_2}{\NDV}}
+    }{ActSynRec}
+}
+
+\newcommand{\ActFunRec}{
+    \irule{
+        \ActLow[\extendCtx{\BV}{\NTV}{\ctx}]{\LA{\AV}{\overline{\CV}}}{\ELV_1}{\ELV_2}
+    }{
+        \ActMid{\LA{\AV}{\parencons{\One}{\overline{\CV}}}}{\ELam{\BV}{\NTV}{\MV_1}{\MV_2}{\ELV_1}}{\ELam{\BV}{\NTV}{\MV_1}{\MV_2}{\ELV_2}}
+    }{ActFunRec}
+}
+
+\newcommand{\ActApRecOne}{
+    \irule{
+        \ActLow{\LA{\AV}{\overline{\CV}}}{\ELV_1}{\ELV_3}
+    }{
+        \ActMid{\LA{\AV}{\parencons{\One}{\overline{\CV}}}}{\EAp{\ELV_1}{\MV}{\ELV_2}}{\EAp{\ELV_3}{\MV}{\ELV_2}}
+    }{ActApRecOne}
+}
+
+\newcommand{\ActApRecTwo}{
+    \irule{
+        \ActLow{\LA{\AV}{\overline{\CV}}}{\ELV_2}{\ELV_3}
+    }{
+        \ActMid{\LA{\AV}{\parencons{\Two}{\overline{\CV}}}}{\EAp{\ELV_1}{\MV}{\ELV_2}}{\EAp{\ELV_1}{\MV}{\ELV_2}}
+    }{ActApRecTwo}
+}
+
+\newcommand{\ActAscRec}{
+    \irule{
+        \ActLow{\LA{\AV}{\overline{\CV}}}{\ELV_1}{\ELV_2}
+    }{
+        \ActMid{\LA{\AV}{\parencons{\One}{\overline{\CV}}}}{\EAsc{\ELV_1}{\NTV}}{\EAsc{\ELV_2}{\NTV}}
+    }{ActAscRec}
+}
+
+\newcommand{\ActAnaRec}{
+    \irule{
+        \ActUp{\LAV}{\EUV_1}{\EUV_2}
+    }{
+        \ActLow{\LAV}{\ELow{\NDV}{\MV}{\EUV_1}}{\ELow{\NDV}{\MV}{\EUV_2}}
+    }{ActAnaRec}
+}
+
+\newcommand{\ActAnaLocal}{
+    \irule{
+        \ActUp{\AV}{\ELV_1}{\ELV_2}
+    }{
+        \ActLow{\LA{\AV}{\nil}}{\ELV_1}{\ELV_2}
+    }{ActAnaLocal}
+}
+
+\newcommand{\ActProgram}{
+    \irule{
+        \ActLow[\emptyset]{\LAV}{
+            \ELow{\NV{\DNone}_1}{\MGood}{\EUV_1}
+        }{
+            \ELow{\NV{\DNone}_2}{\MGood}{\EUV_2}
+        }
+    }{
+        \ActProg{\LAV}{
+            \ELow{\NV{\DNone}_1}{\MGood}{\EUV_1}
+        }{
+            \ELow{\NV{\DNone}_2}{\MGood}{\EUV_2}
+        }
+    }{ActProgram}
+}

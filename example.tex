@@ -1,0 +1,353 @@
+
+\section{Incremental MALC By Example}%
+\label{sec:Example}
+
+% Show the data structure for an example program, show some edits happening, show how the updates propagate. Demo interleaving of actions and edits. 
+
+Before formally defining Incremental MALC, let us develop some intuition by following a small example edit trace. In Incremental MALC, programs are represented as incremental expressions, which mirror the marked expressions of the previous section but attach to each type a dirty bit, either \emph{dirty}, $\NNewBlack{}$, or \emph{clean}, $\NOld{}$, which mediates the propagation of type information updates. The beginning of each subsection below displays the edit in a syntax closer to what the user would see, omitting type information except for occurrences of $\MBad$. Note that only the names of \textit{simple} edit actions are displayed, with the location of the edit implied by its effect. For reference, the arrows representing steps in this section are tagged with names of the corresponding inference rules in section~\ref{sec:Formalism}. 
+
+Term~(\ref{term:init}) displays the initial state of the program, which begins as an empty expression hole synthesizing the unknown type ($\THole$) and not analyzed against a type ($\DNone$). Since there is no inconsistency between the analyzed and synthesized types, there is no consistency error on this expression. The types are furthermore annotated with $\NOld{}$ symbols, indicating that no type information needs to be propagated through the program at this time.
+%
+% Finally, for the purpose of demonstration, a cursor is visible on the expression to clarify forthcoming edit action applications (\ExampleCursor{\EHole\hspace{-2.3pt}}).
+%
+\begin{equation}
+\label{term:init}
+    \ELow{\NOld{\DNone}}{\MGood}{\EUp{\ExampleCursor{\EHole~}}{\NOld{\DSome{\THole}}}}
+\end{equation}
+
+
+\subsection{Inserting a Variable} 
+
+\[
+\centering
+\judgbox{\ActProg{\InsertVar{\VV}}{\THole}{\EVar{\VV}{\MBad}}}
+\]
+\noindent
+Suppose the user's first action is to insert an identifier $\VV$ into the empty hole. This is modeled as the performance of the action $\InsertVar{\VV}$, localized at the hole. The immediate result is term~(\ref{term:var}). 
+\begin{equation}
+\label{term:var}
+    \ActProg{\InsertVar{\VV}}{}{}\hspace{20pt}
+    \ELow{\NNew{\DNone}}{\MGood}{\EUp{\ExampleCursor{\EVar{\VV}{\MBad}}}{\NNew{\DSome{\THole}}}}
+\end{equation}
+The variable $\VV$ is free at this location in the program, so it is given an error mark $\MBad$. Additionally, the analyzed and synthesized types are dirtied, meaning they have been added to the update propagation frontier. The analyzed type, though unchanged, is dirtied because the expression being analyzed is new. The synthesized type of the new variable is set to the variable's type. As it happens in this case, since the variable is free, it again synthesizes the unknown type. 
+% We still mark it as dirty formally, though we can optimize away these cases in the implementation.\todo{accurate?}
+
+At this point the editor, perhaps while waiting for the user's next action, would take two steps to propagate this new type information. The update propagation dynamics is nondeterministic, allowing either of the two dirtied types to step first. There is, however, a preferred prioritization order that minimizes redundant computation in the general case, as discussed in \autoref{subsec:Update Priority Queue}. In this running example, update propagation steps are taken in this order. 
+
+First the dirty analyzed type takes a step, bringing us to term ~(\ref{term:var1}). 
+% \vspace{-20pt}
+% \[\]
+\begin{equation}
+\label{term:var1}
+    \StepProg{}{}_{(\rulename{StepAna})}\hspace{20pt}
+    \ELow{\NOld{\DNone}}{\MGood}{\EUp{\ExampleCursor{\EVar{\VV}{\MBad}}}{\NNew{\DSome{\THole}}}}
+\end{equation}
+The analyzed type encounters a subsumable syntactic form, so it updates the consistency mark, which in this case remains $\MGood$. The analyzed $\NNewBlack{\DNone}$ is cleaned since its immediate ramifications have been calculated; it is no longer on the frontier. 
+
+The synthesized type, being at the root of the entire program, has no downstream information to propagate to, so it simply exits the frontier, bringing us to term~\ref{term:var2}, which has no dirty types. Such a term is called \emph{quiescent}.
+\begin{equation}
+\label{term:var2}
+    \StepProg{}{}_{(\rulename{TopStep})}\hspace{20pt}
+    \ELow{\NOld{\DNone}}{\MGood}{\EUp{\ExampleCursor{\EVar{\VV}{\MBad}}}{\NOld{\DSome{\THole}}}}
+\end{equation}
+
+\subsection{Wrapping a Function Application} 
+
+\[
+\centering
+\judgbox{\ActProg{\WrapAp{\One},~\InsertNum{1}}{\EVar{\VV}{\MBad}}{\EAp{\EVar{\VV}{\MBad}}{}{1}}}
+\]
+
+\noindent
+Next, the user wraps the current expression in a function application form, then inserts a number literal into the argument position before update propagation. The result is shown in term~(\ref{term:ap}). Note that base types are assumed for this example, and included in the mechanization. 
+
+% Next, the user takes another action \textit{before} the system has a chance to propagate updates. This is an unrealistic assumption for a program of this minuscule size, but as the program grows very large and the number of collaborators editing the program concurrently grows high, we must confront this possibility. One of the key properties of Incremental MALC is that the update propagation, which incrementally maintains the static analysis, is \textit{non-blocking} for users of the editor. This manifests formally as the ability to interleave edit actions and update propagation steps freely, without threatening the validity of the analysis. The same result is obtained for a given sequence of actions, no matter how update steps are interspersed between them. 
+% Each child is analyzed against no type, and each synthesizes the unknown type, though for different reasons. Statics within the argument position are ``precomputed'' correctly, so none of the types are members of the update propagation frontier. The analyzed and synthesized types of the entire function application and those of the function position must be propagated, so they are annotated with $\NNewBlack{}$. 
+
+\begin{equation}
+\label{term:ap}
+    \ActProg{\WrapAp{\One}~...~\InsertNum{1}}{}{}\hspace{20pt}
+    \ELow{\NNew{\DNone}}{\MGood}{\EUp{
+    \ExampleCursor{ \EAp{
+        \paren{\ELow{\NNew{\DNone}}{\MGood}{
+            \EUp{\EVar{\VV}{\MBad}}{\NNew{\DSome{\THole}}}
+        }}
+    }{\MGood}{
+        \paren{\ELow{\NNew{\DNone}}{\MGood}{
+            \EUp{1}{\NNew{\DSome{\TNum}}}
+        }}
+    }}
+    }{\NNew{\DNone}}}
+\end{equation}
+
+The leftmost two $\NNewBlack{\DNone}$ propagate similarly to the step from term~(\ref{term:var}) to term~(\ref{term:var1}), resulting in term~(\ref{term:ap1}).
+\begin{equation}
+\label{term:ap1}
+    \StepProg{}{}_{(\rulename{StepAna})}\StepProg{}{}_{(\rulename{StepAna})}\hspace{20pt}
+    \ELow{\NOld{\DNone}}{\MGood}{\EUp{
+    \ExampleCursor{ \EAp{
+        \paren{\ELow{\NOld{\DNone}}{\MGood}{
+            \EUp{\EVar{\VV}{\MBad}}{\NNew{\DSome{\THole}}}
+        }}
+    }{\MGood}{
+        \paren{\ELow{\NNew{\DNone}}{\MGood}{
+            \EUp{1}{\NNew{\DSome{\TNum}}}
+        }}
+    }}
+    }{\NNew{\DNone}}}
+\end{equation}
+
+Next the synthesized type from the function position of the application propagates outwards. The unknown type is matched against the function type as $\TArrow{\THole}{~\THole}$. The argument expression is analyzed against the domain type $\THole$, and the entire application form synthesizes the codomain type $\THole$. This new analytic and synthetic type data is dirtied. The application's error mark remains $\MGood$, because matched function type succeeded. The result is term~(\ref{term:ap2}). 
+\begin{equation}
+\label{term:ap2}
+    \StepProg{}{}_{(\rulename{StepAp})}\hspace{20pt}
+    \ELow{\NOld{\DNone}}{\MGood}{\EUp{
+    \ExampleCursor{ \EAp{
+        \paren{\ELow{\NOld{\DNone}}{\MGood}{
+            \EUp{\EVar{\VV}{\MBad}}{\NOld{\DSome{\THole}}}
+        }}
+    }{\MGood}{
+        \paren{\ELow{\NNew{\DSome{\THole}}}{\MGood}{
+            \EUp{1}{\NNew{\DSome{\TNum}}}
+        }}
+    }}
+    }{\NNew{\DSome{\THole}}}}
+\end{equation}
+
+The newly analyzed $\NNewBlack{\DSome{\THole}}$ against the subsumable number literal in the argument position is then propagated, setting the consistency mark to $\MGood$ again because the analyzed $\THole$ is consistent with the synthesized $\TNum$. The synthesized $\NNewBlack{\DSome{\THole}}$ exits the frontier, having reached the root of the program. These two steps result in the quiescent program shown in term~(\ref{term:ap3}).
+\begin{equation}
+\label{term:ap3}
+    \StepProg{}{}_{(\rulename{StepAna})}\StepProg{}{}_{(\rulename{StepSyn})}\StepProg{}{}_{(\rulename{TopStep})}\hspace{20pt}
+    \ELow{\NOld{\DNone}}{\MGood}{\EUp{
+    \ExampleCursor{ \EAp{
+        \paren{\ELow{\NOld{\DNone}}{\MGood}{
+            \EUp{\EVar{\VV}{\MBad}}{\NOld{\DSome{\THole}}}
+        }}
+    }{\MGood}{
+        \paren{\ELow{\NOld{\DSome{\THole}}}{\MGood}{
+            \EUp{1}{\NOld{\DSome{\TNum}}}
+        }}
+    }}
+    }{\NOld{\DSome{\THole}}}}
+\end{equation}
+
+\subsection{Wrapping a Function Abstraction}
+
+\[
+\centering
+\judgbox{
+\ActProg{\WrapFun,~\SetAnn{\TArrow{\TBool}{\TNum}},~\InsertBinder{\VV}}{\EAp{\EVar{\VV}{\MBad}}{}{1}}{\BELam{\VV}{\paren{\TArrow{\TBool}{\TNum}}}{\paren{\EAp{\VV}{}{{\EVar{\vphantom{a}}{\MBad}\hspace{-1pt}1}}}}}}
+\]
+
+\noindent
+Now the user wraps the program in a function abstraction, resulting in term~(\ref{term:fun}). The binding position of the abstraction as well as its type annotation are initially empty holes, and a few types have been added to the update propagation frontier.
+
+\begin{equation}
+\label{term:fun}
+    \ActProg{\WrapFun}{}{}\hspace{20pt}
+    \ELow{\NNew{\DNone}}{\MGood}{\EUp{
+    \ExampleCursor{\ELam{\BHole}{~\NOld{\DSome{\THole}}}{\MGood}{\MGood}{
+    \paren{\ELow{\NNew{\DNone}}{\MGood}{\EUp{
+    \EAp{
+        \paren{\ELow{\NOld{\DNone}}{\MGood}{
+            \EUp{\EVar{\VV}{\MBad}}{\NOld{\DSome{\THole}}}
+        }}
+    }{\MGood}{
+        \paren{\ELow{\NOld{\DSome{\THole}}}{\MGood}{
+            \EUp{1}{\NOld{\DSome{\TNum}}}
+        }}
+    }
+    }{\NNew{\DSome{\THole}}}}
+    }}}}{\NNew{\DNone}}}
+\end{equation}
+
+Before update propagation, suppose the annotation is edited to $\TArrow{\TBool}{\TNum}$. This new type in the surface syntax is placed in the update propagation frontier. 
+
+\begin{equation}
+\label{term:fun1}
+    \ActProg{\SetAnn{\TArrow{\TBool}{\TNum}}}{}{}\hspace{8pt}
+    \ELow{\NNew{\DNone}}{\MGood}{\EUp{
+    \ExampleCursor{\ELam{\BHole}{\NNew{\paren{\DSome{\TArrow{\TBool}{\TNum}}}}}{\MGood}{\MGood}{
+    \paren{\ELow{\NNew{\DNone}}{\MGood}{\EUp{
+    \EAp{
+        \paren{\ELow{\NOld{\DNone}}{\MGood}{
+            \EUp{\EVar{\VV}{\MBad}}{\NOld{\DSome{\THole}}}
+        }}
+    }{\MGood}{
+        \paren{\ELow{\NOld{\DSome{\THole}}}{\MGood}{
+            \EUp{1}{\NOld{\DSome{\TNum}}}
+        }}
+    }
+    }{\NNew{\DSome{\THole}}}}
+    }}}}{\NNew{\DNone}}}
+\end{equation}
+
+Still before any update propagation steps, let the user insert the variable $\VV$ in the binding position of the abstraction. This demonstrates an important property of the calculus: bindings, being nonlocal connections in the analysis of the program, are not updated via update propagation steps. They are updated atomically as part of the edit action that affects them. In this case, as soon as a binding for $\VV$ is inserted around the occurrence of $\VV$, the occurrence's error mark is set to $\MGood$, since it is no longer free, and it synthesizes the type dictated by the binding annotation. 
+\begin{equation}
+\label{term:fun2}
+    \ActProg{\InsertBinder{\VV}}{}{}\hspace{10pt}
+    \ELow{\NNew{\DNone}}{\MGood}{\EUp{
+    \ExampleCursor{\ELam{\BVar{\VV}}{\NNew{\paren{\DSome{\TArrow{\TBool}{\TNum}}}}}{\MGood}{\MGood}{
+    \paren{\ELow{\NNew{\DNone}}{\MGood}{\EUp{
+    \EAp{
+        \paren{\ELow{\NOld{\DNone}}{\MGood}{
+            \EUp{\EVar{\VV}{\MGood}}{\NNew{\paren{\DSome{\TArrow{\TBool}{\TNum}}}}}
+        }}
+    }{\MGood}{
+        \paren{\ELow{\NOld{\DSome{\THole}}}{\MGood}{
+            \EUp{1}{\NOld{\DSome{\TNum}}}
+        }}
+    }
+    }{\NNew{\DSome{\THole}}}}
+    }}}}{\NNew{\DNone}}}
+\end{equation}
+
+It is a challenge to efficiently maintain type information in response to binding changes such as the one above; the most obvious strategies require traversing the body of a binding construct or traversing the program's spine above a variable occurrence, but these operations may incur costs linear in the size of the program. It is this task to which we apply the order maintenance data structure, as described in detail in \autoref{sec:Implementation}. Formally, however, binding calculations such as updating the bound $\VV$ above are assumed to occur atomically during action performance. 
+
+Now let us consider the propagation of updates in the current program state. The first two steps propagate the analyzed type and the annotation on the abstraction, resulting in a new analyzed type for the body and a new synthesized type for the abstraction. Function abstractions, being non-subsumable, use the expected type to find the expected type of the body, and only synthesize a type if not analyzed against a type. The result of these first two steps is shown in term~(\ref{term:fun3}).
+
+% \begin{equation}
+%     \ELow{\NNew{\DNone}}{\MGood}{\EUp{
+%     \ExampleCursor{\ELam{\BVar{\VV}}{\NOld{\DSome{\TArrow{\TBool}{\TNum}}}}{\MGood}{\MGood}{
+%     \paren{\ELow{\NNew{\DNone}}{\MGood}{\EUp{
+%     \EAp{
+%         \paren{\ELow{\NOld{\DNone}}{\MGood}{
+%             \EUp{\EVar{\VV}{\MGood}}{\NNew{\DSome{\TArrow{\TBool}{\TNum}}}}
+%         }}
+%     }{\MGood}{
+%         \paren{\ELow{\NOld{\DSome{\THole}}}{\MGood}{
+%             \EUp{\EHole}{\NOld{\DSome{\THole}}}
+%         }}
+%     }
+%     }{\NNew{\DSome{\THole}}}}
+%     }}}}{\NOld{\DSome{\THole}}}}
+% \end{equation}
+
+\vspace{-10pt}
+\[
+\StepProg{}{}_{(\rulename{StepAnnFun})}\StepProg{}{}_{(\rulename{StepAnaFun})}
+\]
+\begin{equation}
+\label{term:fun3}
+    \ELow{\NOld{\DNone}}{\MGood}{\EUp{
+    \ExampleCursor{\ELam{\BVar{\VV}}{\NOld{\paren{\DSome{\TArrow{\TBool}{\TNum}}}}}{\MGood}{\MGood}{
+    \paren{\ELow{\NNew{\DNone}}{\MGood}{\EUp{
+    \EAp{
+        \paren{\ELow{\NOld{\DNone}}{\MGood}{
+            \EUp{\EVar{\VV}{\MGood}}{\NNew{\paren{\DSome{\TArrow{\TBool}{\TNum}}}}}
+        }}
+    }{\MGood}{
+        \paren{\ELow{\NOld{\DSome{\THole}}}{\MGood}{
+            \EUp{1}{\NOld{\DSome{\TNum}}}
+        }}
+    }
+    }{\NNew{\DSome{\THole}}}}
+    }}}}{\NNew{\paren{\DSome{\TArrow{\paren{\TArrow{\TBool}{\TNum}}}{\THole}}}}}}
+\end{equation}
+
+Next the analyzed type on the variable is checked against the synthesized type, and then the synthesized type propagates through the function application. The result of these two steps is shown in term~(\ref{term:ap4}).
+
+% \begin{equation}
+%     \ELow{\NOld{\DNone}}{\MGood}{\EUp{
+%     \ExampleCursor{\ELam{\BVar{\VV}}{\NOld{\DSome{\TArrow{\TBool}{\TNum}}}}{\MGood}{\MGood}{
+%     \paren{\ELow{\NOld{\DNone}}{\MGood}{\EUp{
+%     \EAp{
+%         \paren{\ELow{\NOld{\DNone}}{\MGood}{
+%             \EUp{\EVar{\VV}{\MGood}}{\NNew{\DSome{\TArrow{\TBool}{\TNum}}}}
+%         }}
+%     }{\MGood}{
+%         \paren{\ELow{\NOld{\DSome{\THole}}}{\MGood}{
+%             \EUp{\EHole}{\NOld{\DSome{\THole}}}
+%         }}
+%     }
+%     }{\NNew{\DSome{\THole}}}}
+%     }}}}{\NNew{\DSome{\TArrow{\paren{\TArrow{\TBool}{\TNum}}}{\THole}}}}}
+% \end{equation}
+\vspace{-20pt}
+\[
+\StepProg{}{}_{(\rulename{StepAna})}\StepProg{}{}_{(\rulename{StepAp})}
+\]
+\begin{equation}
+\label{term:ap4}
+    \ELow{\NOld{\DNone}}{\MGood}{\EUp{
+    \ExampleCursor{\ELam{\BVar{\VV}}{\NOld{\paren{\DSome{\TArrow{\TBool}{\TNum}}}}}{\MGood}{\MGood}{
+    \paren{\ELow{\NOld{\DNone}}{\MGood}{\EUp{
+    \EAp{
+        \paren{\ELow{\NOld{\DNone}}{\MGood}{
+            \EUp{\EVar{\VV}{\MGood}}{\NOld{\paren{\DSome{\TArrow{\TBool}{\TNum}}}}}
+        }}
+    }{\MGood}{
+        \paren{\ELow{\NNew{\DSome{\TBool}}}{\MGood}{
+            \EUp{1}{\NOld{\DSome{\TNum}}}
+        }}
+    }
+    }{\NNew{\DSome{\TNum}}}}
+    }}}}{\NNew{\paren{\DSome{\TArrow{\paren{\TArrow{\TBool}{\TNum}}}{\THole}}}}}}
+\end{equation}
+
+The analyzed type on the argument is compared with the synthesized type, and the synthesized type of the body propagates to a new synthesized type for the abstraction. The result is term~(\ref{term:fun4}).
+
+% \begin{equation}
+%     \ELow{\NOld{\DNone}}{\MGood}{\EUp{
+%     \ExampleCursor{\ELam{\BVar{\VV}}{\NOld{\DSome{\TArrow{\TBool}{\TNum}}}}{\MGood}{\MGood}{
+%     \paren{\ELow{\NOld{\DNone}}{\MGood}{\EUp{
+%     \EAp{
+%         \paren{\ELow{\NOld{\DNone}}{\MGood}{
+%             \EUp{\EVar{\VV}{\MGood}}{\NOld{\DSome{\TArrow{\TBool}{\TNum}}}}
+%         }}
+%     }{\MGood}{
+%         \paren{\ELow{\NOld{\DSome{\TNum}}}{\MGood}{
+%             \EUp{\EHole}{\NOld{\DSome{\THole}}}
+%         }}
+%     }
+%     }{\NNew{\DSome{\TBool}}}}
+%     }}}}{\NNew{\DSome{\TArrow{\paren{\TArrow{\TBool}{\TNum}}}{\THole}}}}}
+% \end{equation}
+
+\vspace{-10pt}
+\[
+\StepProg{}{}_{(\rulename{StepAna})}\StepProg{}{}_{(\rulename{StepSynFun})}
+\]
+\begin{equation}
+\label{term:fun4}
+    \ELow{\NOld{\DNone}}{\MGood}{\EUp{
+    \ExampleCursor{\ELam{\BVar{\VV}}{\NOld{\paren{\DSome{\TArrow{\TBool}{\TNum}}}}}{\MGood}{\MGood}{
+    \paren{\ELow{\NOld{\DNone}}{\MGood}{\EUp{
+    \EAp{
+        \paren{\ELow{\NOld{\DNone}}{\MGood}{
+            \EUp{\EVar{\VV}{\MGood}}{\NOld{\paren{\DSome{\TArrow{\TBool}{\TNum}}}}}
+        }}
+    }{\MGood}{
+        \paren{\ELow{\NOld{\DSome{\TBool}}}{\MBad}{
+            \EUp{1}{\NOld{\DSome{\TNum}}}
+        }}
+    }
+    }{\NOld{\DSome{\TNum}}}}
+    }}}}{\NNew{\paren{\DSome{\TArrow{\paren{\TArrow{\TBool}{\TNum}}}{\TNum}}}}}}
+\end{equation}
+
+Finally, the synthesized type of the whole program exits the update propagation frontier, having reached the root. The result is the quiescent program shown in term~(\ref{term:fun5}). 
+
+\vspace{-10pt}
+\[
+\StepProg{}{}_{(\rulename{TopStep})}
+\]
+\begin{equation}
+\label{term:fun5}
+    \ELow{\NOld{\DNone}}{\MGood}{\EUp{
+    \ExampleCursor{\ELam{\BVar{\VV}}{\NOld{\paren{\DSome{\TArrow{\TBool}{\TNum}}}}}{\MGood}{\MGood}{
+    \paren{\ELow{\NOld{\DNone}}{\MGood}{\EUp{
+    \EAp{
+        \paren{\ELow{\NOld{\DNone}}{\MGood}{
+            \EUp{\EVar{\VV}{\MGood}}{\NOld{\paren{\DSome{\TArrow{\TBool}{\TNum}}}}}
+        }}
+    }{\MGood}{
+        \paren{\ELow{\NOld{\DSome{\TBool}}}{\MBad}{
+            \EUp{1}{\NOld{\DSome{\TNum}}}
+        }}
+    }
+    }{\NOld{\DSome{\TNum}}}}
+    }}}}{\NOld{\paren{\DSome{\TArrow{\paren{\TArrow{\TBool}{\TNum}}}{\TNum}}}}}}
+\end{equation}
+
+This example, though small, illustrates the fundamental ideas behind Incremental MALC. Edit actions locally update annotations and place them in the propagation frontier, and a small-step dynamics propagates these changes through the rest of the program in a series of local steps. In this syntax these updates propagate from left to right, an idea which has been formalized to prove termination for the dynamics. Once a program is quiescent and no more steps are possible, its marks and type annotations will be correct with respect to the non-incremental MALC. 

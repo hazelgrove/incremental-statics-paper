@@ -1,3 +1,18 @@
 
 \section{Discussion and Conclusion}%
 \label{sec:Discussion and Conclusion}
+In this work we provide a formal system and efficient implementation for maintaining type information in a simple editor calculus. To serve as the base theory, we introduce the marked and annotated lambda calculus (MALC), a novel variant of the marked lambda calculus. 
+
+Our incremental system is remarkably (pun intended) more efficient than from-scratch reanalysis. It contributes to the goal of live programming not just by being efficient, but by reducing the extent to which type checking blocks users from editing the program. 
+
+% [alternative design: all local, no OM => less incremental, but less blocking]
+
+\subsection{Future Work}
+Incremental MALC and Malcom present several opportunities for extension and improvement. One notable limitation of our approach is that although update propagation is less blocking than a batch analysis, it is still possible for some individual update propagation steps to take a long time. In particular, those that involve traversing every occurrence of a variable bound by a particular binder block editing for a time proportional to the number of bound variables. Although this would not seem to be much of a problem in practice, future work may refine the approach and address this possibility. One potential strategy is for the binder to track which of its variables have been updated with new information and update the variables one at a time during update propagation.
+
+While Incremental MALC expresses highly incremental expression-level analysis, it does not provide an incremental solution for type-level computations. Consistency checks, for example, must be rerun in their entirety when only part of the input changes. Although the size of types might often remain modest compared with the size of the program, it may be valuable to extend Incremental MALC with incremental type-level operations in future work. 
+
+As described in \autoref{subsec:generalization}, Incremental MALC as presented in this work fits within a more general schema that can accommodate additional language features. We leave it to future work to define, prove correct, and explore the expressivity of such a schema. We also leave to future work the engineering, and perhaps additional research, necessary to scale these ideas up to real-world type systems. 
+
+Incremental MALC supports liveness for only type-based editor services. To achieve large scale live programming requires incrementalized theories for other editor services, such as evaluation. There is much future work to be done in developing such theories. 
+% - demand driven update prioritization

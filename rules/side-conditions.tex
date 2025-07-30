@@ -1,0 +1,121 @@
+% \newcommand{\extendCtxNone}{
+%     \irule{~}{
+%         \extendCtx{\ctx}{\BNone}{\TV}=\ctx
+%     }{}
+% }
+
+\newcommand{\inCtxHole}{
+    \irule{~}{
+        \inCtx{\BHole}{\TV}{\MV}{\ctx}
+    }{}
+}
+
+
+\newcommand{\inCtxEmpty}{
+    \irule{~}{
+        \inCtx{\VV}{~\THole}{\MBad}{\emptyset}
+    }{}
+}
+
+\newcommand{\inCtxFound}{
+    \irule{~}{
+        \inCtx{\VV}{\TV}{\MGood}{\extendCtx{\ctx}{\VV}{\TV}}
+    }{}
+}
+
+\newcommand{\inCtxSkip}{
+    \irule{
+        \VV\neq\VV'\\
+        \inCtx{\VV}{\TV}{\MV}{\ctx}
+    }{
+        \inCtx{\VV}{\TV}{\MV}{\extendCtx{\ctx}{\VV'}{\TV'}}
+    }{}
+}
+
+\newcommand{\matchedArrowNone}{
+    \irule{~}{
+        \matchedArrow{\DNone}{~\DNone}{~\DNone}{\MGood}
+    }{}
+}
+
+\newcommand{\matchedArrowHole}{
+    \irule{~}{
+        \matchedArrow{\THole}{~\THole}{~\THole}{\MGood}
+    }{}
+}
+
+\newcommand{\matchedArrowArrow}{
+    \irule{~}{
+        \matchedArrow{\TArrow{\TV_1}{\TV_2}}{\TV_1}{\TV_2}{\MGood}
+    }{}
+}
+
+\newcommand{\matchedArrowOther}{
+    \irule{
+        \TV\neq~\THole\\
+        \mathsf{hd}(\TV)\neq~\rightarrow\\
+    }{
+        \matchedArrow{\TV}{~\THole}{~\THole}{\MBad}
+    }{}
+}
+
+\newcommand{\matchedArrowDirty}{
+    \irule{
+        \matchedArrow{\TV_1}{\TV_2}{\TV_3}{\MV}
+    }{
+        \matchedArrow{\NV{\TV_1}}{\NV{\TV_2}}{\NV{\TV_3}}{\NV{\MV}}
+    }{}
+}
+
+\newcommand{\consistentNoneL}{
+    \irule{~}{
+        \consistent{\DNone}{\DV}{\MGood}
+    }{}
+}
+
+\newcommand{\consistentNoneR}{
+    \irule{~}{
+        \consistent{\DV}{\DNone}{\MGood}
+    }{}
+}
+
+\newcommand{\consistentHoleL}{
+    \irule{~}{
+        \consistent{\THole}{\TV}{\MGood}
+    }{}
+}
+
+\newcommand{\consistentHoleR}{
+    \irule{~}{
+        \consistent{\TV}{\THole}{\MGood}
+    }{}
+}
+
+\newcommand{\consistentArrow}{
+    \irule{
+        \consistent{\TV_1}{\TV_3}{\MV_1}\\
+        \consistent{\TV_2}{\TV_4}{\MV_2}\\
+        \markmeet{\MV_1}{\MV_2} = \MV
+    }{
+        \consistent{\TArrow{\TV_1}{\TV_2}}{\TArrow{\TV_3}{\TV_4}}{\MV}
+    }{}
+}
+
+\newcommand{\consistentOther}{
+    \irule{
+        \TV_1\neq~\THole\\
+        \TV_2\neq~\THole\\
+        \mathsf{hd}(\TV_1)\neq\mathsf{hd}(\TV_2)
+    }{
+        \consistent{\TV_1}{\TV_2}{\MBad}
+    }{}
+}
+
+\newcommand{\consistentDirty}{
+    \irule{
+        \consistent{\TV_1}{\TV_2}{\MV}\\
+        \dirtyor{\NVSymbol_1}{\NVSymbol_2}=\NVSymbol_3
+    }{
+        \consistent{\TV_1^{\NVSymbol_1}}{\TV_2^{\NVSymbol_2}}{\MV^{\NVSymbol_3}}
+    }{}
+}

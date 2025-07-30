@@ -1,0 +1,209 @@
+
+\section{The Marked and Annotated Lambda Calculus}
+\label{sec:MALC}
+
+We now introduce the marked and annotated lambda calculus (MALC), 
+which modifies MLC in two ways in support of the goals of this paper. First, in MALC, terms store boolean marks indicating whether an error has been localized to that term, rather than marks being represented as term constructors. Second, every term is annotated with optional analyzed and synthesized types. 
+
+\subsection{Syntax}
+The syntax of MALC is given in \autoref{fig:syntax}. Types, $\TV$, are drawn from a standard simple type system, with the addition of the unknown type of gradual type theory, $\THole$, which also serves as a type hole. Bare expressions, $\BEV$, are the ordinary expression terms in a simply typed language, consisting of constants, variables, function abstractions, function applications, and type ascriptions. Our notation for applications is nonstandard, using $\EApSymbol$ to provide a syntactic anchor for the mark on this form. Bare expressions also allow for expression holes, $\EHole$, representing the incomplete parts of a program that occur as a user edits a program. We likewise allow the binding variable, $\BV$, in a lambda abstraction to be a ``binding hole," which binds nothing, to support flexible editing. 
+
+% MALC deals with \textit{bare expressions} and \textit{marked expressions}, the syntax for which is given in \autref{fig:syntax}. 
+
+\begin{figure}
+    \[\begin{array}{lcllll}
+    \VV & \in & \VName &  & \\ 
+    \BV & \in & \BName & \Coloneqq & \EHole \mid \VV \\ 
+    \TV & \in & \TName & \Coloneqq & 
+        \THole 
+        \mid \TBase
+        \mid \TArrow{\TV}{\TV} \\ 
+    \DV & \in & \DName & \Coloneqq & 
+        \DNone
+        \mid \DSome{\tau}\\ 
+    \BEV & \in & \BEName & \Coloneqq & 
+        \BEHole
+        \mid \BEConst
+        \mid \BEVar{\VV}
+        \mid \BELam{\BV}{\TV}{\BEV}
+        \mid \BEAp{\BEV}{\BEV}
+        \mid \BEAsc{\BEV}{\TV}\\
+    \MV & \in & \MName & \Coloneqq & 
+        \MGood
+        \mid \MBad \\ 
+    \MEUV & \in & \MEUName & \Coloneqq & \EUp{\MEMV~}{\DV}\\ 
+    \MEMV & \in & \MEMName & \Coloneqq & 
+        \EHole
+        \mid \EConst
+        \mid \EVar{\VV}{\MV}
+        \mid \ELam{\BV}{\TV}{\MV}{\MV}{\MELV}
+        \mid \EAp{\MELV}{\MV}{\MELV}
+        \mid \EAsc{\MELV}{\TV}\\ 
+    \MELV & \in & \MELName & \Coloneqq & \ELow{\DV}{\MV}{\MEUV}\\
+    \MPV & \in & \MPName \subseteq \MELName & \Coloneqq & \ELow{\DNone}{\MGood}{\MEUV}\\ 
+    \ctx & \in & \ctxName & \Coloneqq & 
+        \emptyset 
+        \mid \extendCtx{\ctx}{\VV}{\TV}\\
+    \end{array}\]
+    \vspace{-8pt}
+    \caption{Syntax of MALC}
+    \label{fig:syntax}
+\end{figure}
+
+
+
+Marked expressions are like bare expressions but with additional type information. 
+Marked expressions are defined by three mutually recursive sorts: marked synthetic expressions, $\MEUV$, marked constructor expressions, $\MEMV$, and marked analytic expressions, $\MELV$. 
+The marked synthetic expression constructor stores an optional synthesized type, $\DV$; the marked constructor expression constructors are the core syntactic forms; and the marked analytic expression constructor stores an optional analyzed type. 
+The arrows suggest a flow of information from left to right: analyzed types come from the left, and synthesized types proceed to the right.
+Marked analytic expressions also include a consistency mark, $\MV$, which indicates consistency between the analyzed and synthesized types: $\MBad$ indicates the presence of a error and $\MGood$ indicates the absence of one.
+
+Marked programs, $\MPV$,  are modeled as analytic expressions with no analyzed type. They are not just synthetic expressions because the incremental version of the calculus makes use of the empty analytic data at the root of the program.  
+
+% Each edge in the syntax tree stores an optional type $\DV$ synthesized by the child term, an optional type $\DV$ analyzed from the parent environment, and a mark $\MV$ representing a possible error due to an inconsistency between these types. These types are optional because not every syntax form synthesizes a type or analyzes its children against a type. 
+  
+% The reason for this separation is that it is convenient to separate the synthetic part of the edge, which can be thought of as belonging to the child constructor, from the analytic and mark part, which belongs to the parent constructor. 
+
+In addition to the consistency marks, marked constructor expressions also have marks. Each mark position corresponds to a possible kind of static error. Variables have a mark indicating whether they are free. Function abstractions have two marks, the first corresponding to whether the abstraction is analyzed against a non-function type, and the second corresponding to whether the domain of the analyzed type is inconsistent with the annotation on the abstraction. Function applications have a mark indicating whether the first child synthesizes a non-function type. 
+
+The formal syntax is quite elaborate, but most of it would be hidden from the user by default, with error marks only displayed if set to $\MBad$ and local types only displayed when queried.
+
+\subsection{Marking}
+Marking in MALC is given by the mutually recursive synthetic and analytic marking judgments, defined in \autoref{fig:marking}. Note that the synthetic marking judgment $\MarkSyn{\BEV}{\MEUV}$ does not explicitly output the synthesized type because it can be found in the type annotation on $\MEUV$. Also note that the analytic judgment $\MarkAna{\TV}{\BEV}{\MELV}$ is written with the type on the left instead of the right; we adopt this convention so that information tends to flow from left to right.  
+% Synthetic marking, denoted $\MarkSyn{\BEV}{\MEUV}$, marks a bare expression $\BEV$ in context $\ctx$ to the $\MEUName$ $\MEUV$. Note that the type synthesized by the expression is not an explicit output of the judgment, but may be found by inspecting the contents of $\MEUV$. Analytic marking, denoted $\MarkAna{\TV}{\BEV}{\MELV}$, marks a bare expression $\BEV$ in context $\ctx$ with expected type $\TV$ to the $\MELName$ $\MELV$. The top-level judgment $\MarkProg{\BEV}{\MPV}$ marks a bare expression $\BEV$ in synthetic mode and in the empty context to obtain marked program $\MPV$.
+
+\begin{figure}
+    \centering
+
+    \judgbox{\MarkSyn{\BEV}{\MEUV}}
+    \[
+    \MarkHole\hspace{20pt}\MarkConst\hspace{20pt}\MarkVar
+    \]
+    \[
+    \MarkAsc\hspace{20pt}\MarkSynFun
+    \]
+    \[
+    \MarkAp
+    \]  
+
+    \vspace{5pt}
+    \judgbox{\MarkAna{\TV}{\BEV}{\MEUV}}
+    \[
+    \MarkSubsume
+    \]
+    \[
+    \MarkAnaFun
+    \]
+
+    \vspace{5pt}
+    \judgbox{\MarkProg{\BEV}{\MPV}}
+    \[
+    \MarkProgram
+    \]
+    \vspace{-10pt}
+    \caption{Marking (from scratch)}
+    \label{fig:marking}
+\end{figure}
+
+The \rulename{MarkHole} rule marks a bare expression hole, $\EHole$, as an expression hole synthesizing the unknown type. \rulename{MarkConst} similarly marks a constant synthesizing the base type. 
+
+The \rulename{MarkVar} rule marks a variable expression with a synthesized type found by looking up the variable in the context. Unlike in MLC, the context lookup judgment $\inCtx{\VV}{\TV}{\MV}{\ctx}$, defined in \autoref{fig:side-conditions}, is a total function of $\VV$ and $\ctx$, returning $\MV$ and $\TV$. If $\VV$ is an entry in $\ctx$ then $\MV=\MGood$ because the $\VV$ is not free, and the associated $\TV$ is returned; if not, then $\MV=\MBad$ and $\TV=~\THole$.
+
+\begin{figure}
+    \centering
+
+    \judgbox{\inCtx{\VV}{\TV}{\MV}{\ctx}}
+    \vspace{-7pt}
+    \[
+    \inCtxEmpty\hspace{20pt}\inCtxFound\hspace{20pt}\inCtxSkip
+    \]
+%     \caption{Context lookup}
+%     \label{fig:context-lookup}
+% \end{figure}
+
+% \begin{figure}
+%     \centering
+
+    \judgbox{\matchedArrow{\TV}{\TV}{\TV}{\MV}}
+    \vspace{-7pt}
+    \[
+\matchedArrowHole\hspace{20pt}\matchedArrowArrow\hspace{20pt}\matchedArrowOther
+    \]
+%     \caption{Matched arrow judgment}
+%     \label{fig:matched-arrow}
+% \end{figure}
+
+% \begin{figure}
+    % \centering
+
+    \judgbox{\consistent{\TV}{\TV}{\MV}}
+    \vspace{-10pt}
+    \[
+    \consistentHoleL\hspace{20pt}\consistentHoleR
+    \]
+    \[
+    \consistentArrow\hspace{20pt}\consistentOther
+    \]
+    % \caption{Type consistency judgment}
+    % \label{fig:consistency}
+    \caption{Total Side Conditions}
+    \label{fig:side-conditions}
+\end{figure}
+
+The \rulename{MarkAsc} rule marks a type ascription by analytically marking the expression body $\BEV$ against the ascribed type $\TV$, resulting in $\MELV$, and synthesizing $\TV$ as the type of the whole expression. 
+
+The \rulename{MarkSynFun} rule synthesizes a type for a function abstraction by first synthetically marking the body in the extended context. Note the extension of the context with a binder $\BV$, which is either $\BHole$ or some $\VV$. In the former case, since a binding hole does not bind any variables, we define $\extendCtx{\ctx}{\BHole}{\TV}=\ctx$. In the latter case, we interpret $\extendCtx{\ctx}{\VV}{\TV}$ as simply extending an association list. The marked result in \rulename{MarkSynFun} is a marked abstraction with both marks set to $\MGood$, because these mark positions indicate errors related to the analyzed type of the abstraction, and this is the synthetic rule. For the same reason, the body of the abstraction is analyzed against $\DNone$, that is, it is not analyzed against any type. Finally, the abstraction synthesizes a function type with its domain determined by the annotation and its codomain determined by the body's synthesized type.
+
+\rulename{MarkAp} reflects the standard bidirectional typing rule for function applications, with the added step of the \textit{matched arrow judgment} from gradual type theory, defined in ~\autoref{fig:side-conditions}. The expression in function position is marked in synthetic mode, obtaining synthesized type $\TV$. Then $\TV$ is matched against the arrow type to obtain $\TArrow{\TV_1}{\TV_2}$ and mark $\MV$. This matching judgment is a necessary step for two independent reasons: because the unknown type $\THole$ is convertible to  $\TArrow{\THole}{~\THole}$, and because side conditions in this version of the calculus are total functions that return marks indicating success. The unknown type and an arrow type match the arrow form successfully, returning mark $\MGood$, while any other type fails to match, returning the error mark $\MBad$ and unknown types. 
+% The minimal type system shown in the figure only has the unknown and arrow types, so the error case is actually impossible to reach, but this would no longer be true if base types, product types, etc. were present, as they are in the accompanying Agda mechanization. 
+
+% Returning to \rulename{MarkAp}, the mark returned by the matched arrow judgment is placed on the marked application form, the domain type is analyzed against the expression in argument position, and the codomain type is synthesized. 
+
+Now we proceed to the analytic marking rules. Most syntactic forms do not have special typing behavior when typed in analytic mode; they simply ignore the analyzed type, mark in synthetic mode, and compare the analyzed and synthesized types. Such forms are called \textit{subsumable}, and include all forms in this minimal language except function abstractions. The analytic marking rule for these forms, \rulename{MarkSubsume}, first marks the expression in synthetic mode, then checks the consistency of the analyzed and synthesized types. The consistency judgment checks whether two types match, up to the replacement of some subterms with the unknown type. The rules are given in~\autoref{fig:side-conditions}. The rule for arrow types uses the expression $\markmeet{\MV_1}{\MV_2}$, which is defined by the property that $\markmeet{\MV_1}{\MV_2} = \MGood$ if and only if $\MV_1 = \MGood$ and $\MV_2 = \MGood$. 
+% Our minimal type system has the curious property that \textit{all} pairs of types are consistent. Again, this would not be true if other type forms were added. 
+The only output of the consistency judgment is the mark. In the case of \rulename{MarkSubsume}, this mark is placed on the marked analytic expression. 
+
+The \rulename{MarkAnaFun} rule specifies how abstractions are marked in analytic mode. The analyzed type is matched against the arrow type, with the resulting mark placed on the abstraction, because it is a type error to find a function abstraction where a non-function was expected. The resulting domain type is checked for consistency with the abstraction's annotation, resulting in the second mark placed on the abstraction, because the expected and found input types must match. Finally, the body is marked in analytic mode against the codomain of the analyzed type. Note that the mark on the marked analytic expression form is always set to $\MGood$ in this case, rendering it redundant when it appears before a function abstraction. This redundancy could be eliminated by removing the mark from the marked analytic expression form and giving every subsumable constructor expression form its own consistency mark, but this would be onerous to manage. We accept the redundancy for the sake of the convenient factorization of the subsumption rule. 
+
+This rule could be modified so that the analyzed type informs the type of the bound variable, for example by giving it the join of the annotated type and the analyzed type, if they are consistent. This would provide a limited form of variable type inference in our bidirectional setting, without requiring a unification procedure. We forwent this modification for simplicity, as it would not interact interestingly with the rest of the theory. 
+
+A bare expression is marked as a program by marking it in synthetic mode in the empty context, since the top level of a program has no expected type. 
+
+% \subsection{Well-Markedness}
+The marking operation from bare expressions to marked programs induces a notion of \textit{well-markedness} on marked programs. Intuitively, a marked program is well-marked if it is the result of marking its underlying bare expression correctly. To formalize this, we utilize a \textit{marking erasure} function, denoted $\erase{\MPV}=\BEV$. Erasure recursively removes marks and synthesized and analyzed types, resulting in the underlying bare expression. Well-markedness is then defined as such:
+
+\begin{definition}[Well-Markedness]
+    A marked program $\MPV$ is \textit{well-marked} if $\MarkProg{\erase{\MPV}}{\MPV}$.
+\end{definition}
+
+Well-markedness is used to express the correctness of Incremental MALC in \autoref{sec:Formalism}.
+
+\subsection{Edit Actions}
+
+Let us now consider how users edit terms in the language. This is formalized in an \textit{action calculus}, consisting of a set of simple actions $\AV$, representing the kinds of edits the user can make, a set of localized actions $\LAV$, consisting of simple actions paired with a location in the program, and an action performance judgment $\ActProg{\LAV}{\BEV_1}{\BEV_2}$, which performs a localized action in a bare expression. 
+
+\begin{figure}
+    \[\begin{array}{lclcll}
+    \CV & \in & \CName & \Coloneqq & \One \mid\Two \\
+        % \mid\Three \\
+    \AV & \in & \AName & \Coloneqq & \InsertConst \mid \InsertVar{\VV} \mid \WrapFun \mid \WrapAp{\CV}\mid\WrapAsc\\
+        &&&\mid &\Delete \mid \Unwrap{\CV}\mid \SetAnn{\TV} \mid \SetAsc{\TV}\\
+        &&&\mid &\InsertBinder{\BV}\mid \DeleteBinder\\
+    \overline{s} & \in & \mathsf{List[Sort]} & \Coloneqq & \nil \mid \cons{s}{\overline{s}}\\ 
+    \LAV & \in & \LAName & \Coloneqq & \LA{\AV}{\overline{\CV}} 
+    \end{array}\]
+    \vspace{-10pt}
+    \caption{Actions}
+    \label{fig:actions}
+\end{figure}
+
+Figure~\ref{fig:actions} defines the syntax of simple edit actions. They consist of actions to insert constructors at a leaf ($\InsertVar{\VV}$, $\InsertConst$), ``wrap" actions to insert new constructors as parents of a subterm ($\WrapFun$, $\WrapAp{\CV}$, $\WrapAsc$), an action to delete a subterm ($\Delete$), an ``unwrap" action to delete the parent constructor and sibling subterms of a subterm ($\Unwrap{\CV}$), actions to change types in the surface syntax ($\SetAnn{\TV}$, $\SetAsc{\TV}$), and actions to insert or delete binders ($\InsertBinder{\BV}$, $\DeleteBinder$). Wrapping or unwrapping a constructor with multiple children requires specifying which child position to wrap or unwrap around, hence the child argument to these actions, $\CV$. We do not model fine grained type edits in the formalism, since in a simple type system these are independent of the incremental type maintenance behavior, instead abstracting them into the wholesale type edit actions $\SetAnn{\TV}$ and $\SetAsc{\TV}$. 
+
+A localized action $\LAV$ is a simple action $\AV$ paired with a path into the expression from the root, represented as a list of child elements. Not every such path identifies a valid subexpression.
+% , for instance if the path extends past a leaf of the expression, but this does not threaten any key properties of the system. Action localization need not be total, only unambiguous. 
+
+The action performance judgment $\ActProg{\LAV}{\BEV_1}{\BEV_2}$ states that the localized action $\LAV$, when performed on the bare expression $\BEV_1$, results in the new bare expression $\BEV_2$. The rules for this judgment are straightforward, matching the intuitive meaning of the actions. The formal definition can be found in the Agda mechanization. While the choice of action language is an input to the theory, we are able to validate our choice in one respect by proving the completeness of our set of actions, in the sense that any program structure can be reached from any other by some sequence of actions. This is formalized by the following theorem:
+
+\begin{theorem}[Action Completeness]
+    For any bare expressions $\BEV_1$ and $\BEV_2$, there exists a sequence of localized actions $\overline{\LAV}$ such that \ActProg{\overline{\LAV}}{\BEV_1}{\BEV_2} (where \ActProg{\overline{\LAV}}{\BEV_1}{\BEV_2} denotes iterated action performance). 
+\end{theorem}

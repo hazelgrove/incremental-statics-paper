@@ -1,0 +1,234 @@
+\newcommand{\MarkTHole}{
+    \irule{
+    }{
+        \MarkTyp{\THole}{\THole}
+    }{MarkTypHole}
+}
+
+\newcommand{\MarkTBase}{
+    \irule{
+    }{
+        \MarkTyp{\TBase}{\TBase}
+    }{MarkTypBase}
+}
+
+\newcommand{\MarkTArrow}{
+    \irule{
+        \MarkTyp{\BTV_1}{\MTV_1}\\
+        \MarkTyp{\BTV_2}{\MTV_2}\\
+    }{
+        \MarkTyp{\TArrow{\BTV_1}{\BTV_2}}{\TArrow{\MTV_1}{\MTV_2}}
+    }{MarkTypArrow}
+}
+
+\newcommand{\MarkTVar}{
+    \irule{
+        \tInCtx{\TVV}{\MV}{\ctx}
+    }{
+        \MarkTyp{\TVV}{\MTVar{\TVV}{\MV}}
+    }{MarkTypVar}
+}
+
+\newcommand{\MarkForall}{
+    \irule{
+        \MarkTyp[\tExtendCtx{\TBV}{\ctx}]{\BTV}{\MTV}
+    }{
+        \MarkTyp{\TForall{\TBV}{\BTV}}{\TForall{\TBV}{\MTV}}
+    }{MarkForall}
+}
+
+\newcommand{\MarkHole}{
+    \irule{
+        ~
+    }{
+        \MarkSyn{~\EHole}{\EUp{~\EHole}{\DSome{\THole}}}
+    }{MarkHole}
+}
+
+\newcommand{\MarkVar}{
+    \irule{
+        \inCtx{\VV}{\TV}{\MV}{\ctx}
+    }{
+        \MarkSyn{\VV}{\EUp{\EVar{\VV}{\MV}}{\DSome{\TV}}}
+    }{MarkVar}
+}
+
+\newcommand{\MarkConst}{
+    \irule{
+        ~
+    }{
+        \MarkSyn{~\EConst}{\EUp{~\EConst}{\DSome{\TBase}}}
+    }{MarkConst}
+}
+
+\newcommand{\MarkAsc}{
+    \irule{
+        \MarkAna{\TV}{\BEV}{\MELV}
+    }{
+        \MarkSyn{\EAsc{\BEV}{\TV}}{\EUp{\EAsc{\MELV}{\TV}~}{\DSome{\TV}}}
+    }{MarkAsc}
+}
+
+\newcommand{\MarkSynFun}{
+    \irule{
+        \MarkSyn[\extendCtx{\ctx}{\BV}{\TV_1}]{\BEV}{\EUp{\MEMV~}{\DSome{\TV_2}}}
+    }{
+        \MarkSyn{\BELam{\BV}{\TV_1}{\BEV}}{\EUp{\ELam{\BV}{\TV_1}{\MGood}{\MGood}{\paren{\ELow{\DNone}{\MGood}{\EUp{\MEMV~}{\DSome{\TV_2}}}}}}{\DSome{\TArrow{\TV_1}{\TV_2}}}}
+    }{MarkSynFun}
+}
+
+\newcommand{\MarkAp}{
+    \irule{
+        \MarkSyn{\BEV_1}{\EUp{\MEMV~}{\DSome{\TV}}}\\
+        \matchedArrow{\TV}{\TV_1}{\TV_2}{\MV}\\
+        \MarkAna{\TV_1}{\BEV_2}{\MELV}
+    }{
+        \MarkSyn{\BEAp{\BEV_1}{\BEV_2}}{
+            \EUp{
+                \EAp{\paren{\ELow{\DNone}{\MGood}{\EUp{\MEMV~}{\DSome{\TV}}}}}{\MV}{\MELV}~
+            }{\DSome{\TV_2}}
+        }
+    }{MarkAp}
+}
+
+\newcommand{\PolyMarkVar}{
+    \irule{
+        \inCtx{\VV}{\MTV}{\MV}{\ctx}
+    }{
+        \MarkSyn{\VV}{\EUp{\EVar{\VV}{\MV}}{\DSome{\MTV}}}
+    }{MarkVar}
+}
+
+\newcommand{\PolyMarkAsc}{
+    \irule{
+        \MarkTyp{\TV}{\MTV}\\
+        \MarkAna{\MTV}{\BEV}{\MELV}
+    }{
+        \MarkSyn{\EAsc{\BEV}{\TV}}{\EUp{\EAsc{\MELV}{\MTV}~}{\DSome{\MTV}}}
+    }{MarkAsc}
+}
+
+\newcommand{\PolyMarkSynFun}{
+    \irule{
+        \MarkTyp{\TV}{\MTV_1}\\
+        \MarkSyn[\extendCtx{\ctx}{\BV}{\MTV_1}]{\BEV}{\EUp{\MEMV~}{\DSome{\MTV_2}}}
+    }{
+        \MarkSyn{\BELam{\BV}{\TV}{\BEV}}{\EUp{\ELam{\BV}{\MTV_1}{\MGood}{\MGood}{\paren{\ELow{\DNone}{\MGood}{\EUp{\MEMV~}{\DSome{\MTV_2}}}}}}{\DSome{\TArrow{\MTV_1}{\MTV_2}}}}
+    }{MarkSynFun}
+}
+
+\newcommand{\PolyMarkAp}{
+    \irule{
+        \MarkSyn{\BEV_1}{\EUp{\MEMV~}{\DSome{\MTV}}}\\
+        \matchedArrow{\MTV}{\MTV_1}{\MTV_2}{\MV}\\
+        \MarkAna{\MTV_1}{\BEV_2}{\MELV}
+    }{
+        \MarkSyn{\BEAp{\BEV_1}{\BEV_2}}{
+            \EUp{
+                \EAp{\paren{\ELow{\DNone}{\MGood}{\EUp{\MEMV~}{\DSome{\MTV}}}}}{\MV}{\MELV}~
+            }{\DSome{\MTV_2}}
+        }
+    }{MarkAp}
+}
+
+\newcommand{\MarkSynTFun}{
+    \irule{
+        \MarkSyn[\tExtendCtx{\ctx}{\TBV}]{\BEV}{\EUp{\MEMV~}{\DSome{\MTV}}}
+    }{
+        \MarkSyn{\BETLam{\TBV}{\BEV}}{\EUp{\ETLam{\TBV}{\MGood}{\paren{\ELow{\DNone}{\MGood}{\EUp{\MEMV~}{\DSome{\MTV}}}}}}{\DSome{\TForall{\TBV}{\MTV}}}}
+    }{MarkSynTypFun}
+}
+
+\newcommand{\MarkTAp}{
+    \irule{
+      \shortstack{
+      $\MarkSyn{\BEV}{\EUp{\MEMV~}{\DSome{\MTV_1}}} \quad
+        \matchedForall{\MTV_1}{\TBV}{\MTV_2}{\MV}$ \\
+      $\MarkTyp{\TV}{\MTV_3} \quad
+        \sub{\MTV_3}{\TBV}{\MTV_2}{\MTV_4}$
+      }
+    }{
+        \MarkSyn{\BETAp{\BEV}{\TV}}{
+            \EUp{
+                \ETAp{\paren{\ELow{\DNone}{\MGood}{\EUp{\MEMV~}{\DSome{\MTV_1}}}}}{\MV}{\MTV_3}~
+            }{\DSome{\MTV_4}}
+        }
+    }{MarkTypAp}
+}
+
+\newcommand{\MarkSubsume}{
+    \irule{
+        \subsumable{\BEV}\\
+        \MarkSyn{\BEV}{\EUp{\MEMV~}{\DSome{\TV_2}}}\\
+        \consistent{\TV_1}{\TV_2}{\MV}
+    }{
+        \MarkAna{\TV_1}{\BEV}{
+            ~\ELow{\DSome{\TV_1}}{\MV}{\EUp{\MEMV~}{\DSome{\TV_2}}}
+        }
+    }{MarkSubsume}
+}
+
+\newcommand{\MarkAnaFun}{
+    \irule{
+        \matchedArrow{\TV}{\TV_2}{\TV_3}{\MV_1}\\
+        \consistent{\TV_1}{\TV_2}{\MV_2}\\
+        \MarkAna[\extendCtx{\ctx}{\BV}{\TV_1}]{\TV_3}{\BEV}{\MELV}
+    }{
+        \MarkAna{\TV}{
+            \BELam{\BV}{\TV_1}{\BEV}
+        }{
+            ~\ELow{\DSome{\TV}}{\MGood}{\EUp{
+            \ELam{\BV}{\TV_1}{\MV_1}{\MV_2}{\MELV}~}{\DNone}}
+        }
+    }{MarkAnaFun}
+}
+
+\newcommand{\PolyMarkSubsume}{
+    \irule{
+        \subsumable{\BEV}\\
+        \MarkSyn{\BEV}{\EUp{\MEMV~}{\DSome{\MTV_2}}}\\
+        \consistent{\MTV_1}{\MTV_2}{\MV}
+    }{
+        \MarkAna{\MTV_1}{\BEV}{
+            ~\ELow{\DSome{\MTV_1}}{\MV}{\EUp{\MEMV~}{\DSome{\MTV_2}}}
+        }
+    }{MarkSubsume}
+}
+
+\newcommand{\PolyMarkAnaFun}{
+    \irule{
+        \matchedArrow{\MTV}{\MTV_1}{\MTV_2}{\MV_1}\\
+        \MarkTyp{\TV}{\MTV_3}\\
+        \consistent{\MTV_3}{\MTV_1}{\MV_2}\\
+        \MarkAna[\extendCtx{\ctx}{\BV}{\MTV_3}]{\MTV_2}{\BEV}{\MELV}
+    }{
+        \MarkAna{\MTV}{
+            \BELam{\BV}{\TV}{\BEV}
+        }{
+            ~\ELow{\DSome{\MTV}}{\MGood}{\EUp{
+            \ELam{\BV}{\MTV_3}{\MV_1}{\MV_2}{\MELV}~}{\DNone}}
+        }
+    }{MarkAnaFun}
+}
+
+\newcommand{\MarkAnaTFun}{
+    \irule{
+        \matchedForall{\MTV_1}{\TBV}{\MTV_2}{\MV}\\
+        \MarkAna[\tExtendCtx{\ctx}{\TBV}]{\MTV_2}{\BEV}{\MELV}
+    }{
+        \MarkAna{\MTV_1}{
+            \BETLam{\TBV}{\BEV}
+        }{
+            ~\ELow{\DSome{\MTV_1}}{\MGood}{\EUp{
+            \ETLam{\TBV}{\MV}{\MELV}~}{\DNone}}
+        }
+    }{MarkAnaTypFun}
+}
+
+\newcommand{\MarkProgram}{
+    \irule{
+        \MarkSyn[\emptyset]{\BEV}{\MEUV}
+    }{
+        \MarkProg{\BEV}{~\ELow{\DNone}{\MGood}{\MEUV}}
+    }{MarkProgram}
+}

@@ -1,4 +1,4 @@
-\documentclass[acmsmall,dvipsnames,10pt,nonacm]{acmart}\settopmatter{printfolios=true}
+\documentclass[acmsmall,dvipsnames,10pt,review,nonacm,anonymous]{acmart}\settopmatter{printfolios=true}
 
 \startPage{1}
 
@@ -22,6 +22,7 @@
 \usepackage{placeins}
 
 \input{config/config-tex}
+\input{config/config-tikz}
 \input{symbols/colors}
 \input{symbols/layout}
 \input{symbols/types}
@@ -40,31 +41,10 @@
 
 \begin{document}
 
-\title{Incremental Bidirectional Typing via Order Maintenance}
-\input{authors}
-\input{numbers}
-\input{abstract}
+\title{Appendix to Incremental Bidirectional Typing via Order Maintenance}
+\appendix
 
 \maketitle
-
-\input{introduction}
-\input{background}
-\input{malc}
-\input{example}
-\input{formalism}
-\input{implementation}
-\input{evaluation}
-\input{related-work}
-\input{discussion-and-conclusion}
-
-\newpage 
-\input{data-availability}
-\input{acknowledgements}
-
-\bibliography{incremental-paper}
-
-% \newpage 
-% \appendix
-% \input{appendix}
+\input{appendix}
 
 \end{document}

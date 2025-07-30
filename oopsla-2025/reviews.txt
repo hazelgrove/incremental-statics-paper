@@ -1,0 +1,203 @@
+OOPSLA24-25 Paper #538 Reviews and Comments
+===========================================================================
+Paper #538 Incremental Bidirectional Typing via Order Maintenance
+
+
+Review #538A
+===========================================================================
+
+Overall merit
+-------------
+5. Accept - will argue to accept
+
+Reviewer expertise
+------------------
+3. I know the material, but am not an expert
+
+Paper summary
+-------------
+This paper describes a calculus that the call MALC (Marked and Annotated Lambda Calculus), which is a variant of a prior calculus called MLC. The goal of these calculi is, so far as I can understand, to reify the error states of a bidirectional typing algorithm, and (in the incremental version) provide an operational semantics for the rippling out of code changes into these states. This is in recognition of the fact that programmers are always editing *incomplete* programs, where there may be both holes and type errors; rather than re-checking everything whenever the code is edited, individual units of editing should induce small updates to the state that can then be propagated in an incremental and efficient manner. An immediate application for a formalism of this kind is the development of structure editors like Hazel, in which edit actions are well-circumscribed.
+
+The Incremental MALC formalism is evaluated in two ways. First, a mechanised proof is given that Incremental MALC is equivalent to a naive non-incremental version. Second, an efficient implementation of the algorithm is given and benchmarked.
+
+Detailed review
+---------------
+This work seems to be of high quality, and the combination of qualitative evaluation (proof of correctness) and quantitative evaluation (benchmarked implementation) is welcome. I also believe that there is a strong scientific contribution here, as currently incremental elaboration and type checking is something of a dark art known by proprietary IDE developers that has not been adequately exposed to the light. 
+
+I'm excited to see if I can apply some of these ideas in my own work proof assistants---but it does seem that a version of this stuff that can apply to dependent types requires some additional ideas (Cf. Line 790). 
+
+My main criticism of the paper is that it is just too hard to read the formalism; it is a rats nest of symbols, many of which (e.g. all the arrows) are playing roles that are a bit hard to parse for someone who is mathematically literate but not deep into the world of intricate syntactic formalisms. Part of me wonders if a feel well-chosen names for the various syntactic constructors would be less confusing to read, if perhaps less "cool" looking. Anyway, I am not proposing to blow up the notation of the paper---but I would just say that all the symbolism is daunting.
+
+I provide some more detailed comments and suggestions below.
+
+## Detailed comments
+- Line 80: there is a broken \cref here.
+- Line 138: did you mean \rhd? (I'm comparing with Figure 1.)
+- Figure 1: A marked analytic expression has an optional type and then a marked synthetic expression—which has another optional type. Why so many types? Is the point that when there is a type error, the two types could be different and we need to remember what they are?
+- Line 290: Having the definition of \diamond buried in the previous paragraph makes it hard to skim this paper (as opposed to reading it start to finish), but skimming is the way that most people read papers. One way to improve would be to use a more obvious notation (like $\lvert p\rvert$) or you might say "recalling that $\diamond p$ is the marking erasure of $p$", etc. Not a big deal though.
+- Line 369: I understand hat you are first proceeding by example, but I couldn't even find in the formal section later a specification of the NewAna rule.
+- Figure 6. The negation in premise of the final update propagation rule might be a little dodgy, if one is trying to give an inductive definition. It this shorthand for an additional relation that expresses that a given program is terminal?
+- Line 690: I am having trouble seeing how the premise of the InsideStep rule is different from the conclusion. I might just be getting buffaloed by the notation, in which case, maybe you could add some highlights to draw my eyes to the difference?
+
+Is the Data-Availability Statement reasonable?
+----------------------------------------------
+Looks mostly OK, but I noted that the `malcom-workbench` directory contained only the build artifacts and not the actual source code. Was this intentional?
+
+
+
+Review #538B
+===========================================================================
+
+Overall merit
+-------------
+6. Clear Accept - will argue strongly to accept
+
+Reviewer expertise
+------------------
+4. I know a lot about this area
+
+Paper summary
+-------------
+The authors describe the Incremental Marked and Annotated Lambda
+Calculus, a formalism for tracking incremental type checking. A
+type-checker based on this formalism will be able to type-check
+programs more quickly than if type-checking starts from scratch,
+making type-aware programming more practical. The paper also includes
+the description of an implementation, Malcom, of the authors' deisgn.
+
+Detailed review
+---------------
+I think this is great work, and should definitely be accepted
+for presentation at OOPSLA. The work includes both a thorough
+formal treatment of incremental type-checking, and a practical
+analysis of the performance a real implementation. It solves
+a pressing practical problem: how can we use type information
+during live programming at scale? By designing an algorithm that
+reasons locally, we have reason to believe that this approach
+would scale to industrial-size codebases.
+
+I have a number of suggestions for further improvement below,
+but I think the paper is good enough as it is for acceptance.
+I can't wait to see the ideas from this paper adopted in practice.
+
+### Line-by-line comments
+
+Line 82: That's a big number! I'm not sure it's very realistic,
+though. Reading through the evaluation section at the end, this
+is what is achieved if type-checking is done after every edit.
+With a whole-program type checker, doing that is infeasible. And
+thus there is no process that gets 275.96 times faster with this
+work. Instead, the result (I believe) is something more like that
+typing information will be available to the user x% more of the
+time, where that could be computed by seeing how many of the
+type-checking passes are newly under 200ms (or some threshold).
+Maybe that's not quite the right metric either, but I don't think
+the claim as written in the paper is quite realistic. (I'm not
+doubting the math here, just the applicability of the particular
+measurement.)
+
+Line 99: The paper contrasts bidirectional type-checking with
+unification based. But the type-checkers I know do both. Critically,
+MALC has only annotated lambdas. Does your approach work with
+unannotated lambdas? Addressing this question is important
+for this approach to be applicable in practice.
+
+Line 138: I think the triangle should point the other way.
+
+Fig. 1: Thanks for using color! But the lavender was a little hard
+to see. Maybe just make the colored bits a little more bold?
+
+Fig. 3: It would be helpful to have the grammar for contexts
+$\Gamma$ before or near this figure.
+
+Rule MarkAnaFun: I found this rule surprising -- or, rather, that
+there is always a checkmark toward the left of the conclusion.
+I think maybe there's an invariant that the mark to the left of
+an abstraction is always a checkmark, because the relevant mark
+is really in the abstraction itself? Not quite sure, but there
+seems to be something a little squishy here.
+
+In general, I found myself wanting a base type in the formalism.
+It would not be hard to add.
+
+Definition 3.1. I found this unsatisfying. The definition just
+demarcates the codomain of the type-checker. Why is this useful?
+I was expecting a set of rules that assert some consistency among
+the various annotations and marks.
+
+Definition 3.1. Is there a missing $\emptyset \vdash$ in the conclusion?
+
+Paragraph line 318: Put this detail right in Fig. 4.
+
+Line 320: At this point, I didn't know what wrapping was, and so
+I wanted to see the definition of the judgment being described here.
+
+Equation (5): Why are the annotations around $x$ dirty?
+
+Fig. 6: In the rightmost rule, there needs to be a condition that
+$p' \ne p$.
+
+Page 15: I got a little confused in here. Does the length of the
+rightward arrow matter? Rule InsideStep seems awfully boring if
+it doesn't, but I think I missed where this was explained.
+
+Page 15: By this point, I got a little bored. The paper patiently
+explains each rule. That's helpful for an implementor. But as a
+paper-reader, it's not what I want at this point. Instead, I'd want
+some high-level understanding of how to take my favorite type
+system and incrementalize it. That is, what general techniques
+did you figure out were the right ones for transforming a traditional
+type system into an incremental one? That stuff is really interesting!
+Much more so than the details of the rules (which might go in an
+appendix).
+
+Line 835: s/variables/variable/
+
+Line 967.5: s/triggers/trigger/
+
+One question I feel wasn't quite answered: is the implementation
+interactive? That is, can I just type away and see all of this in
+action? Or do I need to feed the implementation with a string of
+edit descriptions and have it play them back at me? For the purposes
+of evaluating the core work here, the latter is sufficient. But the
+former is more fun.
+
+Page 24: Do you plan on submitting the artifact for evaluation?
+If not, why not?
+
+Is the Data-Availability Statement reasonable?
+----------------------------------------------
+Yes, but I would want to know whether the artifact will be submitted.
+
+Questions for authors to answer in their response
+-------------------------------------------------
+Do you see any obstacles in incrementalizing a type system that supported un-annotated lambdas?
+
+Do you have high-level observations about incrementalizing that could be included in revisions? (To be clear, I think this paper is a nice step forward even without that, but it would be much better with.)
+
+
+
+Review #538C
+===========================================================================
+
+Overall merit
+-------------
+5. Accept - will argue to accept
+
+Reviewer expertise
+------------------
+3. I know the material, but am not an expert
+
+Paper summary
+-------------
+This paper tackles the interesting problem of providing type analysis for live programming environments. This means that as the user is editing the program, which consists of parts where the user has provided type annotation (perhaps wrong) and parts which are untyped (wnd where the types have to be inferred), the system needs to provide live type information, perhaps indicating sources of errors. It also needs to perform well, and not require extensive reworking of the type of the entire program due to local changes. The authors have built a lambda calculus with an elaborate typing system (the Marked and Annotated Lambda Calculus) and built a semantics of edits for these marked, annotated expressions. Based on this they have an implementation in Ocaml for live typing, which compares favourably with re-analysing the types from scratch after each edit to the program.
+
+Detailed review
+---------------
+The technical material in the paper starts at Section 3, which presents a type system based on bidirectional and gradual typing. The aim here is to decorate any expression with types and marks denoting whether the typing is consistent or not. In Section 4, the authors present a nice walkthrough of the changes to the annotations that would be necessitated as one starts with the empty program (a ``hole'', denoted by ``?'') and proceeds through a series of edits to the program $(\lambda x: bool -> num |-> x 1)$. Clearly this program is not well-typed, but the final annotation provides a tentative type for the overall expression, with the marking isolating the place where there is a type inconsistency. Section 5 presents incremental MALC, which provides rules for propogating type changes due to edits in the program. Section 6 discusses some important details. It is clear that the authors have paid particular attention to these, and have used many nice ideas to make the system efficient. Section 7 discusses benchmarks, and the performance of Malcom (the implementation of incremental MALC) is indeed impressive.
+
+This paper addresses a nice problem and provides sound theory as well as a nice implementation. I support its acceptance.
+
+Is the Data-Availability Statement reasonable?
+----------------------------------------------
+Code is uploaded to Github repositories and clearly linked to in the final section

@@ -1,0 +1,25 @@
+\newcommand{\ActStepAct}{
+    \irule{
+        \ActProg{\LAV}{\PV_1}{\PV_2}\\
+        \ActStep{\overline{\LAV}}{\PV_2}{\PV_3}\\
+    }{
+        \ActStep{\LAV,\overline{\LAV}}{\PV_1}{\PV_3}
+    }{}
+}
+
+\newcommand{\ActStepStep}{
+    \irule{
+        \StepProg{\PV_1}{\PV_2}\\
+        \ActStep{\overline{\LAV}}{\PV_2}{\PV_3}\\
+    }{
+        \ActStep{\overline{\LAV}}{\PV_1}{\PV_3}
+    }{}
+}
+
+\newcommand{\ActStepDone}{
+    \irule{
+        \lnot\exists \PV'.~\StepProg{\PV}{\PV'}
+    }{
+        \ActStep{\cdot}{\PV}{\PV}
+    }{}
+}

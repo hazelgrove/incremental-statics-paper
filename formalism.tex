@@ -1,27 +1,416 @@
+% !TEX root = incremental-paper.tex
 
-\section{Formalism}%
+\section{Incremental MALC}%
 \label{sec:Formalism}
+We now formally specify Incremental MALC, introduced by example in the previous section.~\autoref{subsec:incremental-syntax} and~\autoref{subsec:incremental-judgments} describe the syntax, central judgments, and main metatheoretic properties of the incremental theory.~\autoref{subsec:actions} and~\autoref{subsec:updates} explain the detailed logic of action performance and update propagation.~\autoref{subsec:generalization} describes the general form of the approach, and includes an extension to System F style polymorphism.~\autoref{subsec:agda} discusses the Agda mechanization.
+ 
+%Incremental MALC consists of two main judgments: the action performance judgment, which defines how user edit actions modify the program, and the update propagation judgment, which specifies the dynamics by which new type information travels through the program.\todo{sec refs}
 
-- Data structure (children, parent, info (syn/ana (type?, freshness), mark, [bi]), bindings, [start, end])
+\subsection{Incremental Program Syntax}
+\label{subsec:incremental-syntax}
 
-- Edit action judgment
+Incremental MALC operates on \textit{incremental programs}, the syntax for which is defined in~\autoref{fig:incremental-syntax}.
 
-- Update step judgment
+\begin{figure}
+    \[\begin{array}{lcllll}
+    \NVSymbol & \in & \NName & \Coloneqq & \raisebox{0.5pt}{\scalebox{1.3}{\NNewSymbolBlack}} \mid \NOldSymbol\\ 
+    \EUV & \in & \EUName & \Coloneqq & \EUp{\EMV~}{\NDV}\\ 
+    \EMV & \in & \EMName & \Coloneqq & 
+        \EHole
+        \mid \EConst
+        \mid \EVar{\VV}{\MV}
+        \mid \ELam{\BV}{\NTV}{\MV}{\MV}{\ELV}
+        \mid \EAp{\ELV}{\MV}{\ELV}
+        \mid \EAsc{\ELV}{\NTV}\\ 
+    \ELV & \in & \ELName & \Coloneqq & \ELow{\NDV}{\MV}{\EUV}\\ 
+    \PV & \in & \PName \subseteq \ELName & \Coloneqq & \ELow{\NV{\DNone}}{\MGood}{\EUV}\\ 
+    \end{array}\]
+    \vspace{-8pt}
+    \caption{Incremental Syntax}
+    \label{fig:incremental-syntax}
+\end{figure}
 
-% \begin{figure}
-%     \[\begin{array}{lcllll}
-%     \TMV & \in & \TMName & \Coloneqq & 
-%         \tnum 
-%         \mid \tarrow 
-%         \mid \multiref 
-%         \mid \uniref \\ 
-% \end{array}\]
-%     \caption{Syntax}
-%     \label{fig:marking-syntax}
-% \end{figure}
+Incremental programs are the same as the marked programs of \autoref{sec:MALC}, except that the types within, both those appearing in the surface syntax and stored analyzed or synthesized types, are additionally annotated with a dirty bit, either \emph{dirty}, $\NNewBlack{}$, or \emph{clean}, $\NOld{}$. Well-markedness is defined on incremental programs by coercing them to marked programs by erasing the dirty bits. 
 
-\subsection{Refined Freshness}
+Types marked as dirty with $\NNewBlack{}$ are members of the update propagation frontier, and represent a location where an update step is possible. Usually $\NNewBlack{\DV}$ indicates that $\DV$ has recently been set to a possibly new value, and the immediate ramifications of this value have not been computed yet. However, this is not always the case. For example, an analyzed type is annotated with $\NNewBlack{}$ when the expression beneath it changes, rather than when the type itself changes. 
 
-\subsection{Efficient Binding Updates via Order Maintenance}
+\subsection{Central Judgments and Properties}
+\label{subsec:incremental-judgments}
 
-\subsection{Prioritized Update Propagation via Order Maintenance}
+These are the two central judgment forms of the calculus. The action performance judgment, written $\ActProg{\LAV}{\PV}{\PV'}$, applies a localized edit action $\LAV$ to the program $\PV$, resulting in new program $\PV'$. The update propagation judgment, written $\StepProg{\PV}{\PV'}$, describes the small step propagation dynamics that cause updates to static information  throughout the program. 
+
+The judgment $\ActStep{\overline{\LAV}}{\PV}{\PV'}$, defined in \autoref{fig:actstep}, combines action performance and update propagation to model the top-level behavior of the system. In the editor, propagations are run automatically and concurrently with action performance until none are possible. The combined judgment applies all actions in sequence, interleaved nondeterministically with arbitrary update propagation steps, until no actions remain and no steps are possible. 
+
+\begin{figure}
+    \centering 
+    \[\begin{array}{lcll}
+    \overline{\LAV} & \Coloneqq & \cdot \mid \LAV,\overline{\LAV}\\ 
+    \end{array}\]
+    \[
+    \ActStepAct\hspace{20pt}
+    \ActStepStep\hspace{20pt}
+    \ActStepDone
+    \]
+    \vspace{-8pt}
+    \caption{Interleaved action and update propagation}
+    \label{fig:actstep}
+\end{figure}
+
+The primary correctness properties of this system are the following, which guide our definitions. Some additional intuition about the proofs are included in the appendix, and the full proofs are mechanized in Agda, discussed further in \autoref{subsec:agda}.
+
+Validity ensures that the incremental analysis produces correct results with respect to the original, non-incremental theory. Here, well-formedness is an invariant on annotated programs that is preserved by actions and update steps. It is formally specified in the appendix. Informally, a program is well-formed if its type information is locally correct according to the typing rules of MALC, except possibly on the update propagation frontier. 
+
+\begin{theorem}[Validity]
+    If program $\PV$ is well-formed and $\ActStep{\overline{\LAV}}{\PV}{\PV'}$, then $\PV'$ is well-marked. 
+\end{theorem}
+
+Convergence guarantees that any valid update propagation steps may be executed at any time during editing, and in any order, including interleaved with user edit actions, and the same resulting annotated program will be obtained. 
+\begin{theorem}[Convergence]
+    If program $\PV$ is well-formed, $\ActStep{\overline{\LAV}}{\PV}{\PV_1}$, and $\ActStep{\overline{\LAV}}{\PV}{\PV_2}$, then $\PV_1=\PV_2$. 
+\end{theorem}
+
+Termination guarantees that update propagation cannot continue forever, which guarantees the eventual correctness of the analysis provided a finite number of edit actions have been performed. %Since an infinite stream of actions may be performed at a rate exceeding that of update propagation, eventual correctness cannot be guaranteed in general. 
+\begin{theorem}[Termination]
+    There is no infinite sequence $\{\PV_n\}_{n= 0}^\infty$ such that $\forall n$. $\StepProg{\PV_n}{\PV_{n+1}}$. 
+\end{theorem}
+
+
+% The rest of this section explains the rules for the action performance and update propagation step judgments. 
+
+\subsection{Action Performance}
+\label{subsec:actions}
+
+The action performance judgment for analytic expressions, $\ActLow{\AV}{\ELV_1}{\ELV_2}$, means that performing the simple action $\AV$ directly on the analytic expression $\ELV_1$, appearing in the typing context $\ctx$, results in the new analytic expression $\ELV_2$. It is defined by only one rule, which marks the analyzed type as new and applies the action to the synthetic expression within:
+\[
+\centering
+\ActAna
+\]
+
+The corresponding judgment for synthetic expressions, $\ActUp{\AV}{\EUV_1}{\EUV_2}$, is where the core logic of action performance is specified. Each rule is designed to satisfy a few criteria. First, each action must change the structure of the program correctly (e.g. deletion should actually delete the subterm). This is formalized in the following lemma, which states that erasure maps action performance annotated expressions to action performance on bare expressions. 
+
+\begin{lemma}[Action Erasure]
+\label{lemma:Action Erasure}
+    If \ActProg{\LAV}{\PV}{\PV'}, then
+    \ActProg{\LAV}{\erase{\PV}}{\erase{\PV'}}.
+\end{lemma}
+
+Secondly, each action must preserve the well-formedness invariant, the full definition of which can be found in the appendix. This allows us to prove the following essential lemma:
+
+\begin{lemma}[Action Preservation]
+\label{lemma:Action Preservation}
+    If $\PV$ is well-formed and $\ActProg{\LAV}{\PV}{\PV'}$, then $\PV'$ is well-formed. 
+\end{lemma}
+
+An additional criterion that is not essential for the formal properties of the system but is important for the practical instantiation of the system is that actions may add but never remove types from the update propagation frontier. 
+% This is because, as discussed in section TODO, a newness mark in the calculus corresponds in an efficient implementation to an element of a global priority queue, which does not support random removal of elements. Actions do change types from old to new, which corresponds to adding entries into the priority queue. 
+Let us consider each rule in turn. 
+
+\[
+\centering
+\ActInsertConst\hspace{20pt}
+\ActInsertVar
+\]
+
+The rule \rulename{ActInsertConst} simply inserts a constant expression form into a hole, setting the synthesized type to the base type. The synthesized type is added to the update propagation frontier. \rulename{ActInsertVar} similarly inserts a variable. Formally, the context is queried to find the variable's mark and synthesized type, just as in the non-incremental MALC. 
+% In the actual implementation, the context is not constructed directly, as that would require a linear time traversal of the program spine. Instead, the order maintenance structure is used to efficiently find the lowest binder (or determine that there is none) for the variable, as described in section TODO.
+
+\[
+\centering
+\ActWrapFun
+\]
+
+
+The rule \rulename{ActWrapFun} wraps a subexpression in a lambda abstraction, with the binder and annotation initialized as holes.
+% Rather than pass the initial binding variable or the type annotation as arguments to the action, they are initialized as holes. This models a more flexible editing flow and reduces repeated logic between this rule and rules which modify the binding or annotation. 
+% The whole form initially has the same synthetic data that the original subexpression had, even though this will typically be updated to a different type after a step of update propagation. The reason for this initial value is that it maintains consistency between this synthesized type and the syntactic environment around the expression. 
+The synthesized type of the form is added to the update propagation frontier even though update propagation flowing from the other $\NNewBlack{\DNone}$ will eventually overwrite it. If it were not added to the frontier, the program would settle into the same state, and the correctness properties of the system would not be endangered. It is added to satisfy the well-formedness invariant, which is defined in terms of local consistency between adjacent data in the syntax tree. In other words, it is added not to guarantee correctness but to support the proof of correctness. 
+
+\[
+\centering
+\ActWrapApOne
+\]
+
+The rule \rulename{ActWrapApOne} wraps a subexpression in the function position of a function application form. The argument position is filled with a hole. Following the ordinary marking rule, the function position is not analyzed against a type. 
+
+\[
+\centering
+\ActWrapApTwo
+\]
+
+\rulename{ActWrapApTwo} is similar, wrapping the subexpression in the argument position instead. This rule ``folds in'' a step of update propagation by placing the argument's analyzed type and the application's synthesized type on the update propagation frontier, rather than just the function position's synthesized type.
+
+\[
+\centering
+\ActWrapAsc
+\hspace{20pt}\ActDelete
+\]
+
+\rulename{ActWrapAsc} wraps the subexpression in a type hole ascription, and also folds in the propagation of this new ascription to the neighboring analyzed and synthesized positions. \rulename{ActDelete} simply replaces an expression with an expression hole synthesizing the unknown type. Note that each occurrence of $\circ$ in these rules is a metavariable for a dirty bit value. To reduce visual clutter, we assume that these metavariables implicitly share the subscript of the type they accompany. 
+
+% \[
+% \centering
+% \ActDelete
+% \]
+
+% \rulename{ActDelete} simply replaces an expression with an hole synthesizing the unknown type.
+
+\[
+\centering
+\ActUnwrapFun
+\]
+
+\rulename{ActUnwrapFun} unwraps a function abstraction from around its body. By deleting a binding location, this action has the potential to ``unshadow'' an outer binder for the same variable name, causing the occurrences of the variable that used to be bound to the deleted binder to be rebound to the outer binder. The first premise looks in the context for the type of the binder variable in the outer scope. The second premise uses a new judgment, the ``variable update'' judgment, defined in the appendix. Its notation evokes substitution because it sets the consistency mark and synthesized type of all free occurrences of $\BV$ in $\EUV$. The resulting synthetic expression, with the type marked as new, is the result of the action. Note the first premise is a variant of the context lookup judgment that accepts a binding argument, rather than just a variable. If $\BV=~\BHole$, this version of context lookup returns an arbitrary $\MV$ and $\TV$, and the variable update operation acts as the identity. 
+
+\[
+\centering
+\ActUnwrapApOne\hspace{10pt}\ActUnwrapApTwo
+\]
+
+\[
+\centering
+\ActUnwrapAsc
+\]
+
+Rules \rulename{ActUnwrapApOne} and \rulename{ActUnwrapApTwo} unwrap an application form from around its left or right child, deleting the other child expression. The synthesized type of expression is added to the update propagation frontier. \rulename{ActUnwrapAsc} is analogous, deleting the type ascription. 
+
+\[
+\centering
+\ActSetAnn\hspace{20pt}
+\ActSetAsc
+\]
+
+\rulename{ActSetAnn} and \rulename{ActSetAsc} update types in the surface syntax of the program, either in function annotations or type ascriptions. Each merely sets the type to the action's argument and dirties it. 
+% A real system would include more fine-grained type editing features, but these are not modeled in the calculus as they are independent of the incremental analysis. 
+
+\[
+\centering
+\ActInsertBinder
+\]
+
+\rulename{ActInsertBinder} inserts a variable name into the binder hole of a function abstraction. This captures all free occurrences of the variable in the body, which now must synthesize the annotated type and be marked as bound, as implemented in the variable update premise. 
+
+\[
+\centering
+\ActDeleteBinder
+\]
+
+\rulename{ActDeleteBinder} deletes the current binder of a function abstraction. This rule is similar to \rulename{ActUnwrapFun}, with the same premises. The only difference is that it does not remove the abstraction form from the body, it just sets the binder to a hole. The reasoning is the same as for \rulename{ActUnwrapFun}, as deleting the binding variable results in a potential ``unshadowing" of the variables in the body. 
+
+\subsection{Update Propagation}
+\label{subsec:updates}
+
+Now we turn to update propagation steps. Like the action performance rules, each step is designed to satisfy certain criteria. First, steps cannot change the structure of the program. They are not edits, but automated calculations that trigger while the user is editing. This is formalized in the following lemma: 
+
+\begin{lemma}[Update Step Erasure]
+\label{lemma:Update Step Erasure}
+    If \StepProg{\PV}{\PV'}, then
+    ${\erase{\PV}}={\erase{\PV'}}$.
+\end{lemma}
+
+Second, like actions, steps must maintain the well-formedness invariant:
+
+\begin{lemma}[Update Step Preservation]
+\label{lemma:Update Step Preservation}
+    If $\PV$ is well-formed and $\StepProg{\PV}{\PV'}$, then $\PV'$ is well-formed. 
+\end{lemma}
+
+Third, to support the implementation, each step removes exactly one type from the update propagation frontier, but can add any number. 
+% Third, to support an efficient implementation using a priority queue, the left hand side of each derivable step judgment includes exactly one new type, and does not require any of the other types to be new or old. The right hand side sets the previously new type to old (corresponding to popping from the priority queue), and may set some number of the other types to new (corresponding to insertions into the priority queue). See section TODO for further discussion. 
+Fourth, the steps must make progress towards termination, so that no infinite sequence of steps is possible. This manifests as each step progressing the frontier of new types along the ``bidirectional information flow,'' which corresponds to the left-to-right order in the syntax. 
+
+At the top level, a program can either take an ordinary step as an analytic expression, or a special step only possible at the root. This $\rulename{TopStep}$ rule allows a new type synthesized by the whole program to exit the update propagation frontier, having reached the root of the program. 
+\[
+\centering 
+\InsideStep\hspace{30pt}\TopStep
+\]
+
+Now we turn our attention to steps for analytic and synthetic expressions, which are written with $\StepSym$ to distinguish them from program steps. These judgments form a kind of ``mutual congruence,'' meaning that an outer expression may step by stepping within a subexpression, regardless of whether the outer expression is analytic or synthetic and whether the subexpression is analytic or synthetic. Let us consider the rules for stepping directly.
+\[
+\centering
+\StepSyn\hspace{30pt}\StepAna
+\]
+
+The \rulename{StepSyn} rule handles a newly synthesized type under an analyzed type that is not $\DNone$. When the term is actually being analyzed against a type, the synthesized type is only used to calculate the consistency mark, hence consistency is reevaluated and nothing is dirtied. 
+% \[
+% \centering
+% \NewAna
+% \]
+The \rulename{StepAna} rule handles the alternative case in which consistency is recomputed, that being when the analyzed type is new. If the root of the expression $\EMV$ is not subsumable, then consistency should not be checked and this rule is not applicable. Otherwise, the analyzed and synthesized data are checked for consistency as in the previous rule. 
+\[
+\centering
+\StepAnaFun
+\]
+
+\rulename{StepAnaFun} propagates a new analyzed type on a function abstraction. 
+% The analyzed type is first matched against the arrow form. This condition is a total function on the first argument, returning the mark $\MGood$ and the domain and codomain type if the type matches the arrow type (either as an actual arrow type or as the unknown type, matching $\TArrow{\THole}{\THole}$), and returning the mark $\MBad$ and the default result $\TArrow{\THole}{\THole}$ otherwise. The resulting mark is the first of the two marks that appear on the function abstraction form. Next the codomain type obtained this way is checked for consistency against the annotated type; this produces the second mark. Finally, the synthesized type of the whole expression is determined as a function of the analyzed type, the annotated type, and the synthesized type of the body.
+The first two premises correspond to those in the non-incremental MALC. The third premise uses a new function, $\funsynrel$. This determines what type the abstraction should synthesize in terms of the analyzed type, the annotated type, and the type synthesized by the body. It is defined by the following equations:
+\[\begin{array}{lcl}
+    \funsyn{\DSome{\TV_1}}{\TV_2}{\DV} &=& \DNone\\
+    \funsyn{\DNone}{\TV_2}{\DNone} &=& \DNone\\
+    \funsyn{\DNone}{\TV_1}{\TV_2} &=& \TArrow{\TV_1}{\TV_2}
+\end{array}\]
+
+% \[
+% \centering
+% \funsyn{\DSome{\TV_1}}{\TV_2}{\DV} = \DNone
+% \]
+% \[
+% \centering
+% \funsyn{\DNone}{\TV_2}{\DNone} = \DNone
+% \]
+% \[
+% \centering
+% \funsyn{\DNone}{\TV_1}{\TV_2} = \TArrow{\TV_1}{\TV_2}
+% \]
+
+If the abstraction is analyzed against some type, then it does not synthesize a type. If it is not analyzed against a type, then it synthesizes the appropriate function type between the annotated type and the body's type (unless the body does not synthesize a type). By including all three inputs, this function provides the correct behavior for abstractions in both analytic and synthetic mode. 
+\[
+\centering
+\StepAnnFun\hspace{20pt}\StepSynFun
+\]
+
+\rulename{StepAnnFun} propagates a change in the annotated type of an abstraction. The new type causes a corresponding update in the synthesized types of the abstraction's bound variables, which is implemented by the variable update in the premise. The new annotation also affects the synthesized type and second mark of the abstraction. For convenience, this is handled by marking the analyzed type as new, allowing \rulename{StepAnaFun} to trigger later and implement this logic, rather than repeating the premises in both rules. 
+% \[
+% \centering
+% \NewSynFun
+% \]
+\rulename{StepSynFun} propagates a newly synthesized type from the body of a function abstraction upwards by recomputing $\mathsf{FunSyn}$ on the new inputs. 
+\[
+\centering
+\StepAp\hspace{25pt}\StepAsc
+\]
+
+\rulename{StepAp} propagates a newly synthesized type from the function position of an application, with the same matched arrow type premise as in MALC. The resulting analyzed type for the body and synthesized type for the application are added to the frontier.
+% \[
+% \centering
+% \NewAsc
+% \]
+\rulename{StepAsc} propagates changes from an ascribed type, with the new type synthesized by the form and analyzed in the body.  
+
+\subsection{Generalized Approach}
+\label{subsec:generalization}
+
+Although our presentation of Incremental MALC is given in terms of a minimal simply typed language, the ideas are applicable to a broader class of language features. The ideas of this section can be used to incrementalize any local flow of information through the syntax tree, and the ideas of the following section extend this to flow along binders governed by lexical scope. The approach can be applied to any language, but will not provide incrementalization for other kinds of computations. For example, the approach does not provide incrementalized type consistency checking for the simply typed language, nor does it provide incrementalized type substitution for System F or an incrementalized unification algorithm for unification-based type systems.
+
+The general schema is as follows: the static semantics of each syntactic form in the MALC can be expressed as a function that determines each ``output'' of the node (the analyzed types of its children, its synthesized type, and its marks) in terms of the ``inputs'' of the node (its types in the surface syntax, its analyzed type, and the synthesized types of its children). These input and output positions are ordered according to the direction in which information can flow: first the form's types in the surface syntax, then annotated types ordered by the left-to-right syntax order, and finally the form's marks. Action application always dirties the types inside or immediately flowing into the edited area, and update propagation steps always recompute the immediate consequences of a dirty type, clean the type, and then dirty the types changed by the update. 
+
+This schema is informal, but it enabled us to easily extend the system with additional language features in the mechanization, including products and System F style polymorphism. Language features such as polymorphic and dependent types contain substantial type-level computations that this approach cannot incrementalize, therefore will require additional techniques to achieve full incrementalization.
+
+To illustrate the extensibility of the theory, here we include the additional grammar and inference rules for System F-style polymorphism in Figures \ref{fig:polymorphism-syntax}-\ref{fig:polymorphism-updates}. Types are extended with type variables and universal types, and expressions are extended with type function abstractions and applications. It is necessary to introduce marked types as distinct from bare types, and a type marking judgment. The type marking judgment places marks on free type variables and must be added as a premise to the marking rules for ascriptions and function abstractions (included in the appendix). The marking, action performance, and update propagation rules for type function abstractions and applications are analogous to ordinary abstractions and applications, utilizing a matched universal type judgment, a type variable update judgment, and a $\tfunsynrel$ function, which are all analogous to their simply typed counterparts. Type-level binding structure is considered up to alpha equivalence.  
+
+% For language features that require modifying the judgmental structure of the calculus, e.g. System F-style polymorphism, additional consideration would be needed to manage type substitution and edits to type bindings. For example, one could use singleton kinds rather than explicit substitution operations to track type variable identities~\cite{stone2000deciding}. For more general type-level computations, e.g. for dependent type systems, we need incremental term reduction---a problem for a future paper!
+
+\begin{figure}
+    \[\begin{array}{lcllll}
+    \TVV & \in & \TVName &  & \\ 
+    \TBV & \in & \TBName & \Coloneqq & \EHole \mid \TVV \\ 
+    \BTV & \in & \BTName & \Coloneqq & 
+        ...
+        \mid \TVar{\TVV} \mid \TForall{\TBV}{\TV} \\ 
+    \MTV & \in & \MTName & \Coloneqq & 
+        ...
+        \mid \MTVar{\TVV}{\MV} \mid \TForall{\TBV}{\MTV} \\ 
+    \ctx & \in & \ctxName & \Coloneqq & ... \mid \tExtendCtx{\ctx}{\TVV}\\
+    \MDV & \in & \MDName & \Coloneqq & 
+        \DNone
+        \mid \DSome{\MTV}\\ 
+    \BEV & \in & \BEName & \Coloneqq & 
+        ...
+        \mid \BETLam{\TBV}{\BEV} 
+        \mid \BETAp{\BEV}{\TV}\\
+    \MEMV & \in & \MEMName & \Coloneqq & 
+        ...
+        \mid \ETLam{\TBV}{\MV}{\MEMV} 
+        \mid \ETAp{\MEMV}{\MV}{\NV{\MTV}}\\
+    \EMV & \in & \EMName & \Coloneqq & 
+        ...
+        \mid \ETLam{\TBV}{\MV}{\EMV} 
+        \mid \ETAp{\EMV}{\MV}{\NV{\MTV}}\\
+    \AV & \in & \AName & \Coloneqq & 
+        ... 
+        \mid \WrapTFun \mid \WrapTAp \mid \SetTArg{\TV} \\
+    \end{array}\]
+    \vspace{-10pt}
+    \caption{Polymorphism Syntax Extension}
+    \label{fig:polymorphism-syntax}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+
+    \begin{minipage}{.5\textwidth}
+        \centering  
+        \judgbox{\MarkTyp{\BTV}{\MTV}}
+        % \[
+        % \MarkTHole \hspace{20pt} \MarkTBase \hspace{20pt} \MarkTArrow
+        % \]
+        \[
+        ... \hspace{20pt} \MarkTVar \hspace{20pt} \MarkForall
+        \]
+    \end{minipage}%
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \judgbox{\MarkAna{\MTV}{\BEV}{\MELV}}
+        \[
+        \MarkAnaTFun
+        \]
+    \end{minipage}
+
+    \judgbox{\MarkSyn{\BEV}{\MEUV}}
+    \[
+    \MarkSynTFun \hspace{20pt} \MarkTAp
+    \]
+    
+    \vspace{-10pt}
+    \caption{Polymorphism Marking}
+    \label{fig:polymorphism-marking}
+\end{figure}
+
+\begin{figure}
+    \centering
+
+    \judgbox{\ActUp{\AV}{\BTV}{\MTV}}
+    \[
+    \ActWrapTFun \hspace{20pt} \ActSetTArg  
+    % \ActWrapTAp
+    \]
+    % \[
+    % \ActSetTArg 
+    % \]
+    \[
+    \ActUnwrapTFun \hspace{20pt} \ActUnwrapTAp
+    \]
+    % \[
+    % \ActInsertTBinder
+    % \]
+    % \[
+    % \ActDeleteTBinder
+    % \]
+    \vspace{-10pt}
+    \caption{Polymorphism Action Performance}
+    \label{fig:polymorphism-actions}
+\end{figure}
+
+\begin{figure}
+    \centering
+
+    \judgbox{\StepLow{\ELV}{\ELV}}
+    \[
+    \StepAnaTFun \hspace{20pt} \StepSynTFun
+    \]
+    \judgbox{\StepUp{\EUV}{\EUV}}
+    \[
+    \StepTApFun \hspace{20pt} \StepTApArg
+    \]
+    \vspace{-10pt}
+    \caption{Polymorphism Update Propagation}
+    \label{fig:polymorphism-updates}
+\end{figure}
+
+
+\subsection{Agda Mechanization}
+\label{subsec:agda}
+
+All definitions, lemmas, theorems, and proofs of Incremental MALC, including those referenced in this section, have been mechanically proven in the Agda proof assistant. The mechanization includes all constructs of this section, including System F-style polymorphism, as well as product types. One difference between the written theory and the mechanization is that types are edited with fine-grained actions, like terms, instead of with coarse-grained actions such as $\SetAsc{\TV}$. This simplifies the extension to polymorphic features. The mechanization also does not define the marked programs of \autoref{sec:MALC}, instead identifying them with the equivalent set of quiescent incremental programs. This choice frees us from needing two almost identical definitions of the central data structure of the theory. Termination is directly shown by proving that the inverse of the update propagation step relation is well-founded, which is then used to prove the given form of the theorem. The mechanization does not include the definitions of the total side condition functions, such as consistency and the matched arrow judgment, which are instead postulated. This is because all metatheorems in the development are independent of the behavior of the side condition functions, so the proofs are kept abstract. 
+% (where an infinite sequence is considered to be a function from $\mathbb{N}$). 

@@ -1,0 +1,128 @@
+% !requires types
+
+\newcommand{\paren}[1]{\left(#1\right)}
+
+% nums
+\newcommand{\NumName}{{\normalfont\textsf{Num}}}
+\newcommand{\NumV}{\ensuremath{n}}
+
+% marks
+\newcommand{\MName}{{\normalfont\textsf{Mark}}}
+\newcommand{\MV}{\ensuremath{m}}
+\newcommand{\MGood}{\ensuremath{\scalebox{0.7}{{\color{mygreen} \checkmark}}}}
+\newcommand{\MBad}{\ensuremath{{\color{myred}\times}}}
+\newcommand{\MarkParens}[1]{\ensuremath{\bm{\llparenthesis}#1\bm{\rrparenthesis}}}
+
+% bare expressions
+\newcommand{\BEName}{{\normalfont\textsf{BareExp}}}
+\newcommand{\BESet}{\ensuremath{B}}
+\newcommand{\BEV}{\ensuremath{e}}
+
+% annotated expressions
+\newcommand{\EUName}{{\normalfont\textsf{SynExp}}}
+\newcommand{\EUSet}{\ensuremath{EU}}
+\newcommand{\EUV}{\ensuremath{e^{\Syn}}}
+
+\newcommand{\EMName}{{\normalfont\textsf{ConExp}}}
+\newcommand{\EMSet}{\ensuremath{EM}}
+\newcommand{\EMV}{\ensuremath{\dot{e}}}
+\newcommand{\ELName}{{\normalfont\textsf{AnaExp}}}
+\newcommand{\ELSet}{\ensuremath{EL}}
+\newcommand{\ELV}{\ensuremath{\vphantom{a}^{\Syn\hspace{-2px}}e}}
+\newcommand{\PV}{\ensuremath{p}}
+\newcommand{\PName}{{\normalfont\textsf{Program}}}
+
+% marked expressions
+\newcommand{\MEUName}{{\normalfont\textsf{MarkedSynExp}}}
+\newcommand{\MEUV}{\ensuremath{\check{e}^{\Syn}}}
+\newcommand{\MEMName}{{\normalfont\textsf{MarkedConExp}}}
+\newcommand{\MEMV}{\ensuremath{\dot{\check{e}}}}
+\newcommand{\MELName}{{\normalfont\textsf{MarkedAnaExp}}}
+\newcommand{\MELV}{\ensuremath{\vphantom{a}^{\Syn\hspace{-2px}}\check{e}}}
+\newcommand{\MPV}{\ensuremath{\check{p}}}
+\newcommand{\MPName}{{\normalfont\textsf{MarkedProgram}}}
+
+% variables
+\newcommand{\VV}{\ensuremath{x}}
+\newcommand{\VName}{{\normalfont\textsf{Variable}}}
+\newcommand{\BV}{\ensuremath{x?}}
+\newcommand{\BName}{{\normalfont\textsf{Binding}}}
+\newcommand{\BHole}{\ensuremath{?}}
+\newcommand{\BVar}[1]{\ensuremath{#1}}
+
+% bare syntax
+\newcommand{\BEHole}{\ensuremath{?}}
+\newcommand{\BEConst}{\ensuremath{{\normalfont\textsf{c}}}}
+\newcommand{\BEVar}[1]{\ensuremath{#1}}
+\newcommand{\BELam}[3]{\ensuremath{\lambda \lparen #1 : #2 \rparen .~#3}}
+\newcommand{\BEAp}[2]{\ensuremath{#1\lhd#2}}
+\newcommand{\BEAsc}[2]{\ensuremath{#1 : #2}}
+\newcommand{\BETLam}[2]{\ensuremath{\Lambda (#1).~#2}}
+\newcommand{\BETAp}[2]{\ensuremath{#1\EApSymbol[#2]}}
+
+% core syntax
+\newcommand{\Cursor}[1]{\ensuremath{\blacktriangleright#1\blacktriangleleft}}
+\newcommand{\ExampleCursor}[1]{\ensuremath{#1}}
+\newcommand{\EHole}{\ensuremath{?}}
+\newcommand{\EConst}{\BEConst}
+\newcommand{\EVar}[2]{\ensuremath{#1_{#2}}}
+\newcommand{\ELam}[5]{\ensuremath{\lambda \lparen #1 : #2 \rparen_{#3,#4}.#5}}
+\newcommand{\EApSymbol}{\ensuremath{\lhd}}
+\newcommand{\EAp}[3]{\ensuremath{#1\EApSymbol_{#2}#3}}
+\newcommand{\EAsc}[2]{\ensuremath{#1 : #2}}
+\newcommand{\ETLam}[3]{\ensuremath{\Lambda (#1)_{#2}.~#3}}
+\newcommand{\ETAp}[3]{\ensuremath{#1\EApSymbol_{#2}[#3]}}
+% ---------------------------------------- %
+\newcommand{\ENum}[1]{\ensuremath{\underline{#1}}}
+\newcommand{\EOpPlus}{\ensuremath{+}}
+\newcommand{\EPlus}[2]{\ensuremath{#1 \ECOpPlus #2}}
+\newcommand{\ETrue}{\ensuremath{{\normalfont\textsf{tt}}}}
+\newcommand{\EFalse}{\ensuremath{{\normalfont\textsf{ff}}}}
+\newcommand{\EIf}[3]{\ensuremath{\textsf{if}~ #1 ~\textsf{then}~ #2 ~\textsf{else}~ #3}}
+\newcommand{\EPair}[2]{\ensuremath{(#1, #2)}}
+\newcommand{\EProjL}[1]{\ensuremath{\pi_1 #1}}
+\newcommand{\EProjR}[1]{\ensuremath{\pi_2 #1}}
+\newcommand{\ELet}[3]{\ensuremath{\textsf{let}~ #1 = #2 ~\textsf{in}~ #3}}
+
+% annotated syntax
+\newcommand{\Syn}{\ensuremath{\mathsmaller{\Rightarrow}}}
+\newcommand{\Ana}{\ensuremath{\mathsmaller{\Leftarrow}}}
+% \newcommand{\Left}{\ensuremath{\mathsmaller{\Leftarrow}}}
+% \newcommand{\Right}{\ensuremath{\mathsmaller{\Rightarrow}}}
+% \newcommand{\Up}{\ensuremath{\mathsmaller{\Uparrow}}}
+% \newcommand{\Down}{\ensuremath{\mathsmaller{\Downarrow}}}
+\newcommand{\OverUp}[1]{\ensuremath{\stackrel{#1}{\mathsmaller{\Rightarrow}}}}
+\newcommand{\OverDown}[2]{\ensuremath{\stackrel{#1}{\mathsmaller{\Rightarrow}_{#2}}}}
+
+% \newcommand{\OverDown}[2]{\ensuremath{\mathrel{\substack{#1\\\mathbigger{\Rightarrow}\\ #2}}}}
+
+\newcommand{\EUp}[2]{\ensuremath{#1{\color{mymild}\OverUp{#2}}}}
+\newcommand{\ELow}[3]{\ensuremath{{\color{mymild}\OverDown{#1}{#2}}#3}}
+
+
+% \newcommand{\ECMarked}[3]{\ensuremath{\textcolor{red}{\bm{\llparenthesis}#1\bm{\rrparenthesis}_{#2}^{#3}}}}
+% \newcommand{\ECMarkedFree}[1]{\ensuremath{\ECMarked{#1}{\MRFree}{}}}
+% \newcommand{\ECMarkedInconType}[1]{\ensuremath{\ECMarked{#1}{\MRInconType}{}}}
+% \newcommand{\ECMarkedInconBr}[1]{\ensuremath{\ECMarked{#1}{\MRInconBr}{}}}
+% \newcommand{\ECMarkedInconAsc}[1]{\ensuremath{\ECMarked{#1}{\MRInconAsc}{}}}
+% \newcommand{\ECMarkedSynNonMatchedArrow}[1]{\ensuremath{\ECMarked{#1}{\MRSynNonMatchedArrow}{\MRSyn}}}
+% \newcommand{\ECMarkedSynNonMatchedProd}[1]{\ensuremath{\ECMarked{#1}{\MRSynNonMatchedProd}{\MRSyn}}}
+% \newcommand{\ECMarkedAnaNonMatchedArrow}[1]{\ensuremath{\ECMarked{#1}{\MRAnaNonMatchedArrow}{\MRAna}}}
+% \newcommand{\ECMarkedAnaNonMatchedProd}[1]{\ensuremath{\ECMarked{#1}{\MRAnaNonMatchedProd}{\MRAna}}}
+
+% \newcommand{\ECFree}[1]{\ensuremath{\ECMarkedFree{#1}}}
+% \newcommand{\ECInconType}[1]{\ensuremath{\ECMarkedInconType{#1}}}
+% \newcommand{\ECInconBr}[3]{\ensuremath{\ECMarkedInconBr{\ECIf{#1}{#2}{#3}}}}
+% \newcommand{\ECInconAsc}[1]{\ensuremath{\ECMarkedInconAsc{#1}}}
+% \newcommand{\ECSynNonMatchedArrow}[1]{\ensuremath{\ECMarkedSynNonMatchedArrow{#1}}}
+% \newcommand{\ECSynNonMatchedProd}[1]{\ensuremath{\ECMarkedSynNonMatchedProd{#1}}}
+% \newcommand{\ECAnaNonMatchedArrow}[1]{\ensuremath{\ECMarkedAnaNonMatchedArrow{#1}}}
+% \newcommand{\ECAnaNonMatchedProd}[1]{\ensuremath{\ECMarkedAnaNonMatchedProd{#1}}}
+% \newcommand{\ECLamGraphErasure}[1]{\ECMarked{#1}{\triangle^{\times}}{}}
+
+% \newcommand{\ECLamInconAsc}[3]{\ensuremath{\ECInconAsc{\ECLam{#1}{#2}{#3}}}}
+% \newcommand{\ECApSynNonMatchedArrow}[2]{\ensuremath{\ECAp{\ECSynNonMatchedArrow{#1}}{#2}}}
+% \newcommand{\ECProjLSynNonMatchedProd}[1]{\ensuremath{\ECProjL{\ECSynNonMatchedProd{#1}}}}
+% \newcommand{\ECProjRSynNonMatchedProd}[1]{\ensuremath{\ECProjR{\ECSynNonMatchedProd{#1}}}}
+% \newcommand{\ECLamAnaNonMatchedArrow}[3]{\ensuremath{\ECAnaNonMatchedArrow{\ECLam{#1}{#2}{#3}}}}
+% \newcommand{\ECPairAnaNonMatchedProd}[2]{\ensuremath{\ECAnaNonMatchedProd{\ECPair{#1}{#2}}}}
