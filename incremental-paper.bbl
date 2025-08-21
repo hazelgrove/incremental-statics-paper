@@ -1,0 +1,513 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{49}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{}, \showDOI{}, and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showDOI}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showDOI #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showDOI      \undefined \def \showDOI       #1{#1}\fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[SAL(2018)]%
+        {SALSA}
+ \bibinfo{year}{2018}\natexlab{}.
+\newblock \bibinfo{title}{salsa}.
+\newblock \bibinfo{howpublished}{\url{https://github.com/salsa-rs/salsa}}.
+\newblock
+
+
+\bibitem[Acar(2005)]%
+        {SAC}
+\bibfield{author}{\bibinfo{person}{Umut~A Acar}.} \bibinfo{year}{2005}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{Self-adjusting computation}}.
+\newblock \bibinfo{publisher}{Carnegie Mellon University}.
+\newblock
+
+
+\bibitem[Acar et~al\mbox{.}(2002)]%
+        {DBLP:conf/popl/AcarBH02}
+\bibfield{author}{\bibinfo{person}{Umut~A. Acar}, \bibinfo{person}{Guy~E. Blelloch}, {and} \bibinfo{person}{Robert Harper}.} \bibinfo{year}{2002}\natexlab{}.
+\newblock \showarticletitle{Adaptive functional programming}. In \bibinfo{booktitle}{\emph{Conference Record of {POPL} 2002: The 29th {SIGPLAN-SIGACT} Symposium on Principles of Programming Languages}}, \bibfield{editor}{\bibinfo{person}{John Launchbury} {and} \bibinfo{person}{John~C. Mitchell}} (Eds.). \bibinfo{publisher}{{ACM}}, \bibinfo{pages}{247--259}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/503272.503296}
+\showDOI{\tempurl}
+
+
+\bibitem[Aditya and Nikhil(1991)]%
+        {DBLP:conf/fpca/AdityaN91}
+\bibfield{author}{\bibinfo{person}{Shail Aditya} {and} \bibinfo{person}{Rishiyur~S. Nikhil}.} \bibinfo{year}{1991}\natexlab{}.
+\newblock \showarticletitle{Incremental Polymorphism}. In \bibinfo{booktitle}{\emph{Functional Programming Languages and Computer Architecture, 5th {ACM} Conference, Proceedings}} \emph{(\bibinfo{series}{Lecture Notes in Computer Science}, Vol.~\bibinfo{volume}{523})}, \bibfield{editor}{\bibinfo{person}{John Hughes}} (Ed.). \bibinfo{publisher}{Springer}, \bibinfo{pages}{379--405}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1007/3540543961\_19}
+\showDOI{\tempurl}
+
+
+\bibitem[Bandukwala et~al\mbox{.}(2024)]%
+        {hazel-propl}
+\bibfield{author}{\bibinfo{person}{Alexander Bandukwala}, \bibinfo{person}{Andrew Blinn}, {and} \bibinfo{person}{Cyrus Omar}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Toward a Live, Rich, Composable, and Collaborative Planetary Compute Engine}. In \bibinfo{booktitle}{\emph{Workshop on Programming for the Planet (PROPL)}}.
+\newblock
+
+
+\bibitem[Bender et~al\mbox{.}(2002)]%
+        {DBLP:conf/esa/BenderCDFZ02}
+\bibfield{author}{\bibinfo{person}{Michael~A. Bender}, \bibinfo{person}{Richard Cole}, \bibinfo{person}{Erik~D. Demaine}, \bibinfo{person}{Martin Farach{-}Colton}, {and} \bibinfo{person}{Jack Zito}.} \bibinfo{year}{2002}\natexlab{}.
+\newblock \showarticletitle{Two Simplified Algorithms for Maintaining Order in a List}. In \bibinfo{booktitle}{\emph{Algorithms - {ESA} 2002, 10th Annual European Symposium, Proceedings}} \emph{(\bibinfo{series}{Lecture Notes in Computer Science}, Vol.~\bibinfo{volume}{2461})}, \bibfield{editor}{\bibinfo{person}{Rolf~H. M{\"{o}}hring} {and} \bibinfo{person}{Rajeev Raman}} (Eds.). \bibinfo{publisher}{Springer}, \bibinfo{pages}{152--164}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1007/3-540-45749-6\_17}
+\showDOI{\tempurl}
+
+
+\bibitem[Busi et~al\mbox{.}(2019)]%
+        {DBLP:conf/nfm/BusiDG19}
+\bibfield{author}{\bibinfo{person}{Matteo Busi}, \bibinfo{person}{Pierpaolo Degano}, {and} \bibinfo{person}{Letterio Galletta}.} \bibinfo{year}{2019}\natexlab{}.
+\newblock \showarticletitle{Using Standard Typing Algorithms Incrementally}. In \bibinfo{booktitle}{\emph{{NASA} Formal Methods - 11th International Symposium, {NFM} 2019, Proceedings}} \emph{(\bibinfo{series}{Lecture Notes in Computer Science}, Vol.~\bibinfo{volume}{11460})}, \bibfield{editor}{\bibinfo{person}{Julia~M. Badger} {and} \bibinfo{person}{Kristin~Yvonne Rozier}} (Eds.). \bibinfo{publisher}{Springer}, \bibinfo{pages}{106--122}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1007/978-3-030-20652-9\_7}
+\showDOI{\tempurl}
+
+
+\bibitem[Chawathe and Garcia-Molina(1997)]%
+        {chawathe1997meaningful}
+\bibfield{author}{\bibinfo{person}{Sudarshan~S Chawathe} {and} \bibinfo{person}{Hector Garcia-Molina}.} \bibinfo{year}{1997}\natexlab{}.
+\newblock \showarticletitle{Meaningful change detection in structured data}.
+\newblock \bibinfo{journal}{\emph{ACM SIGMOD Record}} \bibinfo{volume}{26}, \bibinfo{number}{2} (\bibinfo{year}{1997}), \bibinfo{pages}{26--37}.
+\newblock
+
+
+\bibitem[Demers et~al\mbox{.}(1981)]%
+        {Demers1981IncrementalEF}
+\bibfield{author}{\bibinfo{person}{Alan~J. Demers}, \bibinfo{person}{T. Reps}, {and} \bibinfo{person}{Tim Teitelbaum}.} \bibinfo{year}{1981}\natexlab{}.
+\newblock \showarticletitle{Incremental evaluation for attribute grammars with application to syntax-directed editors}. In \bibinfo{booktitle}{\emph{ACM-SIGACT Symposium on Principles of Programming Languages}}.
+\newblock
+\urldef\tempurl%
+\url{https://api.semanticscholar.org/CorpusID:12044550}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Dietz(1982)]%
+        {OM}
+\bibfield{author}{\bibinfo{person}{Paul~F Dietz}.} \bibinfo{year}{1982}\natexlab{}.
+\newblock \showarticletitle{Maintaining order in a linked list}. In \bibinfo{booktitle}{\emph{Proceedings of the fourteenth annual ACM symposium on Theory of computing}}. \bibinfo{pages}{122--127}.
+\newblock
+
+
+\bibitem[Dunfield and Krishnaswami(2022)]%
+        {DBLP:journals/csur/DunfieldK21}
+\bibfield{author}{\bibinfo{person}{Jana Dunfield} {and} \bibinfo{person}{Neel Krishnaswami}.} \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{Bidirectional Typing}.
+\newblock \bibinfo{journal}{\emph{{ACM} Comput. Surv.}} \bibinfo{volume}{54}, \bibinfo{number}{5} (\bibinfo{year}{2022}), \bibinfo{pages}{98:1--98:38}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3450952}
+\showDOI{\tempurl}
+
+
+\bibitem[Erdweg et~al\mbox{.}(2015)]%
+        {DBLP:conf/oopsla/ErdwegBKKM15}
+\bibfield{author}{\bibinfo{person}{Sebastian Erdweg}, \bibinfo{person}{Oliver Bracevac}, \bibinfo{person}{Edlira Kuci}, \bibinfo{person}{Matthias Krebs}, {and} \bibinfo{person}{Mira Mezini}.} \bibinfo{year}{2015}\natexlab{}.
+\newblock \showarticletitle{A co-contextual formulation of type rules and its application to incremental type checking}. In \bibinfo{booktitle}{\emph{Proceedings of the 2015 {ACM} {SIGPLAN} International Conference on Object-Oriented Programming, Systems, Languages, and Applications, {OOPSLA} 2015, part of {SPLASH} 2015}}, \bibfield{editor}{\bibinfo{person}{Jonathan Aldrich} {and} \bibinfo{person}{Patrick Eugster}} (Eds.). \bibinfo{publisher}{{ACM}}, \bibinfo{pages}{880--897}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/2814270.2814277}
+\showDOI{\tempurl}
+
+
+\bibitem[Es et~al\mbox{.}(2017)]%
+        {DBLP:conf/benevol/EsVR17}
+\bibfield{author}{\bibinfo{person}{Noah~Van Es}, \bibinfo{person}{Maarten Vandercammen}, {and} \bibinfo{person}{Coen~De Roover}.} \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{Incrementalizing Abstract Interpretation}. In \bibinfo{booktitle}{\emph{Proceedings of the 16th edition of the BElgian-NEtherlands software eVOLution symposium}} \emph{(\bibinfo{series}{{CEUR} Workshop Proceedings}, Vol.~\bibinfo{volume}{2047})}, \bibfield{editor}{\bibinfo{person}{Serge Demeyer}, \bibinfo{person}{Ali Parsai}, \bibinfo{person}{Gulsher Laghari}, {and} \bibinfo{person}{Brent van Bladel}} (Eds.). \bibinfo{publisher}{CEUR-WS.org}, \bibinfo{pages}{31--35}.
+\newblock
+\urldef\tempurl%
+\url{https://ceur-ws.org/Vol-2047/BENEVOL\_2017\_paper\_9.pdf}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Garseil(2010)]%
+        {tali-garseil}
+\bibfield{author}{\bibinfo{person}{Tali Garseil}.} \bibinfo{year}{2010}\natexlab{}.
+\newblock \bibinfo{title}{{H}ow browsers work --- taligarsiel.com}.
+\newblock \bibinfo{howpublished}{\url{https://taligarsiel.com/Projects/howbrowserswork1.htm##Dirty_bit_system}}.
+\newblock
+\newblock
+\shownote{[Accessed 05-11-2024]}.
+
+
+\bibitem[Ghime et~al\mbox{.}(2022)]%
+        {DBLP:conf/indiaSE/GhimeKJC22}
+\bibfield{author}{\bibinfo{person}{Vaidehi Ghime}, \bibinfo{person}{Ankita Khadsare}, \bibinfo{person}{Anushri Jana}, {and} \bibinfo{person}{Bharti Chimdyalwar}.} \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{{IR} Mapping: Intermediate Representation {(IR)} based Mapping to facilitate Incremental Static Analysis}. In \bibinfo{booktitle}{\emph{{ISEC} 2022: 15th Innovations in Software Engineering Conference}}, \bibfield{editor}{\bibinfo{person}{Saurabh Tiwari}, \bibinfo{person}{Sanjay Chaudhary}, \bibinfo{person}{Chanchal~K. Roy}, \bibinfo{person}{Meenakshi D'Souza}, \bibinfo{person}{Richa Sharma}, {and} \bibinfo{person}{Lov Kumar}} (Eds.). \bibinfo{publisher}{{ACM}}, \bibinfo{pages}{23:1--23:5}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3511430.3511451}
+\showDOI{\tempurl}
+
+
+\bibitem[Hammer et~al\mbox{.}(2015)]%
+        {AdaptonName}
+\bibfield{author}{\bibinfo{person}{Matthew~A Hammer}, \bibinfo{person}{Jana Dunfield}, \bibinfo{person}{Kyle Headley}, \bibinfo{person}{Nicholas Labich}, \bibinfo{person}{Jeffrey~S Foster}, \bibinfo{person}{Michael Hicks}, {and} \bibinfo{person}{David Van~Horn}.} \bibinfo{year}{2015}\natexlab{}.
+\newblock \showarticletitle{Incremental computation with names}. In \bibinfo{booktitle}{\emph{Proceedings of the 2015 ACM SIGPLAN International Conference on Object-Oriented Programming, Systems, Languages, and Applications}}. \bibinfo{pages}{748--766}.
+\newblock
+
+
+\bibitem[Hammer et~al\mbox{.}(2014)]%
+        {Adapton}
+\bibfield{author}{\bibinfo{person}{Matthew~A. Hammer}, \bibinfo{person}{Khoo~Yit Phang}, \bibinfo{person}{Michael Hicks}, {and} \bibinfo{person}{Jeffrey~S. Foster}.} \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{Adapton: composable, demand-driven incremental computation}. In \bibinfo{booktitle}{\emph{Proceedings of the 35th ACM SIGPLAN Conference on Programming Language Design and Implementation}} \emph{(\bibinfo{series}{PLDI '14})}. \bibinfo{publisher}{Association for Computing Machinery}, \bibinfo{address}{New York, NY, USA}, \bibinfo{pages}{156–166}.
+\newblock
+\showISBNx{9781450327848}
+\urldef\tempurl%
+\url{https://doi.org/10.1145/2594291.2594324}
+\showDOI{\tempurl}
+
+
+\bibitem[Holcomb et~al\mbox{.}(2023)]%
+        {holcomb2023case}
+\bibfield{author}{\bibinfo{person}{Amelia Holcomb}, \bibinfo{person}{Michael Dales}, \bibinfo{person}{Patrick Ferris}, \bibinfo{person}{Sadiq Jaffer}, \bibinfo{person}{Thomas Swinfield}, \bibinfo{person}{Alison Eyres}, \bibinfo{person}{Andrew Balmford}, \bibinfo{person}{David Coomes}, \bibinfo{person}{Srinivasan Keshav}, {and} \bibinfo{person}{Anil Madhavapeddy}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{A Case for Planetary Computing}.
+\newblock \bibinfo{journal}{\emph{arXiv e-prints}} (\bibinfo{year}{2023}), \bibinfo{pages}{arXiv--2303}.
+\newblock
+
+
+\bibitem[Kirisame et~al\mbox{.}(2025)]%
+        {ST}
+\bibfield{author}{\bibinfo{person}{Marisa Kirisame}, \bibinfo{person}{Tiezhi Wang}, {and} \bibinfo{person}{Pavel Panchekha}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Spineless Traversal for Layout Invalidation}.
+\newblock
+\newblock
+\showeprint[arxiv]{2411.10659}~[cs.PL]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2411.10659}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Kuan et~al\mbox{.}(2007)]%
+        {DBLP:conf/esop/KuanMF07}
+\bibfield{author}{\bibinfo{person}{George Kuan}, \bibinfo{person}{David MacQueen}, {and} \bibinfo{person}{Robert~Bruce Findler}.} \bibinfo{year}{2007}\natexlab{}.
+\newblock \showarticletitle{A Rewriting Semantics for Type Inference}. In \bibinfo{booktitle}{\emph{Programming Languages and Systems, 16th European Symposium on Programming, {ESOP} 2007, Held as Part of the Joint European Conferences on Theory and Practics of Software, {ETAPS} 2007, Proceedings}} \emph{(\bibinfo{series}{Lecture Notes in Computer Science}, Vol.~\bibinfo{volume}{4421})}, \bibfield{editor}{\bibinfo{person}{Rocco~De Nicola}} (Ed.). \bibinfo{publisher}{Springer}, \bibinfo{pages}{426--440}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1007/978-3-540-71316-6\_29}
+\showDOI{\tempurl}
+
+
+\bibitem[Liu(2024)]%
+        {IC-Survey}
+\bibfield{author}{\bibinfo{person}{Yanhong~A. Liu}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Incremental Computation: What Is the Essence? (Invited Contribution)}. In \bibinfo{booktitle}{\emph{Proceedings of the 2024 ACM SIGPLAN International Workshop on Partial Evaluation and Program Manipulation}} \emph{(\bibinfo{series}{PEPM 2024})}. \bibinfo{publisher}{Association for Computing Machinery}, \bibinfo{address}{New York, NY, USA}, \bibinfo{pages}{39–52}.
+\newblock
+\showISBNx{9798400704871}
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3635800.3637447}
+\showDOI{\tempurl}
+
+
+\bibitem[Maloney et~al\mbox{.}(2010)]%
+        {maloney2010scratch}
+\bibfield{author}{\bibinfo{person}{John Maloney}, \bibinfo{person}{Mitchel Resnick}, \bibinfo{person}{Natalie Rusk}, \bibinfo{person}{Brian Silverman}, {and} \bibinfo{person}{Evelyn Eastmond}.} \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{The scratch programming language and environment}.
+\newblock \bibinfo{journal}{\emph{ACM Transactions on Computing Education (TOCE)}} \bibinfo{volume}{10}, \bibinfo{number}{4} (\bibinfo{year}{2010}), \bibinfo{pages}{1--15}.
+\newblock
+
+
+\bibitem[McPeak et~al\mbox{.}(2013)]%
+        {DBLP:conf/sigsoft/McPeakGR13}
+\bibfield{author}{\bibinfo{person}{Scott McPeak}, \bibinfo{person}{Charles{-}Henri Gros}, {and} \bibinfo{person}{Murali~Krishna Ramanathan}.} \bibinfo{year}{2013}\natexlab{}.
+\newblock \showarticletitle{Scalable and incremental software bug detection}. In \bibinfo{booktitle}{\emph{Joint Meeting of the European Software Engineering Conference and the {ACM} {SIGSOFT} Symposium on the Foundations of Software Engineering, ESEC/FSE'13}}, \bibfield{editor}{\bibinfo{person}{Bertrand Meyer}, \bibinfo{person}{Luciano Baresi}, {and} \bibinfo{person}{Mira Mezini}} (Eds.). \bibinfo{publisher}{{ACM}}, \bibinfo{pages}{554--564}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/2491411.2501854}
+\showDOI{\tempurl}
+
+
+\bibitem[McSherry et~al\mbox{.}(2013)]%
+        {DDF}
+\bibfield{author}{\bibinfo{person}{Frank McSherry}, \bibinfo{person}{Derek Murray}, \bibinfo{person}{Rebecca Isaacs}, {and} \bibinfo{person}{Michael Isard}.} \bibinfo{year}{2013}\natexlab{}.
+\newblock \showarticletitle{Differential dataflow}. In \bibinfo{booktitle}{\emph{Proceedings of CIDR 2013} (\bibinfo{edition}{proceedings of cidr 2013} ed.)}.
+\newblock
+\urldef\tempurl%
+\url{https://www.microsoft.com/en-us/research/publication/differential-dataflow/}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Meertens(1983)]%
+        {DBLP:conf/popl/Meertens83}
+\bibfield{author}{\bibinfo{person}{Lambert G. L.~T. Meertens}.} \bibinfo{year}{1983}\natexlab{}.
+\newblock \showarticletitle{Incremental Polymorphic Type Checking in {B}}. In \bibinfo{booktitle}{\emph{Conference Record of the Tenth Annual {ACM} Symposium on Principles of Programming Languages}}, \bibfield{editor}{\bibinfo{person}{John~R. Wright}, \bibinfo{person}{Larry Landweber}, \bibinfo{person}{Alan~J. Demers}, {and} \bibinfo{person}{Tim Teitelbaum}} (Eds.). \bibinfo{publisher}{{ACM} Press}, \bibinfo{pages}{265--275}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/567067.567092}
+\showDOI{\tempurl}
+
+
+\bibitem[Mokhov et~al\mbox{.}(2018)]%
+        {ALACARTE}
+\bibfield{author}{\bibinfo{person}{Andrey Mokhov}, \bibinfo{person}{Neil Mitchell}, {and} \bibinfo{person}{Simon Peyton~Jones}.} \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{Build systems \`{a} la carte}.
+\newblock \bibinfo{journal}{\emph{Proc. ACM Program. Lang.}} \bibinfo{volume}{2}, \bibinfo{number}{ICFP}, Article \bibinfo{articleno}{79} (\bibinfo{date}{July} \bibinfo{year}{2018}), \bibinfo{numpages}{29}~pages.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3236774}
+\showDOI{\tempurl}
+
+
+\bibitem[Mudduluru and Ramanathan(2014)]%
+        {DBLP:conf/fase/MudduluruR14}
+\bibfield{author}{\bibinfo{person}{Rashmi Mudduluru} {and} \bibinfo{person}{Murali~Krishna Ramanathan}.} \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{Efficient Incremental Static Analysis Using Path Abstraction}. In \bibinfo{booktitle}{\emph{Fundamental Approaches to Software Engineering - 17th International Conference, {FASE} 2014, Held as Part of the European Joint Conferences on Theory and Practice of Software, {ETAPS} 2014, Proceedings}} \emph{(\bibinfo{series}{Lecture Notes in Computer Science}, Vol.~\bibinfo{volume}{8411})}, \bibfield{editor}{\bibinfo{person}{Stefania Gnesi} {and} \bibinfo{person}{Arend Rensink}} (Eds.). \bibinfo{publisher}{Springer}, \bibinfo{pages}{125--139}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1007/978-3-642-54804-8\_9}
+\showDOI{\tempurl}
+
+
+\bibitem[Omar et~al\mbox{.}(2017a)]%
+        {omar2017b}
+\bibfield{author}{\bibinfo{person}{Cyrus Omar}, \bibinfo{person}{Ian Voysey}, \bibinfo{person}{Michael Hilton}, \bibinfo{person}{Jonathan Aldrich}, {and} \bibinfo{person}{Matthew~A. Hammer}.} \bibinfo{year}{2017}\natexlab{a}.
+\newblock \showarticletitle{Hazelnut: a bidirectionally typed structure editor calculus}. In \bibinfo{booktitle}{\emph{Proceedings of the 44th {ACM} {SIGPLAN} Symposium on Principles of Programming Languages, {POPL} 2017}}, \bibfield{editor}{\bibinfo{person}{Giuseppe Castagna} {and} \bibinfo{person}{Andrew~D. Gordon}} (Eds.). \bibinfo{publisher}{{ACM}}, \bibinfo{pages}{86--99}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3009837.3009900}
+\showDOI{\tempurl}
+
+
+\bibitem[Omar et~al\mbox{.}(2017b)]%
+        {omar2017a}
+\bibfield{author}{\bibinfo{person}{Cyrus Omar}, \bibinfo{person}{Ian Voysey}, \bibinfo{person}{Michael Hilton}, \bibinfo{person}{Joshua Sunshine}, \bibinfo{person}{Claire~Le Goues}, \bibinfo{person}{Jonathan Aldrich}, {and} \bibinfo{person}{Matthew~A. Hammer}.} \bibinfo{year}{2017}\natexlab{b}.
+\newblock \showarticletitle{Toward Semantic Foundations for Program Editors}. In \bibinfo{booktitle}{\emph{2nd Summit on Advances in Programming Languages, {SNAPL} 2017, May 7-10, 2017, Asilomar, CA, {USA}}} \emph{(\bibinfo{series}{LIPIcs}, Vol.~\bibinfo{volume}{71})}, \bibfield{editor}{\bibinfo{person}{Benjamin~S. Lerner} {and} \bibinfo{person}{Shriram~Krishnamurthi Rastislav~Bod{\'\i}k}} (Eds.). \bibinfo{publisher}{Schloss Dagstuhl - Leibniz-Zentrum f{\"{u}}r Informatik}, \bibinfo{pages}{11:1--11:12}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.4230/LIPICS.SNAPL.2017.11}
+\showDOI{\tempurl}
+
+
+\bibitem[Pacak et~al\mbox{.}(2020)]%
+        {DBLP:journals/pacmpl/PacakES20}
+\bibfield{author}{\bibinfo{person}{Andr{\'{e}} Pacak}, \bibinfo{person}{Sebastian Erdweg}, {and} \bibinfo{person}{Tam{\'{a}}s Szab{\'{o}}}.} \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{A systematic approach to deriving incremental type checkers}.
+\newblock \bibinfo{journal}{\emph{Proc. {ACM} Program. Lang.}} \bibinfo{volume}{4}, \bibinfo{number}{{OOPSLA}} (\bibinfo{year}{2020}), \bibinfo{pages}{127:1--127:28}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3428195}
+\showDOI{\tempurl}
+
+
+\bibitem[Pierce and Turner(2000)]%
+        {pierce2000}
+\bibfield{author}{\bibinfo{person}{Benjamin~C. Pierce} {and} \bibinfo{person}{David~N. Turner}.} \bibinfo{year}{2000}\natexlab{}.
+\newblock \showarticletitle{Local type inference}.
+\newblock \bibinfo{journal}{\emph{{ACM} Trans. Program. Lang. Syst.}} \bibinfo{volume}{22}, \bibinfo{number}{1} (\bibinfo{year}{2000}), \bibinfo{pages}{1--44}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/345099.345100}
+\showDOI{\tempurl}
+
+
+\bibitem[Prinz et~al\mbox{.}(2025)]%
+        {prinz2025pantograph}
+\bibfield{author}{\bibinfo{person}{Jacob Prinz}, \bibinfo{person}{Henry Blanchette}, {and} \bibinfo{person}{Leonidas Lampropoulos}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Pantograph: A Fluid and Typed Structure Editor}.
+\newblock \bibinfo{journal}{\emph{Proceedings of the ACM on Programming Languages}} \bibinfo{volume}{9}, \bibinfo{number}{POPL} (\bibinfo{year}{2025}), \bibinfo{pages}{802--831}.
+\newblock
+
+
+\bibitem[Pugh and Teitelbaum(1989)]%
+        {ICC}
+\bibfield{author}{\bibinfo{person}{William Pugh} {and} \bibinfo{person}{Tim Teitelbaum}.} \bibinfo{year}{1989}\natexlab{}.
+\newblock \showarticletitle{Incremental computation via function caching}. In \bibinfo{booktitle}{\emph{Proceedings of the 16th ACM SIGPLAN-SIGACT symposium on Principles of programming languages}}. \bibinfo{pages}{315--328}.
+\newblock
+
+
+\bibitem[Qiu et~al\mbox{.}(2015)]%
+        {DBLP:conf/icse/QiuYPK15}
+\bibfield{author}{\bibinfo{person}{Rui Qiu}, \bibinfo{person}{Guowei Yang}, \bibinfo{person}{Corina~S. Pasareanu}, {and} \bibinfo{person}{Sarfraz Khurshid}.} \bibinfo{year}{2015}\natexlab{}.
+\newblock \showarticletitle{Compositional Symbolic Execution with Memoized Replay}. In \bibinfo{booktitle}{\emph{37th {IEEE/ACM} International Conference on Software Engineering, {ICSE} 2015}}, \bibfield{editor}{\bibinfo{person}{Antonia Bertolino}, \bibinfo{person}{Gerardo Canfora}, {and} \bibinfo{person}{Sebastian~G. Elbaum}} (Eds.). \bibinfo{publisher}{{IEEE} Computer Society}, \bibinfo{pages}{632--642}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1109/ICSE.2015.79}
+\showDOI{\tempurl}
+
+
+\bibitem[Ramalingam and Reps(1993)]%
+        {IC-bib}
+\bibfield{author}{\bibinfo{person}{Ganesan Ramalingam} {and} \bibinfo{person}{Thomas Reps}.} \bibinfo{year}{1993}\natexlab{}.
+\newblock \showarticletitle{A categorized bibliography on incremental computation}. In \bibinfo{booktitle}{\emph{Proceedings of the 20th ACM SIGPLAN-SIGACT symposium on Principles of programming languages}}. \bibinfo{pages}{502--510}.
+\newblock
+
+
+\bibitem[Razafintsialonina et~al\mbox{.}(2025)]%
+        {DBLP:conf/ecoop/Razafintsialonina25}
+\bibfield{author}{\bibinfo{person}{Mamy Razafintsialonina}, \bibinfo{person}{David B{\"{u}}hler}, \bibinfo{person}{Antoine Min{\'{e}}}, \bibinfo{person}{Valentin Perrelle}, {and} \bibinfo{person}{Julien Signoles}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Reusing Caches and Invariants for Efficient and Sound Incremental Static Analysis}. In \bibinfo{booktitle}{\emph{39th European Conference on Object-Oriented Programming, {ECOOP} 2025}} \emph{(\bibinfo{series}{LIPIcs}, Vol.~\bibinfo{volume}{333})}, \bibfield{editor}{\bibinfo{person}{Jonathan Aldrich} {and} \bibinfo{person}{Alexandra Silva}} (Eds.). \bibinfo{publisher}{Schloss Dagstuhl - Leibniz-Zentrum f{\"{u}}r Informatik}, \bibinfo{pages}{28:1--28:29}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.4230/LIPICS.ECOOP.2025.28}
+\showDOI{\tempurl}
+
+
+\bibitem[Seidl et~al\mbox{.}(2020)]%
+        {DBLP:conf/birthday/SeidlEV15}
+\bibfield{author}{\bibinfo{person}{Helmut Seidl}, \bibinfo{person}{Julian Erhard}, {and} \bibinfo{person}{Ralf Vogler}.} \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{Incremental Abstract Interpretation}. In \bibinfo{booktitle}{\emph{From Lambda Calculus to Cybersecurity Through Program Analysis - Essays Dedicated to Chris Hankin on the Occasion of His Retirement}} \emph{(\bibinfo{series}{Lecture Notes in Computer Science}, Vol.~\bibinfo{volume}{12065})}, \bibfield{editor}{\bibinfo{person}{Alessandra~Di Pierro}, \bibinfo{person}{Pasquale Malacaria}, {and} \bibinfo{person}{Rajagopal Nagarajan}} (Eds.). \bibinfo{publisher}{Springer}, \bibinfo{pages}{132--148}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1007/978-3-030-41103-9\_5}
+\showDOI{\tempurl}
+
+
+\bibitem[Siek and Taha(2006)]%
+        {siek2006}
+\bibfield{author}{\bibinfo{person}{Jeremy~G. Siek} {and} \bibinfo{person}{Walid Taha}.} \bibinfo{year}{2006}\natexlab{}.
+\newblock \showarticletitle{Gradual Typing for Functional Languages}. In \bibinfo{booktitle}{\emph{Scheme and Functional Programming Workshop}}.
+\newblock
+
+
+\bibitem[Siek et~al\mbox{.}(2015)]%
+        {siek2015}
+\bibfield{author}{\bibinfo{person}{Jeremy~G. Siek}, \bibinfo{person}{Michael~M. Vitousek}, \bibinfo{person}{Matteo Cimini}, {and} \bibinfo{person}{John~Tang Boyland}.} \bibinfo{year}{2015}\natexlab{}.
+\newblock \showarticletitle{Refined Criteria for Gradual Typing}. In \bibinfo{booktitle}{\emph{1st Summit on Advances in Programming Languages, {SNAPL} 2015, May 3-6, 2015}} \emph{(\bibinfo{series}{LIPIcs}, Vol.~\bibinfo{volume}{32})}, \bibfield{editor}{\bibinfo{person}{Thomas Ball}, \bibinfo{person}{Rastislav Bodik}, \bibinfo{person}{Shriram Krishnamurthi}, \bibinfo{person}{Benjamin~S. Lerner}, {and} \bibinfo{person}{Greg Morrisett}} (Eds.). \bibinfo{publisher}{Schloss Dagstuhl - Leibniz-Zentrum f{\"{u}}r Informatik}, \bibinfo{pages}{274--293}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.4230/LIPICS.SNAPL.2015.274}
+\showDOI{\tempurl}
+
+
+\bibitem[Stump et~al\mbox{.}(2011)]%
+        {DBLP:conf/rta/StumpKO11}
+\bibfield{author}{\bibinfo{person}{Aaron Stump}, \bibinfo{person}{Garrin Kimmell}, {and} \bibinfo{person}{Roba El~Haj Omar}.} \bibinfo{year}{2011}\natexlab{}.
+\newblock \showarticletitle{Type Preservation as a Confluence Problem}. In \bibinfo{booktitle}{\emph{Proceedings of the 22nd International Conference on Rewriting Techniques and Applications, {RTA} 2011}} \emph{(\bibinfo{series}{LIPIcs}, Vol.~\bibinfo{volume}{10})}, \bibfield{editor}{\bibinfo{person}{Manfred Schmidt{-}Schau{\ss}}} (Ed.). \bibinfo{publisher}{Schloss Dagstuhl - Leibniz-Zentrum f{\"{u}}r Informatik}, \bibinfo{pages}{345--360}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.4230/LIPICS.RTA.2011.345}
+\showDOI{\tempurl}
+
+
+\bibitem[Szab{\'{o}} et~al\mbox{.}(2016)]%
+        {DBLP:conf/kbse/SzaboEV16}
+\bibfield{author}{\bibinfo{person}{Tam{\'{a}}s Szab{\'{o}}}, \bibinfo{person}{Sebastian Erdweg}, {and} \bibinfo{person}{Markus Voelter}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{IncA: a {DSL} for the definition of incremental program analyses}. In \bibinfo{booktitle}{\emph{Proceedings of the 31st {IEEE/ACM} International Conference on Automated Software Engineering, {ASE} 2016}}, \bibfield{editor}{\bibinfo{person}{David Lo}, \bibinfo{person}{Sven Apel}, {and} \bibinfo{person}{Sarfraz Khurshid}} (Eds.). \bibinfo{publisher}{{ACM}}, \bibinfo{pages}{320--331}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/2970276.2970298}
+\showDOI{\tempurl}
+
+
+\bibitem[Teitelbaum and Reps(1981)]%
+        {teitelbaum1981cornell}
+\bibfield{author}{\bibinfo{person}{Tim Teitelbaum} {and} \bibinfo{person}{Thomas Reps}.} \bibinfo{year}{1981}\natexlab{}.
+\newblock \showarticletitle{The Cornell program synthesizer: a syntax-directed programming environment}.
+\newblock \bibinfo{journal}{\emph{Commun. ACM}} \bibinfo{volume}{24}, \bibinfo{number}{9} (\bibinfo{year}{1981}), \bibinfo{pages}{563--573}.
+\newblock
+
+
+\bibitem[Wachsmuth et~al\mbox{.}(2013)]%
+        {DBLP:conf/sle/WachsmuthKVGV13}
+\bibfield{author}{\bibinfo{person}{Guido Wachsmuth}, \bibinfo{person}{Gabri{\"{e}}l D.~P. Konat}, \bibinfo{person}{Vlad~A. Vergu}, \bibinfo{person}{Danny~M. Groenewegen}, {and} \bibinfo{person}{Eelco Visser}.} \bibinfo{year}{2013}\natexlab{}.
+\newblock \showarticletitle{A Language Independent Task Engine for Incremental Name and Type Analysis}. In \bibinfo{booktitle}{\emph{Software Language Engineering - 6th International Conference, {SLE} 2013, Proceedings}} \emph{(\bibinfo{series}{Lecture Notes in Computer Science}, Vol.~\bibinfo{volume}{8225})}, \bibfield{editor}{\bibinfo{person}{Martin Erwig}, \bibinfo{person}{Richard~F. Paige}, {and} \bibinfo{person}{Eric~Van Wyk}} (Eds.). \bibinfo{publisher}{Springer}, \bibinfo{pages}{260--280}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1007/978-3-319-02654-1\_15}
+\showDOI{\tempurl}
+
+
+\bibitem[Yang et~al\mbox{.}(2013)]%
+        {DBLP:conf/icse/YangKP04}
+\bibfield{author}{\bibinfo{person}{Guowei Yang}, \bibinfo{person}{Sarfraz Khurshid}, {and} \bibinfo{person}{Corina~S. Pasareanu}.} \bibinfo{year}{2013}\natexlab{}.
+\newblock \showarticletitle{Memoise: a tool for memoized symbolic execution}. In \bibinfo{booktitle}{\emph{35th International Conference on Software Engineering, {ICSE} '13}}, \bibfield{editor}{\bibinfo{person}{David Notkin}, \bibinfo{person}{Betty H.~C. Cheng}, {and} \bibinfo{person}{Klaus Pohl}} (Eds.). \bibinfo{publisher}{{IEEE} Computer Society}, \bibinfo{pages}{1343--1346}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1109/ICSE.2013.6606713}
+\showDOI{\tempurl}
+
+
+\bibitem[Yang et~al\mbox{.}(2012)]%
+        {DBLP:conf/issta/YangPK12}
+\bibfield{author}{\bibinfo{person}{Guowei Yang}, \bibinfo{person}{Corina~S. Pasareanu}, {and} \bibinfo{person}{Sarfraz Khurshid}.} \bibinfo{year}{2012}\natexlab{}.
+\newblock \showarticletitle{Memoized symbolic execution}. In \bibinfo{booktitle}{\emph{International Symposium on Software Testing and Analysis, {ISSTA} 2012}}, \bibfield{editor}{\bibinfo{person}{Mats Per~Erik Heimdahl} {and} \bibinfo{person}{Zhendong Su}} (Eds.). \bibinfo{publisher}{{ACM}}, \bibinfo{pages}{144--154}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/2338965.2336771}
+\showDOI{\tempurl}
+
+
+\bibitem[Yang et~al\mbox{.}(2014)]%
+        {DBLP:journals/tosem/YangPRK14}
+\bibfield{author}{\bibinfo{person}{Guowei Yang}, \bibinfo{person}{Suzette Person}, \bibinfo{person}{Neha Rungta}, {and} \bibinfo{person}{Sarfraz Khurshid}.} \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{Directed Incremental Symbolic Execution}.
+\newblock \bibinfo{journal}{\emph{{ACM} Trans. Softw. Eng. Methodol.}} \bibinfo{volume}{24}, \bibinfo{number}{1} (\bibinfo{year}{2014}), \bibinfo{pages}{3:1--3:42}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/2629536}
+\showDOI{\tempurl}
+
+
+\bibitem[Zhang et~al\mbox{.}(2017)]%
+        {DBLP:conf/sas/ZhangSX17}
+\bibfield{author}{\bibinfo{person}{Jieyuan Zhang}, \bibinfo{person}{Yulei Sui}, {and} \bibinfo{person}{Jingling Xue}.} \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{Incremental Analysis for Probabilistic Programs}. In \bibinfo{booktitle}{\emph{Static Analysis - 24th International Symposium, {SAS} 2017, Proceedings}} \emph{(\bibinfo{series}{Lecture Notes in Computer Science}, Vol.~\bibinfo{volume}{10422})}, \bibfield{editor}{\bibinfo{person}{Francesco Ranzato}} (Ed.). \bibinfo{publisher}{Springer}, \bibinfo{pages}{450--472}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1007/978-3-319-66706-5\_22}
+\showDOI{\tempurl}
+
+
+\bibitem[Zhao et~al\mbox{.}(2021)]%
+        {SOUFFLE}
+\bibfield{author}{\bibinfo{person}{David Zhao}, \bibinfo{person}{Pavle Subotic}, \bibinfo{person}{Mukund Raghothaman}, {and} \bibinfo{person}{Bernhard Scholz}.} \bibinfo{year}{2021}\natexlab{}.
+\newblock \showarticletitle{Towards Elastic Incrementalization for Datalog}. In \bibinfo{booktitle}{\emph{Proceedings of the 23rd International Symposium on Principles and Practice of Declarative Programming}} \emph{(\bibinfo{series}{PPDP '21})}. \bibinfo{publisher}{Association for Computing Machinery}, \bibinfo{address}{New York, NY, USA}, Article \bibinfo{articleno}{20}, \bibinfo{numpages}{16}~pages.
+\newblock
+\showISBNx{9781450386890}
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3479394.3479415}
+\showDOI{\tempurl}
+
+
+\bibitem[Zhao et~al\mbox{.}(2024)]%
+        {DBLP:journals/pacmpl/ZhaoMDBPO24}
+\bibfield{author}{\bibinfo{person}{Eric Zhao}, \bibinfo{person}{Raef Maroof}, \bibinfo{person}{Anand Dukkipati}, \bibinfo{person}{Andrew Blinn}, \bibinfo{person}{Zhiyi Pan}, {and} \bibinfo{person}{Cyrus Omar}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Total Type Error Localization and Recovery with Holes}.
+\newblock \bibinfo{journal}{\emph{Proc. {ACM} Program. Lang.}} \bibinfo{volume}{8}, \bibinfo{number}{{POPL}} (\bibinfo{year}{2024}), \bibinfo{pages}{2041--2068}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1145/3632910}
+\showDOI{\tempurl}
+
+
+\end{thebibliography}
