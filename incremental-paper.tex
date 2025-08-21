@@ -1,27 +1,14 @@
-\documentclass[acmsmall,dvipsnames,10pt,nonacm]{acmart}\settopmatter{printfolios=true}
+\documentclass[acmsmall,dvipsnames,10pt]{acmart}\settopmatter{printfolios=true}
 
 \startPage{1}
-
-%% Copyright information 
-\setcopyright{none}
-
-\bibliographystyle{ACM-Reference-Format}
-%\citestyle{acmauthoryear}
-\citestyle{acmnumeric}
-
-%% Spacing hacks 
-\usepackage{titlesec}
-\titlespacing*{\section} {0pt}{6pt}{2pt}
-% \titlespacing*{\subsection} {0pt}{6pt}{2pt}
-\titlespacing*{\subsubsection}{0pt}{6pt}{10pt}
-\titlespacing*{\paragraph} {0pt}{4pt}{10pt}
-% \titlespacing*{\subparagraph} {12pt}{5pt}{10pt}
 
 \usepackage{enumitem}
 \usepackage{todonotes}
 \usepackage{placeins}
 
 \input{config/config-tex}
+\input{config/spacing-hacks}
+
 \input{symbols/colors}
 \input{symbols/layout}
 \input{symbols/types}
@@ -41,25 +28,28 @@
 \begin{document}
 
 \title{Incremental Bidirectional Typing via Order Maintenance}
-\input{authors}
-\input{numbers}
+\input{meta/authors}
+\input{meta/numbers}
 \input{abstract}
+\input{meta-acm/ccs}
+\input{meta-acm/keywords}
+\input{meta-acm/reference-information}
 
 \maketitle
 
-\input{introduction}
-\input{background}
-\input{malc}
-\input{example}
-\input{formalism}
-\input{implementation}
-\input{evaluation}
-\input{related-work}
-\input{discussion-and-conclusion}
+\input{sections/introduction}
+\input{sections/background}
+\input{sections/malc}
+\input{sections/example}
+\input{sections/formalism}
+\input{sections/implementation}
+\input{sections/evaluation}
+\input{sections/related-work}
+\input{sections/discussion-and-conclusion}
 
 \newpage 
-\input{data-availability}
-\input{acknowledgements}
+\input{meta/data-availability}
+\input{meta/acknowledgements}
 
 \bibliography{incremental-paper}
 
